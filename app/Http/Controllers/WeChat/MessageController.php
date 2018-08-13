@@ -24,7 +24,6 @@
 namespace App\Http\Controllers\WeChat;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Log;
 
 class MessageController extends Controller
 {
@@ -156,7 +155,6 @@ class MessageController extends Controller
             . '<Description>' . $data['description'] . '</Description>'
             . '</Video>'
             . '</xml>';
-        Log::info($message);
         echo $message;
     }
 }

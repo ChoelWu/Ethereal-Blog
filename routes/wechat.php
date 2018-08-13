@@ -56,4 +56,11 @@ Route::group(['prefix' => 'wechat', 'namespace' => 'WeChat'], function () {
     Route::any('get_permanent_material', 'WeChatTestController@getPermanentMaterialInstance');
     //群发消息
     Route::any('mass_message', 'WeChatTestController@massMessageInstance');
+    //发送模板消息
+    Route::any('set_industry', 'WeChatTestController@setIndustryInstance');
+    Route::any('get_industry', 'WeChatTestController@getIndustryInstance');
+    Route::any('get_template_id', 'WeChatTestController@getTemplateIdInstance');
+    Route::any('get_template_list', 'WeChatTestController@getTemplateListInstance');
+    Route::any('delete_template', 'WeChatTestController@deleteTemplateInstance');
+    Route::any('send_template_message_instance', 'WeChatTestController@sendTemplateMessageInstance');
 });

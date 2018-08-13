@@ -773,6 +773,7 @@ class WeChatTestController extends Controller
 
     /**
      * 获取永久素材
+     * （规则详见：微信公众平台技术开发文档>>新增临时素材）
      * @return mixed
      */
     public function getPermanentMaterialInstance()
@@ -784,6 +785,11 @@ class WeChatTestController extends Controller
         return $rel;
     }
 
+    /**
+     * 群发消息
+     * （规则详见：微信公众平台技术开发文档>>群发接口和原创校验）
+     * @return mixed
+     */
     public function massMessageInstance()
     {
         $massMessage = new MassMessageController();
@@ -826,6 +832,126 @@ class WeChatTestController extends Controller
             ]
         ];
         $rel = $massMessage->massMessage($this->accessToken, $data);
+        return $rel;
+    }
+
+    /**
+     * 设置所属行业
+     * （设置行业可在微信公众平台后台完成，每月可修改行业1次，帐号仅可使用所属行业中相关的模板）
+     * （规则详见：微信公众平台技术开发文档>>模板消息接口）
+     * @return mixed （返回示例：{"errcode":0,"errmsg":"ok"}）
+     */
+    public function setIndustryInstance()
+    {
+        $template = new TemplateController();
+        $this->checkAccessToken();
+        $data = [
+            "primary_industry" => "1",
+            "secondary_industry" => "4"
+        ];
+        $rel = $template->setIndustry($this->accessToken, $data);
+        return $rel;
+    }
+
+    /**
+     * 获取设置的行业信息
+     * （规则详见：微信公众平台技术开发文档>>模板消息接口）
+     * @return mixed ({"primary_industry": {"first_class": "IT科技","second_class": "互联网|电子商务"},
+     * "secondary_industry": {"first_class": "IT科技","second_class": "电子技术"}})
+     */
+    public function getIndustryInstance()
+    {
+        $template = new TemplateController();
+        $this->checkAccessToken();
+        $rel = $template->getIndustryInfo($this->accessToken);
+        return $rel;
+    }
+
+    /**
+     * 获得模板ID
+     * （规则详见：微信公众平台技术开发文档>>模板消息接口）
+     * @return mixed (返回示例：{"errcode":0,"errmsg":"ok","template_id":"mvGWpXF4sBOlLWK6-aR7xMbOSKjTIwMt49UT9zrXbGA"})
+     */
+    public function getTemplateIdInstance()
+    {
+        $template = new TemplateController();
+        $this->checkAccessToken();
+        $template_id_short = "TM00015";
+        $rel = $template->getTemplateId($this->accessToken, $template_id_short);
+        return $rel;
+    }
+
+    /**
+     * 获取模板列表
+     * （规则详见：微信公众平台技术开发文档>>模板消息接口）
+     * @return mixed (返回示例：{"template_list": [{"template_id": "mvGWpXF4sBOlLWK6-aR7xMbOSKjTIwMt49UT9zrXbGA","title": "订单支付成功",
+     * "primary_industry": "IT科技","deputy_industry": "互联网|电子商务","content": "{{first.DATA}}\n\n支付金额：{{orderMoneySum.DATA}}\n商品信息：{{orderProductName.DATA}}\n{{Remark.DATA}}",
+     * "example": "我们已收到您的货款，开始为您打包商品，请耐心等待: )\n支付金额：30.00元\n商品信息：我是商品名字\n\n如有问题请致电400-828-1878或直接在微信留言，小易将第一时间为您服务！"
+     * }]})
+     */
+    public function getTemplateListInstance()
+    {
+        $template = new TemplateController();
+        $this->checkAccessToken();
+        $rel = $template->getTemplateList($this->accessToken);
+        return $rel;
+    }
+
+    /**
+     * 删除模板
+     * （规则详见：微信公众平台技术开发文档>>模板消息接口）
+     * @return mixed (返回示例： {"errcode":0,"errmsg":"ok"})
+     */
+    public function deleteTemplateInstance()
+    {
+        $template = new TemplateController();
+        $this->checkAccessToken();
+        $template_id = 'mvGWpXF4sBOlLWK6-aR7xMbOSKjTIwMt49UT9zrXbGA';
+        $rel = $template->deleteTemplate($this->accessToken, $template_id);
+        return $rel;
+    }
+
+    /**
+     * 发送模板消息
+     * （url和miniprogram都是非必填字段，若都不传则模板无跳转；若都传，会优先跳转至小程序。开发者可根据实际需要选择其中一种跳转方式即可。
+     * 当用户的微信客户端版本不支持跳小程序时，将会跳转至url。）
+     * （规则详见：微信公众平台技术开发文档>>模板消息接口）
+     * @return mixed (返回示例：{"errcode":0,"errmsg":"ok","msgid":412022993116479488})
+     */
+    public function sendTemplateMessageInstance()
+    {
+        $template = new TemplateController();
+        $app_id = env('wechat_AppID');
+        $this->checkAccessToken();
+        $data = [
+            "touser" => "ojBInwdddTmpw-YiD-XwkOzYCeeM",
+            "template_id" => "pN3861BLMb488BZFnMXYeOZzePsP2G76q9XOiJ4koXo",
+            "url" => "http://weixin.qq.com/download",
+            "miniprogram" => '',
+            "data" => [
+                "first" => [
+                    "value" => "恭喜你购买成功！",
+                    "color" => "#173177"
+                ],
+                "keyword1" => [
+                    "value" => "巧克力",
+                    "color" => "#173177"
+                ],
+                "keyword2" => [
+                    "value" => "39.8元",
+                    "color" => "#173177"
+                ],
+                "keyword3" => [
+                    "value" => "2014年9月22日",
+                    "color" => "#173177"
+                ],
+                "remark" => [
+                    "value" => "欢迎再次购买！",
+                    "color" => "#173177"
+                ]
+            ]
+        ];
+        $rel = $template->sendTemplateMessage($this->accessToken, $data);
         return $rel;
     }
 
