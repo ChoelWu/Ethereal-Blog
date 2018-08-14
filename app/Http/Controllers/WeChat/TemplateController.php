@@ -108,13 +108,39 @@ class TemplateController extends Controller
     /**
      * 发送模板消息
      * @param $access_token
-     * @param $post
+     * @param $data
      * @return mixed
      */
-    public function sendTemplateMessage($access_token, $post)
+    public function sendTemplateMessage($access_token, $data)
     {
         $url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" . $access_token;
-        $post_data = json_encode($post, JSON_UNESCAPED_UNICODE);
+        $post_data = json_encode($data, JSON_UNESCAPED_UNICODE);
+        $output = $this->httpCurl->post($url, $post_data);
+        return $output;
+    }
+
+    /**
+     * 需要用户同意授权，获取一次给用户推送一条订阅模板消息的机会
+     * @param $data
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function subscribeOnce($data)
+    {
+        $app_id = env('wechat_AppID');
+        $url = 'https://mp.weixin.qq.com/mp/subscribemsg?action=get_confirm&appid=' . $app_id . '&scene=' . $data['scene']
+            . '&template_id=' . $data['template_id'] . '&redirect_url=' . urlencode($data['url']) . '&reserved=' . $data['reserved'] . '#wechat_redirect';
+        return redirect()->away($url);
+    }
+
+    /**
+     * 通过API推送订阅模板消息给到授权微信用户
+     * @param $access_token
+     * @param $data
+     * @return mixed
+     */
+    public function subscribeOnceMessage($access_token, $data) {
+        $url = 'https://api.weixin.qq.com/cgi-bin/message/template/subscribe?access_token='.$access_token;
+        $post_data = json_encode($data, JSON_UNESCAPED_UNICODE);
         $output = $this->httpCurl->post($url, $post_data);
         return $output;
     }

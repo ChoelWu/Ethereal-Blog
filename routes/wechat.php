@@ -63,4 +63,6 @@ Route::group(['prefix' => 'wechat', 'namespace' => 'WeChat'], function () {
     Route::any('get_template_list', 'WeChatTestController@getTemplateListInstance');
     Route::any('delete_template', 'WeChatTestController@deleteTemplateInstance');
     Route::any('send_template_message_instance', 'WeChatTestController@sendTemplateMessageInstance');
+    Route::any('subscribe_once', 'WeChatTestController@subscribeOnceInstance');
+    Route::any('get_auto_reply', 'WeChatTestController@getAutoReplyInstance');
 });

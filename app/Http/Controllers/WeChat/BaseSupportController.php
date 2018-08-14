@@ -86,6 +86,18 @@ class BaseSupportController extends Controller
     }
 
     /**
+     * 获取公众号的自动回复规则
+     * @param $access_token
+     * @return mixed
+     */
+    public function getAutoReply($access_token)
+    {
+        $url = 'https://api.weixin.qq.com/cgi-bin/get_current_autoreply_info?access_token=' . $access_token;
+        $output = $this->httpCurl->get($url);
+        return $output;
+    }
+
+    /**
      * 上传图文消息素材【订阅号与服务号认证后均可用】
      * @param $data
      * @return mixed
@@ -100,7 +112,7 @@ class BaseSupportController extends Controller
                 . '"title":"' . $article['title'] . '","content_source_url":"' . $article['content_source_url'] . '","content":"' . $article['content']
                 . '","digest":"' . $article['digest'] . '","show_cover_pic":' . $article['show_cover_pic'] . '}, ';
         }
-        $post_data = '{"articles":['.$articles.']}';
+        $post_data = '{"articles":[' . $articles . ']}';
         $output = $this->httpCurl->post($url, $post_data);
         return $output;
     }

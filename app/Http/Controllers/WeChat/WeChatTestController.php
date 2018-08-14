@@ -921,7 +921,6 @@ class WeChatTestController extends Controller
     public function sendTemplateMessageInstance()
     {
         $template = new TemplateController();
-        $app_id = env('wechat_AppID');
         $this->checkAccessToken();
         $data = [
             "touser" => "ojBInwdddTmpw-YiD-XwkOzYCeeM",
@@ -933,16 +932,12 @@ class WeChatTestController extends Controller
                     "value" => "恭喜你购买成功！",
                     "color" => "#173177"
                 ],
-                "keyword1" => [
+                "orderMoneySum" => [
+                    "value" => "2",
+                    "color" => "#173177"
+                ],
+                "orderProductName" => [
                     "value" => "巧克力",
-                    "color" => "#173177"
-                ],
-                "keyword2" => [
-                    "value" => "39.8元",
-                    "color" => "#173177"
-                ],
-                "keyword3" => [
-                    "value" => "2014年9月22日",
                     "color" => "#173177"
                 ],
                 "remark" => [
@@ -952,6 +947,30 @@ class WeChatTestController extends Controller
             ]
         ];
         $rel = $template->sendTemplateMessage($this->accessToken, $data);
+        return $rel;
+    }
+
+    /**
+     * 一次性订阅授权
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function subscribeOnceInstance()
+    {
+        $template = new TemplateController();
+        $data = [
+            'scene' => '100',
+            'template_id' => 'pN3861BLMb488BZFnMXYeOZzePsP2G76q9XOiJ4koXo',
+            'url' => 'http://radcfc.natappfree.cc',
+            'reserved' => 'test'
+        ];
+        $rel = $template->subscribeOnce($data);
+        return $rel;
+    }
+
+    public function getAutoReplyInstance() {
+        $base = new BaseSupportController();
+        $this->checkAccessToken();
+        $rel = $base->getAutoReply($this->accessToken);
         return $rel;
     }
 
