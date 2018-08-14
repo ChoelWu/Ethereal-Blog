@@ -1,4 +1,25 @@
 <?php
+/**
+ * + ====================================================================
+ * | @author             | Choel
+ * + --------------------------------------------------------------------
+ * | @e-mail             | choel_wu@foxmail.com
+ * + --------------------------------------------------------------------
+ * | @copyright          | Choel
+ * + --------------------------------------------------------------------
+ * | @version            | v-1.0.0
+ * + --------------------------------------------------------------------
+ * | @information        | 登录授权
+ * + --------------------------------------------------------------------
+ * | @create-date        | 2018-07-20
+ * + --------------------------------------------------------------------
+ * | @remark             |
+ * + --------------------------------------------------------------------
+ * |          | @date    |
+ * +  @update + ---------------------------------------------------------
+ * |          | @content |
+ * + ====================================================================
+ */
 
 namespace App\Http\Controllers\Admin;
 
@@ -8,11 +29,20 @@ use App\Models\User;
 
 class AuthController extends Controller
 {
+    /**
+     * 登录页
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function index()
     {
         return view('admin.auth.login');
     }
 
+    /**
+     * 登录校验
+     * @param Request $request
+     * @return string
+     */
     public function login(Request $request)
     {
         $account = $request->account;
@@ -54,6 +84,11 @@ class AuthController extends Controller
 
     }
 
+    /**
+     * 检查用户账户是否存在
+     * @param Request $request
+     * @return string
+     */
     public function checkAccount(Request $request)
     {
         $is_ajax = $request->ajax();

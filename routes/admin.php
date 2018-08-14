@@ -29,6 +29,8 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function() {
     Route::get('user/upload', 'UserController@upload');
     Route::get('user/delete', 'UserController@delete');
     Route::get('user/update_status', 'UserController@updateStatus');
+    //角色管理
+    Route::get('role/index', 'RoleController@index');
     //登录注销
     Route::post('auth/login', 'AuthController@login');
     Route::post('auth/logout', 'AuthController@logout');
