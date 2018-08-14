@@ -66,30 +66,15 @@ class MaterialController extends Controller
     }
 
     /**
-     * 新增其他类型永久素材
+     * 新增永久图文素材
+     * @param $access_token
      * @param $data
      * @return mixed
      */
-    public function addPermanentMaterial($data)
+    public function addPermanentNews($access_token, $data)
     {
-        $url = "https://api.weixin.qq.com/cgi-bin/material/add_material?access_token=" . $data['access_token'] . "&type=" . $data['type'];
-        $curl_file = new \CURLFile($data['path']);
-        $post_data = ['media' => $curl_file];
-        $output = $this->httpCurl->post($url, $post_data);
-        return $output;
-    }
-
-    /**
-     * 获取临时素材
-     * @param $access_token
-     * @param $media_id
-     * @return mixed
-     */
-    public function getPermanentMaterial($access_token, $media_id)
-    {
-        $url = 'https://api.weixin.qq.com/cgi-bin/material/get_material?access_token=' . $access_token;
-        $post_data = '{"media_id":"' . $media_id . '"}';
-        Log::info($post_data);
+        $url = 'https://api.weixin.qq.com/cgi-bin/material/add_news?access_token=' . $access_token;
+        $post_data = json_encode($data, JSON_UNESCAPED_UNICODE);
         $output = $this->httpCurl->post($url, $post_data);
         return $output;
     }
@@ -110,15 +95,103 @@ class MaterialController extends Controller
     }
 
     /**
-     * 新增永久图文素材
+     * 新增其他类型永久素材
+     * @param $data
+     * @return mixed
+     */
+    public function addPermanentMaterial($data)
+    {
+        $url = "https://api.weixin.qq.com/cgi-bin/material/add_material?access_token=" . $data['access_token'] . "&type=" . $data['type'];
+        $curl_file = new \CURLFile($data['path']);
+        $post_data = ['media' => $curl_file];
+        $output = $this->httpCurl->post($url, $post_data);
+        return $output;
+    }
+
+    /**
+     * 获取永久素材
+     * @param $access_token
+     * @param $media_id
+     * @return mixed
+     */
+    public function getPermanentMaterial($access_token, $media_id)
+    {
+        $url = 'https://api.weixin.qq.com/cgi-bin/material/get_material?access_token=' . $access_token;
+        $post_data = '{"media_id":"' . $media_id . '"}';
+        $output = $this->httpCurl->post($url, $post_data);
+        return $output;
+    }
+
+    /**
+     * 删除永久素材
+     * @param $access_token
+     * @param $media_id
+     * @return mixed
+     */
+    public function deletePermanentMaterial($access_token, $media_id)
+    {
+        $url = 'https://api.weixin.qq.com/cgi-bin/material/del_material?access_token=' . $access_token;
+        $post_data = '{"media_id":' . $media_id . '}';
+        $output = $this->httpCurl->post($url, $post_data);
+        return $output;
+    }
+
+    /**
+     * 修改永久图文素材
      * @param $access_token
      * @param $data
      * @return mixed
      */
-    public function addPermanentNews($access_token, $data)
+    public function updatePermanentMaterial($access_token, $data)
     {
-        $url = 'https://api.weixin.qq.com/cgi-bin/material/add_news?access_token=' . $access_token;
-        $post_data = json_encode($data, JSON_UNESCAPED_UNICODE);
+        $url = 'https://api.weixin.qq.com/cgi-bin/material/update_news?access_token=' . $access_token;
+        $post_data = json_encode($data, JSON_UNESCAPED_UNICODE);;
+        $output = $this->httpCurl->post($url, $post_data);
+        return $output;
+    }
+
+    /**
+     * 获取素材总数
+     * @param $access_token
+     * @return mixed
+     */
+    public function getMaterialAmount($access_token)
+    {
+        $url = 'https://api.weixin.qq.com/cgi-bin/material/get_materialcount?access_token=' . $access_token;
+        $output = $this->httpCurl->get($url);
+        return $output;
+    }
+
+    /**
+     * 获取素材列表
+     * @param $access_token
+     * @param $data
+     * @return mixed
+     */
+    public function getMaterialList($access_token, $data)
+    {
+        $url = 'https://api.weixin.qq.com/cgi-bin/material/batchget_material?access_token=' . $access_token;
+        $post_data = json_encode($data, JSON_UNESCAPED_UNICODE);;
+        $output = $this->httpCurl->post($url, $post_data);
+        return $output;
+    }
+
+    /**
+     * 上传图文消息素材【订阅号与服务号认证后均可用】
+     * @param $access_token
+     * @param $data
+     * @return mixed
+     */
+    public function addNews($access_token, $data)
+    {
+        $url = "https://api.weixin.qq.com/cgi-bin/media/uploadnews?access_token=" . $access_token;
+        $articles = '';
+        foreach ($data as $article) {
+            $articles .= '{"thumb_media_id":"' . $article['thumb_media_id'] . '","author":"' . $article['author'] . '",'
+                . '"title":"' . $article['title'] . '","content_source_url":"' . $article['content_source_url'] . '","content":"' . $article['content']
+                . '","digest":"' . $article['digest'] . '","show_cover_pic":' . $article['show_cover_pic'] . '}, ';
+        }
+        $post_data = '{"articles":[' . $articles . ']}';
         $output = $this->httpCurl->post($url, $post_data);
         return $output;
     }

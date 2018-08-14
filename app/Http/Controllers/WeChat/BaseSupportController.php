@@ -96,24 +96,4 @@ class BaseSupportController extends Controller
         $output = $this->httpCurl->get($url);
         return $output;
     }
-
-    /**
-     * 上传图文消息素材【订阅号与服务号认证后均可用】
-     * @param $data
-     * @return mixed
-     */
-    public function addNews($data)
-    {
-        $access_token = $this->getAccessToken();
-        $url = "https://api.weixin.qq.com/cgi-bin/media/uploadnews?access_token=" . $access_token['access_token'];
-        $articles = '';
-        foreach ($data as $article) {
-            $articles .= '{"thumb_media_id":"' . $article['thumb_media_id'] . '","author":"' . $article['author'] . '",'
-                . '"title":"' . $article['title'] . '","content_source_url":"' . $article['content_source_url'] . '","content":"' . $article['content']
-                . '","digest":"' . $article['digest'] . '","show_cover_pic":' . $article['show_cover_pic'] . '}, ';
-        }
-        $post_data = '{"articles":[' . $articles . ']}';
-        $output = $this->httpCurl->post($url, $post_data);
-        return $output;
-    }
 }
