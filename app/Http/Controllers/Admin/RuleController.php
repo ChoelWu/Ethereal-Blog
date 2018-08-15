@@ -9,7 +9,7 @@
  * + --------------------------------------------------------------------
  * | @version            | v-1.0.0
  * + --------------------------------------------------------------------
- * | @information        | 角色管理
+ * | @information        | 规则管理
  * + --------------------------------------------------------------------
  * | @create-date        | 2018-08-15
  * + --------------------------------------------------------------------
@@ -23,24 +23,37 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Role;
+use App\Models\Rule;
 use Illuminate\Http\Request;
 
-class RoleController extends CommonController
+class RuleController extends CommonController
 {
     /**
      * 列表显示
+     * @param Request $request
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
-        $title = ['title' => '角色管理', 'sub_title' => '角色列表'];
-        $list = Role::select('id', 'role_name', 'status')->get();
-        return view('admin.role.index', ['menu_list' => $this->menu_list, 'list' => $list, 'title' => $title]);
+        $menu_id = $request->menu_id;
+        $route = $request->route;
+        $title = ['title' => '规则管理', 'sub_title' => '规则列表'];
+        $list = Rule::select('id', 'route', 'menu_id', 'status')->where(function ($query) use ($menu_id) {
+            $has_menu_id = !empty($menu_id);
+            if ($has_menu_id) {
+                $query->where('menu_id', $menu_id);
+            }
+        })->where(function ($query) use ($route) {
+            $has_route = !empty($route);
+            if ($has_route) {
+                $query->where('menu_id', $route);
+            }
+        })->get();
+        return view('admin.rule.index', ['menu_list' => $this->menu_list, 'list' => $list, 'title' => $title]);
     }
 
     /**
-     * 添加角色
+     * 添加规则
      * @param Request $request
      * @return array|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
@@ -52,24 +65,24 @@ class RoleController extends CommonController
             if ($is_post) {
                 $data = $request->all();
                 unset($data['_token']);
-                $data['id'] = setModelId("Role");
+                $data['id'] = setModelId("Rule");
                 try {
-                    Role::create($data);
+                    Rule::create($data);
                     $rel = [
                         "status" => "200",
-                        "message" => "角色添加成功！"
+                        "message" => "规则添加成功！"
                     ];
                 } catch (\Exception $e) {
                     $rel = [
                         "status" => "400",
-                        "message" => "角色添加失败！" . $e->getMessage()
+                        "message" => "规则添加失败！" . $e->getMessage()
                     ];
                 }
                 return $rel;
             }
         } else {
-            $title = ['title' => '角色管理', 'sub_title' => '添加角色'];
-            return view('admin.role.add', ['menu_list' => $this->menu_list, 'title' => $title]);
+            $title = ['title' => '规则管理', 'sub_title' => '添加规则'];
+            return view('admin.rule.add', ['menu_list' => $this->menu_list, 'title' => $title]);
         }
     }
 
@@ -90,23 +103,23 @@ class RoleController extends CommonController
                 unset($data["_token"]);
                 unset($data["id"]);
                 try {
-                    Role::where('id', $id)->update($data);
+                    Rule::where('id', $id)->update($data);
                     $rel = [
                         'status' => '200',
-                        'message' => '角色修改成功！'
+                        'message' => '规则修改成功！'
                     ];
                 } catch (\Exception $e) {
                     $rel = [
                         "status" => "400",
-                        "message" => "角色修改失败！" . $e->getMessage()
+                        "message" => "规则修改失败！" . $e->getMessage()
                     ];
                 }
                 return $rel;
             }
         } else {
-            $title = ['title' => '角色管理', 'sub_title' => '修改角色信息'];
-            $role = Role::select('id', 'role_name', 'status')->find($id);
-            return view('admin.role.edit', ['menu_list' => $this->menu_list, 'title' => $title, 'role' => $role, 'id' => $id]);
+            $title = ['title' => '规则管理', 'sub_title' => '修改规则信息'];
+            $rule = Rule::select('id', 'route', 'menu_id', 'status')->find($id);
+            return view('admin.rule.edit', ['menu_list' => $this->menu_list, 'title' => $title, 'rule' => $rule, 'id' => $id]);
         }
     }
 
@@ -120,22 +133,22 @@ class RoleController extends CommonController
         $is_ajax = $request->ajax();
         $rel = '';
         if ($is_ajax) {
-            $role_id = $request->role_id;
-            $rel = Role::destroy($role_id);
+            $rule_id = $request->rule_id;
+            $rel = Rule::destroy($rule_id);
         }
         $is_delete = empty($rel);
         if (!$is_delete) {
             $rel_arr = [
                 'status' => '200',
-                'message' => '角色删除成功！'
+                'message' => '规则删除成功！'
             ];
         } else {
             $rel_arr = [
                 'status' => '400',
-                'message' => '角色删除失败！'
+                'message' => '规则删除失败！'
             ];
         }
-        $rel_arr['title'] = '删除角色';
+        $rel_arr['title'] = '删除规则';
         return $rel_arr;
     }
 
@@ -147,14 +160,10 @@ class RoleController extends CommonController
     {
         $is_ajax = $request->ajax();
         if ($is_ajax) {
-            $role_id = $request->role_id;
-            $user = Role::select('id', 'status')->find($role_id);
+            $rule_id = $request->rule_id;
+            $user = Rule::select('id', 'status')->find($rule_id);
             $user->status == '1' ? $user->status = '0' : $user->status = '1';
             $user->save();
         }
-    }
-
-    public function authorizeRole() {
-        return 'todo';
     }
 }

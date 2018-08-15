@@ -24,7 +24,7 @@
                 <div class="ibox-title">
                     <h5>{{ $title['sub_title'] }}</h5>
                     <div class="ibox-tools">
-                        <span class="btn btn-xs btn-primary" id="user-add">
+                        <span class="btn btn-xs btn-primary" id="role-add">
                             <i class="fa fa-plus"></i>
                             添加
                         </span>
@@ -36,7 +36,8 @@
                         <tr>
                             <th>#</th>
                             <th>角色名</th>
-                            <th>状态</th>
+                            <th class="col-lg-2">状态</th>
+                            <th class="col-lg-2">授权</th>
                             <th class="col-lg-2">操作</th>
                         </tr>
                         </thead>
@@ -47,19 +48,24 @@
                                 <td>{{ $role['role_name'] }}</td>
                                 <td>
                                     @if($role['status'] == '1')
-                                        <button class="btn btn-xs btn-primary edit-user-status"
+                                        <button class="btn btn-xs btn-primary edit-role-status"
                                                 data-id="{{ $role['id'] }}" title="启用"><i class="fa fa-eye"></i>
                                         </button>
                                     @else
-                                        <button class="btn btn-xs btn-default edit-user-status"
+                                        <button class="btn btn-xs btn-default edit-role-status"
                                                 data-id="{{ $role['id'] }}" title="禁用"><i class="fa fa-eye-slash"></i>
                                         </button>
                                     @endif
                                 </td>
                                 <td>
-                                    <span class="btn btn-xs btn-primary edit-user" data-id="{{ $role['id'] }}"><i
+                                    <button class="btn btn-xs btn-warning authorize"
+                                            data-id="{{ $role['id'] }}" title="授权"><i class="fa fa-check-square-o"></i>
+                                    </button>
+                                </td>
+                                <td>
+                                    <span class="btn btn-xs btn-primary edit-role" data-id="{{ $role['id'] }}"><i
                                                 class="fa fa-edit"></i> 修改</span>
-                                    <span class="btn btn-xs btn-danger delete-user" data-id="{{ $role['id'] }}"><i
+                                    <span class="btn btn-xs btn-danger delete-role" data-id="{{ $role['id'] }}"><i
                                                 class="fa fa-times"></i> 删除</span>
                                 </td>
                             </tr>
@@ -80,22 +86,22 @@
     <script src="{{ asset(config('view.admin_static_path') . '/js/demo/peity-demo.js') }}"></script>
     <script>
         $(document).ready(function () {
-            $("#user-add").click(function () {
-                window.location.href = "{{ url('admin/user/add') }}";
+            $("#role-add").click(function () {
+                window.location.href = "{{ url('admin/role/add') }}";
             });
-            $(".edit-user").click(function () {
-                window.location.href = "{{ url('admin/user/edit') }}/id/" + $(this).data("id");
+            $(".edit-role").click(function () {
+                window.location.href = "{{ url('admin/role/edit') }}/id/" + $(this).data("id");
             });
-            $(".delete-user").click(function () {
+            $(".delete-role").click(function () {
                 var is_disabled = $(this).attr("disabled");
                 if (is_disabled != "disabled") {
-                    var user_id = $(this).data("id");
+                    var role_id = $(this).data("id");
                     $('#action-modal').find('.modal-body').html('<h3><i class="fa fa-exclamation-triangle text-warning"></i> 是否要删除用户？</h3>');
                     $('#action-modal').modal('show');
                     $('#action-modal').find('.confirm').click(function () {
                         $('#action-modal').modal('hide');
                         $('#action-modal').on('hidden.bs.modal', function () {
-                            $.get("{{ url('admin/user/delete') }}", {"user_id": user_id}, function (data, status) {
+                            $.get("{{ url('admin/role/delete') }}", {"role_id": role_id}, function (data, status) {
                                 $('#message-modal-label').html(data['title']);
                                 if ('success' == status) {
                                     if ('200' == data['status']) {
@@ -119,9 +125,14 @@
                     });
                 }
             });
-            $(".edit-user-status").click(function () {
-                $.get("{{ url('admin/user/update_status') }}", {"user_id": $(this).data("id")}, function () {
+            $(".edit-role-status").click(function () {
+                $.get("{{ url('admin/role/update_status') }}", {"role_id": $(this).data("id")}, function () {
                     location.reload();
+                });
+            });
+            $(".authorize").click(function () {
+                $.get("{{ url('admin/role/authorize') }}", {"role_id": $(this).data("id")}, function () {
+                    // location.reload();
                 });
             });
         });

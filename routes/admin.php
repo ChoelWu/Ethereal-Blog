@@ -31,6 +31,21 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function() {
     Route::get('user/update_status', 'UserController@updateStatus');
     //角色管理
     Route::get('role/index', 'RoleController@index');
+    Route::get('role/add', 'RoleController@add');
+    Route::post('role/add', 'RoleController@add');
+    Route::get('role/edit/id/{id?}', 'RoleController@edit');
+    Route::post('role/edit', 'RoleController@edit');
+    Route::get('role/delete', 'RoleController@delete');
+    Route::get('role/update_status', 'RoleController@updateStatus');
+    Route::get('role/authorize', 'RoleController@authorizeRole');
+    //角色管理
+    Route::get('rule/index', 'RuleController@index');
+    Route::get('rule/add', 'RuleController@add');
+    Route::post('rule/add', 'RuleController@add');
+    Route::get('rule/edit/id/{id?}', 'RuleController@edit');
+    Route::post('rule/edit', 'RuleController@edit');
+    Route::get('rule/delete', 'RuleController@delete');
+    Route::get('rule/update_status', 'RuleController@updateStatus');
     //登录注销
     Route::post('auth/login', 'AuthController@login');
     Route::post('auth/logout', 'AuthController@logout');

@@ -45,20 +45,40 @@
                         </div>
                     </div>
                     <div class="ibox-content">
-                        <form class="form-horizontal" id="edit-role-form">
+                        <form class="form-horizontal" id="add-rule-form">
                             @csrf
                             <div class="hr-line-dashed"></div>
                             <div class="form-group">
-                                <label class="col-sm-2 control-label">角色名：</label>
+                                <label class="col-sm-2 control-label">路由规则：</label>
                                 <div class="col-sm-5">
-                                    <input type="text" class="form-control" name="role_name" value="{{ $role->role_name }}"
-                                           placeholder="请输入角色名">
+                                    <input type="text" class="form-control" name="route" placeholder="请输入规则名称">
                                 </div>
-                                <span class="text-danger">*</span>
                             </div>
                             <div class="hr-line-dashed"></div>
                             <div class="form-group">
-                                <label class="col-sm-2 control-label">角色状态：</label>
+                                <label class="col-sm-2 control-label">父级菜单：</label>
+                                <div class="col-sm-4">
+                                    <select class="form-control m-b" name="menu_id">
+                                        <option disabled="disabled">- - - - - - - - - - - - - - - - - - - - - - - - - -
+                                            - - - - - - - - - - - - - - - -
+                                        </option>
+                                        <option value="0">顶级菜单</option>
+                                        <option disabled="disabled">- - - - - - - - - - - - - - - - - - - - - - - - - -
+                                            - - - - - - - - - - - - - - - -
+                                        </option>
+                                        @foreach($menu_list as $item)
+                                            <option value="{{ $item['id'] }}">{{ $item['name'] }}</option>
+                                            @foreach($item['children'] as $v)
+                                                <option value="{{ $v['id'] }}">&nbsp;&nbsp;&nbsp;&nbsp;| -
+                                                    - {{ $v['name'] }}</option>
+                                            @endforeach
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="hr-line-dashed"></div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">规则状态：</label>
                                 <div class="col-sm-5">
                                     <input type="checkbox" class="js-switch" checked/>
                                 </div>
@@ -67,11 +87,10 @@
                             <div class="hr-line-dashed"></div>
                             <div class="form-group">
                                 <div class="col-sm-4 col-sm-offset-2">
-                                    <div class="btn btn-white" id="edit-role-cancel">取消</div>
-                                    <div class="btn btn-primary" id="edit-role-submit">保存</div>
+                                    <div class="btn btn-white" id="add-rule-cancel">取消</div>
+                                    <div class="btn btn-primary" id="add-rule-submit">保存</div>
                                 </div>
                             </div>
-                            <input type="hidden" name="id" value="{{ $role->id }}">
                         </form>
                     </div>
                 </div>
@@ -80,28 +99,15 @@
     </div>
 @endsection
 @section('foot_files')
-    <script src="{{ asset(config('view.admin_static_path') . '/js/bootstrapValidator.js') }}"></script>
+    <script type="text/javascript"
+            src="{{ asset(config('view.admin_static_path') . '/js/bootstrapValidator.js') }}"></script>
     <!-- Switchery -->
     <script src="{{ asset(config('view.admin_static_path') . '/js/plugins/switchery/switchery.js') }}"></script>
     <script>
         $(document).ready(function () {
             var elem = document.querySelector('.js-switch');
             var switchery = new Switchery(elem, {color: '#1AB394'});
-            var pre_status = "{{ $role->status }}";
-            if (pre_status == "1") {
-                setSwitchery(switchery, true);
-            } else {
-                setSwitchery(switchery, false);
-            }
-
-            function setSwitchery(switchElement, checkedBool) {
-                if ((checkedBool && !switchElement.isChecked()) || (!checkedBool && switchElement.isChecked())) {
-                    switchElement.setPosition(true);
-                    switchElement.handleOnchange(true);
-                }
-            }
-
-            $('#edit-role-form').bootstrapValidator({
+            $('#add-rule-form').bootstrapValidator({
                 message: 'This value is not valid',
                 feedbackIcons: {
                     valid: 'glyphicon glyphicon-ok',
@@ -109,34 +115,34 @@
                     validating: 'glyphicon glyphicon-refresh'
                 },
                 fields: {
-                    role_name: {
+                    rule_name: {
                         validators: {
                             notEmpty: {
-                                message: '角色名称不能为空！'
+                                message: '规则名称不能为空！'
                             },
                             stringLength: {
                                 min: 0,
                                 max: 20,
-                                message: '角色名称在20个字符以内！'
+                                message: '规则名称在20个字符以内！'
                             }
                         }
                     }
                 }
             });
-            $("#edit-role-submit").click(function () {
+            $("#add-rule-submit").click(function () {
                 if (elem.checked) {
                     $('input[name="status"]').val('1');
                 } else {
                     $('input[name="status"]').val('0');
                 }
                 var ajax_data;
-                var form_data = new FormData($('#edit-role-form')[0]);
-                $('#edit-role-form').bootstrapValidator('validate');
-                var flag = $('#edit-role-form').data('bootstrapValidator').isValid();
+                var form_data = new FormData($('#add-rule-form')[0]);
+                $('#add-rule-form').bootstrapValidator('validate');
+                var flag = $('#add-rule-form').data('bootstrapValidator').isValid();
                 if (flag) {
                     $.ajax({
                         type: "post",
-                        url: "{{ url('admin/role/edit') }}",
+                        url: "{{ url('admin/rule/add') }}",
                         cache: false,
                         processData: false,
                         contentType: false,
@@ -147,7 +153,7 @@
                             ajax_data = data;
                         }
                     });
-                    $('#message-modal-label').html("编辑角色");
+                    $('#message-modal-label').html("添加规则");
                     if ('200' == ajax_data['status']) {
                         $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-check-square text-info"></i> ' + ajax_data['message'] + '</h3>');
                     } else {
@@ -162,7 +168,7 @@
                     }, 600);
                     if ('200' == ajax_data['status']) {
                         setTimeout(function () {
-                            window.location.href = "{{ url('admin/role/index') }}";
+                            window.location.href = "{{ url('admin/rule/index') }}";
                         }, 2500);
                     } else {
                         setTimeout(function () {
@@ -173,9 +179,9 @@
 
             });
             $("#clear").click(function () {
-                $('#edit-role-form').find("input[type=text]").val("");
-                $('#edit-role-form').find("input[name=status][type=radio]:first").prop("checked", true);
-                $('#edit-role-form').data('bootstrapValidator').resetForm(true);
+                $('#add-rule-form').find("input[type=text]").val("");
+                $('#add-rule-form').find("input[name=status][type=radio]:first").prop("checked", true);
+                $('#add-rule-form').data('bootstrapValidator').resetForm(true);
             });
         });
     </script>

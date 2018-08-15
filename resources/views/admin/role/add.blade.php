@@ -10,12 +10,6 @@
           rel="stylesheet">
     <!-- Validator -->
     <link rel="stylesheet" href="{{ asset(config('view.admin_static_path') . '/css/bootstrapValidator.css') }}"/>
-    <link href="{{ asset(config('view.admin_static_path') . '/css/plugins/dropzone/basic.css') }}" rel="stylesheet">
-    <link href="{{ asset(config('view.admin_static_path') . '/css/plugins/dropzone/dropzone.css') }}" rel="stylesheet">
-    <link href="{{ asset(config('view.admin_static_path') . '/css/plugins/jasny/jasny-bootstrap.min.css') }}"
-          rel="stylesheet">
-    <link href="{{ asset(config('view.admin_static_path') . '/css/plugins/codemirror/codemirror.css') }}"
-          rel="stylesheet">
     <link href="{{ asset(config('view.admin_static_path') . '/css/plugins/switchery/switchery.css') }}"
           rel="stylesheet">
 @endsection
@@ -51,65 +45,18 @@
                         </div>
                     </div>
                     <div class="ibox-content">
-                        <form class="form-horizontal" id="add-user-form">
+                        <form class="form-horizontal" id="add-role-form">
                             @csrf
                             <div class="hr-line-dashed"></div>
                             <div class="form-group">
-                                <label class="col-sm-2 control-label">登录账号：</label>
+                                <label class="col-sm-2 control-label">角色名：</label>
                                 <div class="col-sm-5">
-                                    <input type="text" class="form-control" name="account" placeholder="请输入用户登录账号">
+                                    <input type="text" class="form-control" name="role_name" placeholder="请输入角色名称">
                                 </div>
                             </div>
                             <div class="hr-line-dashed"></div>
                             <div class="form-group">
-                                <label class="col-sm-2 control-label">用户名：</label>
-                                <div class="col-sm-5">
-                                    <input type="text" class="form-control" name="nickname" placeholder="请输入用户名">
-                                </div>
-                            </div>
-                            <div class="hr-line-dashed"></div>
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label">登录密码：</label>
-                                <div class="col-sm-5">
-                                    <input type="password" class="form-control" name="password" placeholder="请输入用户登录密码">
-                                </div>
-                            </div>
-                            <div class="hr-line-dashed"></div>
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label">联系方式：</label>
-                                <div class="col-sm-5">
-                                    <input type="text" class="form-control" name="phone" placeholder="请输入用户联系方式">
-                                </div>
-                            </div>
-                            <div class="hr-line-dashed"></div>
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label">e-mail：</label>
-                                <div class="col-sm-5">
-                                    <input type="text" class="form-control" name="e_mail" placeholder="请输入e-mail">
-                                </div>
-                            </div>
-                            <div class="hr-line-dashed"></div>
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label">账号头像：</label>
-                                <div class="col-sm-5">
-                                    <div class="fileinput fileinput-new input-group" data-provides="fileinput">
-                                        <div class="form-control" data-trigger="fileinput"><i
-                                                    class="glyphicon glyphicon-file fileinput-exists"></i> <span
-                                                    class="fileinput-filename"></span>
-                                        </div>
-                                        <span class="input-group-addon btn btn-default btn-file">
-                                        <span class="fileinput-new">选择文件</span>
-                                        <span class="fileinput-exists">更改</span>
-                                        <input type="file" name="header_img">
-                                    </span>
-                                        <a href="#" class="input-group-addon btn btn-default fileinput-exists"
-                                           data-dismiss="fileinput">删除</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="hr-line-dashed"></div>
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label">账号状态：</label>
+                                <label class="col-sm-2 control-label">角色状态：</label>
                                 <div class="col-sm-5">
                                     <input type="checkbox" class="js-switch" checked/>
                                 </div>
@@ -118,8 +65,8 @@
                             <div class="hr-line-dashed"></div>
                             <div class="form-group">
                                 <div class="col-sm-4 col-sm-offset-2">
-                                    <div class="btn btn-white" id="add-user-cancel">取消</div>
-                                    <div class="btn btn-primary" id="add-user-submit">保存</div>
+                                    <div class="btn btn-white" id="add-role-cancel">取消</div>
+                                    <div class="btn btn-primary" id="add-role-submit">保存</div>
                                 </div>
                             </div>
                         </form>
@@ -132,21 +79,13 @@
 @section('foot_files')
     <script type="text/javascript"
             src="{{ asset(config('view.admin_static_path') . '/js/bootstrapValidator.js') }}"></script>
-    <!-- Jasny -->
-    <script src="{{ asset(config('view.admin_static_path') . '/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
-    <!-- DROPZONE -->
-    <script src="{{ asset(config('view.admin_static_path') . '/js/plugins/dropzone/dropzone.js') }}"></script>
-    <!-- CodeMirror -->
-    <script src="{{ asset(config('view.admin_static_path') . '/js/plugins/codemirror/codemirror.js') }}"></script>
-    <script src="{{ asset(config('view.admin_static_path') . '/js/plugins/codemirror/mode/xml/xml.js') }}"></script>
     <!-- Switchery -->
     <script src="{{ asset(config('view.admin_static_path') . '/js/plugins/switchery/switchery.js') }}"></script>
     <script>
         $(document).ready(function () {
             var elem = document.querySelector('.js-switch');
             var switchery = new Switchery(elem, {color: '#1AB394'});
-            $('#add-user-form').bootstrapValidator({
-                live: "submitted",
+            $('#add-role-form').bootstrapValidator({
                 message: 'This value is not valid',
                 feedbackIcons: {
                     valid: 'glyphicon glyphicon-ok',
@@ -154,109 +93,34 @@
                     validating: 'glyphicon glyphicon-refresh'
                 },
                 fields: {
-                    account: {
+                    role_name: {
                         validators: {
                             notEmpty: {
-                                message: '用户账号不能为空！'
+                                message: '角色名称不能为空！'
                             },
                             stringLength: {
                                 min: 0,
                                 max: 20,
-                                message: '用户账号长度在20个字符以内！'
-                            },
-                            regexp: {
-                                regexp: /^[a-zA-Z0-9_]+$/,
-                                message: '用户名只能包含大写、小写、数字和下划线'
-                            },
-                            callback: {
-                                message: '该账号已被使用',
-                                callback: function (value) {
-                                    var ajax_data;
-                                    $.ajax({
-                                        type: "get",
-                                        url: "{{ url('admin/auth/check_account') }}",
-                                        data: {"account": value},
-                                        async: false,
-                                        dataType: "json",
-                                        success: function (data) {
-                                            ajax_data = data;
-                                        }
-                                    });
-                                    return !ajax_data;
-                                }
-                            }
-                        }
-                    },
-                    nickname: {
-                        validators: {
-                            notEmpty: {
-                                message: '用户名不能为空！'
-                            },
-                            stringLength: {
-                                min: 0,
-                                max: 12,
-                                message: '用户名长度在12个字符以内！'
-                            }
-                        }
-                    },
-                    password: {
-                        validators: {
-                            notEmpty: {
-                                message: '用户密码不能为空！'
-                            },
-                            stringLength: {
-                                min: 6,
-                                max: 20,
-                                message: '用户密码长度在6-16个字符之间！'
-                            }
-                        }
-                    },
-                    phone: {
-                        validators: {
-                            regexp: {
-                                regexp: /^[-\+]?[0-9]+$/,
-                                message: '电话格式不正确！'
-                            }
-                        }
-                    },
-                    e_mail: {
-                        validators: {
-                            emailAddress: {
-                                message: '亲输入正确的邮箱地址！'
-                            }
-                        }
-                    },
-                    header_img: {
-                        validators: {
-                            callback: {
-                                message: '请上传png、jpg、jpeg格式的图片！',
-                                callback: function (value) {
-                                    var type = value.substring(value.lastIndexOf('.') + 1);
-                                    if (type != "png" && type != "jpeg" && type != "JPG" && type != "PNG" && type != "JPEG" && type != "jpg" && value != "") {
-                                        return false;
-                                    } else {
-                                        return true;
-                                    }
-                                }
+                                message: '角色名称在20个字符以内！'
                             }
                         }
                     }
                 }
             });
-            $("#add-user-submit").click(function () {
+            $("#add-role-submit").click(function () {
                 if (elem.checked) {
                     $('input[name="status"]').val('1');
                 } else {
                     $('input[name="status"]').val('0');
                 }
                 var ajax_data;
-                var form_data = new FormData($('#add-user-form')[0]);
-                $('#add-user-form').bootstrapValidator('validate');
-                var flag = $('#add-user-form').data('bootstrapValidator').isValid();
+                var form_data = new FormData($('#add-role-form')[0]);
+                $('#add-role-form').bootstrapValidator('validate');
+                var flag = $('#add-role-form').data('bootstrapValidator').isValid();
                 if (flag) {
                     $.ajax({
                         type: "post",
-                        url: "{{ url('admin/user/add') }}",
+                        url: "{{ url('admin/role/add') }}",
                         cache: false,
                         processData: false,
                         contentType: false,
@@ -267,7 +131,7 @@
                             ajax_data = data;
                         }
                     });
-                    $('#message-modal-label').html("添加用户");
+                    $('#message-modal-label').html("添加角色");
                     if ('200' == ajax_data['status']) {
                         $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-check-square text-info"></i> ' + ajax_data['message'] + '</h3>');
                     } else {
@@ -282,7 +146,7 @@
                     }, 600);
                     if ('200' == ajax_data['status']) {
                         setTimeout(function () {
-                            window.location.href = "{{ url('admin/user/index') }}";
+                            window.location.href = "{{ url('admin/role/index') }}";
                         }, 2500);
                     } else {
                         setTimeout(function () {
@@ -293,11 +157,9 @@
 
             });
             $("#clear").click(function () {
-                $('#add-user-form').find("input[type=text]").val("");
-                $('#add-user-form').find("input[type=file]").val("");
-                $('#add-user-form').find("select[name=parent_id]").find("option:nth-child(2)").attr("selected", "selected");
-                $('#add-user-form').find("input[name=status][type=radio]:first").prop("checked", true);
-                $('#add-user-form').data('bootstrapValidator').resetForm(true);
+                $('#add-role-form').find("input[type=text]").val("");
+                $('#add-role-form').find("input[name=status][type=radio]:first").prop("checked", true);
+                $('#add-role-form').data('bootstrapValidator').resetForm(true);
             });
         });
     </script>

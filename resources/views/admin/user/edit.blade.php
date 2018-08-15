@@ -302,7 +302,7 @@
                             ajax_data = data;
                         }
                     });
-                    $('#message-modal-label').html("添加用户");
+                    $('#message-modal-label').html("修改用户");
                     if ('200' == ajax_data['status']) {
                         $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-check-square text-info"></i> ' + ajax_data['message'] + '</h3>');
                     } else {

@@ -46,8 +46,7 @@
                             <tr>
                                 <td>{{ $menu['sort'] }}</td>
                                 <td>{{ $menu['name'] }}</td>
-                                <td><i class="fa fa-{{ $menu['icon'] }}"></i>&nbsp;&nbsp;&nbsp;&nbsp;{{ $menu['icon'] }}
-                                </td>
+                                <td><i class="fa fa-{{ $menu['icon'] }}"></i></td>
                                 <td>
                                     @if($menu['status'] == '1')
                                         <button class="btn btn-xs btn-primary edit-menu-status"
@@ -75,7 +74,7 @@
                                         <td>{{ $m['sort'] }}</td>
                                         <td>&nbsp;&nbsp;&nbsp;&nbsp;| - - {{ $m['name'] }}</td>
                                         <td>
-                                            <i class="fa fa-{{ $m['icon'] }}"></i>&nbsp;&nbsp;&nbsp;&nbsp;{{ $m['icon'] }}
+                                            <i class="fa fa-{{ $m['icon'] }}"></i>
                                         </td>
                                         <td>
                                             @if($m['status'] == '1')
