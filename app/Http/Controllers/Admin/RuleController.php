@@ -38,7 +38,7 @@ class RuleController extends CommonController
         $menu_id = $request->menu_id;
         $route = $request->route;
         $title = ['title' => '规则管理', 'sub_title' => '规则列表'];
-        $list = Rule::select('id', 'route', 'menu_id', 'status')->where(function ($query) use ($menu_id) {
+        $list = Rule::with('menu.parent')->select('id', 'route', 'menu_id', 'status')->where(function ($query) use ($menu_id) {
             $has_menu_id = !empty($menu_id);
             if ($has_menu_id) {
                 $query->where('menu_id', $menu_id);
@@ -46,10 +46,11 @@ class RuleController extends CommonController
         })->where(function ($query) use ($route) {
             $has_route = !empty($route);
             if ($has_route) {
-                $query->where('menu_id', $route);
+                $query->where('route', $route);
             }
         })->get();
-        return view('admin.rule.index', ['menu_list' => $this->menu_list, 'list' => $list, 'title' => $title]);
+        return view('admin.rule.index', ['menu_list' => $this->menu_list, 'list' => $list, 'title' => $title,
+            'menu_id' => $menu_id, 'route' => $route]);
     }
 
     /**

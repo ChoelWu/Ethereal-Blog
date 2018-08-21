@@ -32,32 +32,38 @@
                 </div>
                 <div class="ibox-content">
                     <div class="row">
-                        <div class="col-sm-5 m-b-xs">
-                            <select class="form-control input-s-xs inline" name="menu_id" id="menu-selection">
-                                <option disabled="disabled">- - - - - - - - - - - - - - - - - - - - - - - - - -
-                                    - - - - - - - - - - - - - - - -
-                                </option>
-                                <option value="0">顶级菜单</option>
-                                <option disabled="disabled">- - - - - - - - - - - - - - - - - - - - - - - - - -
-                                    - - - - - - - - - - - - - - - -
-                                </option>
-                                @foreach($menu_list as $item)
-                                    <option value="{{ $item['id'] }}">{{ $item['name'] }}</option>
-                                    @foreach($item['children'] as $v)
-                                        <option value="{{ $v['id'] }}">&nbsp;&nbsp;&nbsp;&nbsp;| -
-                                            - {{ $v['name'] }}</option>
+                        <form class="form-horizontal" id="index-rule-form" method="post">
+                            @csrf
+                            <div class="col-sm-5 m-b-xs">
+                                <select class="form-control input-s-xs inline" name="menu_id" id="menu-selection">
+                                    <option disabled="disabled">- - - - - - - - - - - - - - - - - - - - - - - - - -
+                                        - - - - - - - - - - - - - - - -
+                                    </option>
+                                    <option value="0">顶级菜单</option>
+                                    <option disabled="disabled">- - - - - - - - - - - - - - - - - - - - - - - - - -
+                                        - - - - - - - - - - - - - - - -
+                                    </option>
+                                    @foreach($menu_list as $item)
+                                        <option value="{{ $item['id'] }}"
+                                                @if($menu_id == $item['id']) selected="selected" @endif>{{ $item['name'] }}</option>
+                                        @foreach($item['children'] as $v)
+                                            <option value="{{ $v['id'] }}"
+                                                    @if($menu_id == $v['id']) selected="selected" @endif>&nbsp;&nbsp;&nbsp;&nbsp;|
+                                                -
+                                                - {{ $v['name'] }}</option>
+                                        @endforeach
                                     @endforeach
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-sm-3">
-                            <div class="input-group">
-                                <input placeholder="请输入路由规则进行搜索..." class="form-control" type="text">
-                                <span class="input-group-btn">
-                                        <button type="button" class="btn btn-primary"> 搜索 </button>
-                                </span>
+                                </select>
                             </div>
-                        </div>
+                            <div class="col-sm-3">
+                                <div class="input-group">
+                                    <input placeholder="请输入路由规则进行搜索..." class="form-control" type="text" name="route" value="{{ $route }}">
+                                    <span class="input-group-btn">
+                                        <button type="submit" class="btn btn-primary"> 搜索 </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                     <div class="table-responsive">
                         <table class="table table-hover">
@@ -75,7 +81,7 @@
                                 <tr>
                                     <td>{{ $key + 1 }}</td>
                                     <td>{{ $rule->route }}</td>
-                                    <td>{{ $rule->menu_id }}</td>
+                                    <td>@if(empty($rule->menu->parent)) <b>{{ $rule->menu->name }}</b> @else <b>{{ $rule->menu->parent->name }}</b> >> {{ $rule->menu->name }} @endif</td>
                                     <td>
                                         @if($rule['status'] == '1')
                                             <button class="btn btn-xs btn-primary edit-rule-status"
@@ -157,8 +163,8 @@
                     location.reload();
                 });
             });
-            $('#menu-selection').change(function() {
-                alert('ok');
+            $('#menu-selection').change(function () {
+                $("#index-rule-form").attr("action", '').submit();
             });
         });
     </script>

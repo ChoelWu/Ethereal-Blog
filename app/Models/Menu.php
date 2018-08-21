@@ -17,4 +17,10 @@ class Menu extends Model
 
     //设置白名单
     protected $fillable = ['id', 'name', 'level', 'status', 'sort', 'parent_id', 'created_at', 'updated_at', 'icon', 'url'];
+
+    //获取父菜单
+    public function parent()
+    {
+        return $this->belongsTo('\App\Models\Menu', 'parent_id', 'id');
+    }
 }

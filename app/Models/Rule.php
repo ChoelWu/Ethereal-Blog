@@ -17,4 +17,10 @@ class Rule extends Model
 
     //设置白名单
     protected $fillable = ['id', 'route', 'menu_id', 'status', 'updated_at', 'created_date'];
+
+    //获取菜单信息
+    public function menu()
+    {
+        return $this->belongsTo('\App\Models\Menu');
+    }
 }
