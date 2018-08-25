@@ -49,6 +49,15 @@
                             @csrf
                             <div class="hr-line-dashed"></div>
                             <div class="form-group">
+                                <label class="col-sm-2 control-label">规则名称：</label>
+                                <div class="col-sm-5">
+                                    <input type="text" class="form-control" name="name" value="{{ $rule->name }}"
+                                           placeholder="请输入规则名">
+                                </div>
+                                <span class="text-danger">*</span>
+                            </div>
+                            <div class="hr-line-dashed"></div>
+                            <div class="form-group">
                                 <label class="col-sm-2 control-label">路由规则：</label>
                                 <div class="col-sm-5">
                                     <input type="text" class="form-control" name="route" value="{{ $rule->route }}"
@@ -64,7 +73,7 @@
                                         <option disabled="disabled">- - - - - - - - - - - - - - - - - - - - - - - - - -
                                             - - - - - - - - - - - - - - - -
                                         </option>
-                                        <option value="0" @if('0' == $rule->menu_id)selected="selected"@endif >顶级菜单
+                                        <option value="0" @if('0' == $rule->menu_id)selected="selected"@endif >选择菜单
                                         </option>
                                         <option disabled="disabled">- - - - - - - - - - - - - - - - - - - - - - - - - -
                                             - - - - - - - - - - - - - - - -
@@ -80,6 +89,13 @@
                                             @endforeach
                                         @endforeach
                                     </select>
+                                </div>
+                            </div>
+                            <div class="hr-line-dashed"></div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">路由序号：</label>
+                                <div class="col-sm-5">
+                                    <input type="text" class="form-control" name="sort" placeholder="请输入规则序号" value="{{ $rule->sort }}" />
                                 </div>
                             </div>
                             <div class="hr-line-dashed"></div>
@@ -135,15 +151,40 @@
                     validating: 'glyphicon glyphicon-refresh'
                 },
                 fields: {
-                    rule_name: {
+                    name: {
                         validators: {
                             notEmpty: {
                                 message: '规则名称不能为空！'
                             },
                             stringLength: {
-                                min: 0,
+                                min: 1,
                                 max: 20,
                                 message: '规则名称在20个字符以内！'
+                            }
+                        }
+                    },
+                    route: {
+                        validators: {
+                            notEmpty: {
+                                message: '路由规则不能为空！'
+                            },
+                            stringLength: {
+                                min: 1,
+                                max: 40,
+                                message: '路由规则在20个字符以内！'
+                            }
+                        }
+                    },
+                    sort: {
+                        validators: {
+                            stringLength: {
+                                min: 4,
+                                max: 4,
+                                message: '规则序号在4个数字以内！'
+                            },
+                            regexp: {
+                                regexp: /^[0-9]+$/,
+                                message: '请输入数字作为菜单序号！'
                             }
                         }
                     }

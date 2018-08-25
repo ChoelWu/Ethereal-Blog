@@ -38,7 +38,7 @@ class RuleController extends CommonController
         $menu_id = $request->menu_id;
         $route = $request->route;
         $title = ['title' => '规则管理', 'sub_title' => '规则列表'];
-        $list = Rule::with('menu.parent')->select('id', 'route', 'menu_id', 'status')->where(function ($query) use ($menu_id) {
+        $list = Rule::with('menu.parent')->select('id', 'name', 'route', 'menu_id', 'status', 'sort')->where(function ($query) use ($menu_id) {
             $has_menu_id = !empty($menu_id);
             if ($has_menu_id) {
                 $query->where('menu_id', $menu_id);
@@ -46,9 +46,9 @@ class RuleController extends CommonController
         })->where(function ($query) use ($route) {
             $has_route = !empty($route);
             if ($has_route) {
-                $query->where('route', $route);
+                $query->where('route', $route)->orWhere('name', 'like', '%' . $route . '%');
             }
-        })->get();
+        })->orderBy('sort', 'asc')->get();
         return view('admin.rule.index', ['menu_list' => $this->menu_list, 'list' => $list, 'title' => $title,
             'menu_id' => $menu_id, 'route' => $route]);
     }
@@ -67,16 +67,23 @@ class RuleController extends CommonController
                 $data = $request->all();
                 unset($data['_token']);
                 $data['id'] = setModelId("Rule");
-                try {
-                    Rule::create($data);
-                    $rel = [
-                        "status" => "200",
-                        "message" => "规则添加成功！"
-                    ];
-                } catch (\Exception $e) {
+                if ('0' != $data['menu_id']) {
+                    try {
+                        Rule::create($data);
+                        $rel = [
+                            "status" => "200",
+                            "message" => "规则添加成功！"
+                        ];
+                    } catch (\Exception $e) {
+                        $rel = [
+                            "status" => "400",
+                            "message" => "规则添加失败！" . $e->getMessage()
+                        ];
+                    }
+                } else {
                     $rel = [
                         "status" => "400",
-                        "message" => "规则添加失败！" . $e->getMessage()
+                        "message" => "规则添加失败，请选择所属菜单！"
                     ];
                 }
                 return $rel;
@@ -103,23 +110,30 @@ class RuleController extends CommonController
                 $id = $data['id'];
                 unset($data["_token"]);
                 unset($data["id"]);
-                try {
-                    Rule::where('id', $id)->update($data);
-                    $rel = [
-                        'status' => '200',
-                        'message' => '规则修改成功！'
-                    ];
-                } catch (\Exception $e) {
+                if ('0' != $data['menu_id']) {
+                    try {
+                        Rule::where('id', $id)->update($data);
+                        $rel = [
+                            'status' => '200',
+                            'message' => '规则修改成功！'
+                        ];
+                    } catch (\Exception $e) {
+                        $rel = [
+                            "status" => "400",
+                            "message" => "规则修改失败！" . $e->getMessage()
+                        ];
+                    }
+                } else {
                     $rel = [
                         "status" => "400",
-                        "message" => "规则修改失败！" . $e->getMessage()
+                        "message" => "规则添加失败，请选择所属菜单！"
                     ];
                 }
                 return $rel;
             }
         } else {
             $title = ['title' => '规则管理', 'sub_title' => '修改规则信息'];
-            $rule = Rule::select('id', 'route', 'menu_id', 'status')->find($id);
+            $rule = Rule::select('id', 'name', 'route', 'menu_id', 'status', 'sort')->find($id);
             return view('admin.rule.edit', ['menu_list' => $this->menu_list, 'title' => $title, 'rule' => $rule, 'id' => $id]);
         }
     }

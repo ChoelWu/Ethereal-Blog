@@ -62,7 +62,7 @@ class AuthController extends Controller
                     'identify' => 'ok',
                     'deadline' => ''
                 ];
-                User::where('id', $user->id)->update($data);
+//                User::where('id', $user->id)->update($data);
             }
             // 获取权限
             // @TODO

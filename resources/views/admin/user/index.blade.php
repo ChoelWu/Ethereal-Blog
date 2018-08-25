@@ -19,60 +19,65 @@
         </div>
     </div>
     <div class="wrapper wrapper-content animated fadeInRight">
-        <div class="col-lg-12">
-            <div class="ibox float-e-margins">
-                <div class="ibox-title">
-                    <h5>{{ $title['sub_title'] }}</h5>
-                    <div class="ibox-tools">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>{{ $title['sub_title'] }}</h5>
+                        <div class="ibox-tools">
                         <span class="btn btn-xs btn-primary" id="user-add">
                             <i class="fa fa-plus"></i>
                             添加
                         </span>
+                        </div>
                     </div>
-                </div>
-                <div class="ibox-content">
-                    <table class="table table-hover">
-                        <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>头像</th>
-                            <th>昵称</th>
-                            <th>e-mail</th>
-                            <th>电话</th>
-                            <th>状态</th>
-                            <th class="col-lg-2">操作</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        @foreach($list as $key => $user)
+                    <div class="ibox-content">
+                        <table class="table table-hover">
+                            <thead>
                             <tr>
-                                <td>{{ $key + 1 }}</td>
-                                <td><img alt="image" class="img-circle img-sm" src="@if('' != $user['header_img']){{ asset('uploads/' . $user['header_img']) }}@else{{ asset(config('view.admin_static_path') . '/img/male.png') }}@endif"></td>
-                                <td>{{ $user['nickname'] }}</td>
-                                <td>{{ $user['e_mail'] }}
-                                <td>{{ $user['phone'] }}
-                                </td>
-                                <td>
-                                    @if($user['status'] == '1')
-                                        <button class="btn btn-xs btn-primary edit-user-status"
-                                                data-id="{{ $user['id'] }}" title="启用"><i class="fa fa-eye"></i>
-                                        </button>
-                                    @else
-                                        <button class="btn btn-xs btn-default edit-user-status"
-                                                data-id="{{ $user['id'] }}" title="禁用"><i class="fa fa-eye-slash"></i>
-                                        </button>
-                                    @endif
-                                </td>
-                                <td>
+                                <th>#</th>
+                                <th>头像</th>
+                                <th>昵称</th>
+                                <th>e-mail</th>
+                                <th>电话</th>
+                                <th>状态</th>
+                                <th class="col-lg-2">操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($list as $key => $user)
+                                <tr>
+                                    <td>{{ $key + 1 }}</td>
+                                    <td><img alt="image" class="img-circle img-sm"
+                                             src="@if('' != $user['header_img']){{ asset('uploads/' . $user['header_img']) }}@else{{ asset(config('view.admin_static_path') . '/img/male.png') }}@endif">
+                                    </td>
+                                    <td>{{ $user['nickname'] }}</td>
+                                    <td>{{ $user['e_mail'] }}
+                                    <td>{{ $user['phone'] }}
+                                    </td>
+                                    <td>
+                                        @if($user['status'] == '1')
+                                            <button class="btn btn-xs btn-primary edit-user-status"
+                                                    data-id="{{ $user['id'] }}" title="启用"><i class="fa fa-eye"></i>
+                                            </button>
+                                        @else
+                                            <button class="btn btn-xs btn-default edit-user-status"
+                                                    data-id="{{ $user['id'] }}" title="禁用"><i
+                                                        class="fa fa-eye-slash"></i>
+                                            </button>
+                                        @endif
+                                    </td>
+                                    <td>
                                     <span class="btn btn-xs btn-primary edit-user" data-id="{{ $user['id'] }}"><i
                                                 class="fa fa-edit"></i> 修改</span>
-                                    <span class="btn btn-xs btn-danger delete-user" data-id="{{ $user['id'] }}"><i
-                                                class="fa fa-times"></i> 删除</span>
-                                </td>
-                            </tr>
-                        @endforeach
-                        </tbody>
-                    </table>
+                                        <span class="btn btn-xs btn-danger delete-user" data-id="{{ $user['id'] }}"><i
+                                                    class="fa fa-times"></i> 删除</span>
+                                    </td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -91,7 +96,7 @@
                 window.location.href = "{{ url('admin/user/add') }}";
             });
             $(".edit-user").click(function () {
-                window.location.href = "{{ url('admin/user/edit') }}/id/" + $(this).data("id");
+                window.location.href = "{{ url('admin/user/edit') }}/" + $(this).data("id");
             });
             $(".delete-user").click(function () {
                 var is_disabled = $(this).attr("disabled");

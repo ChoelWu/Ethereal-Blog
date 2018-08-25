@@ -16,7 +16,7 @@ class Rule extends Model
     protected $keyType = 'string';
 
     //设置白名单
-    protected $fillable = ['id', 'route', 'menu_id', 'status', 'updated_at', 'created_date'];
+    protected $fillable = ['id', 'name', 'route', 'menu_id', 'status', 'sort', 'updated_at', 'created_date'];
 
     //获取菜单信息
     public function menu()
