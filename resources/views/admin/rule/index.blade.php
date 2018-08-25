@@ -49,7 +49,7 @@
                                     <select class="form-control input-s-xs inline" name="menu_id" id="menu-selection">
                                         <option disabled="disabled">- - - - - - - - - - - - - - - - - - - - - - - - -
                                         </option>
-                                        <option value="">顶级菜单</option>
+                                        <option value="">所有菜单</option>
                                         <option disabled="disabled">- - - - - - - - - - - - - - - - - - - - - - - - -
                                         </option>
                                         @foreach($menu_list as $item)
@@ -136,7 +136,7 @@
                 window.location.href = "{{ url('admin/rule/add') }}";
             });
             $(".edit-rule").click(function () {
-                window.location.href = "{{ url('admin/rule/edit') }}/id/" + $(this).data("id");
+                window.location.href = "{{ url('admin/rule/edit') }}/" + $(this).data("id");
             });
             $(".delete-rule").click(function () {
                 var is_disabled = $(this).attr("disabled");
