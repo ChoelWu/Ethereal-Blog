@@ -24,7 +24,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Role;
+use App\Models\Menu;
 use Illuminate\Http\Request;
+use Log;
 
 class RoleController extends CommonController
 {
@@ -35,8 +37,15 @@ class RoleController extends CommonController
     public function index()
     {
         $title = ['title' => '角色管理', 'sub_title' => '角色列表'];
-        $list = Role::select('id', 'role_name', 'status')->get();
-        return view('admin.role.index', ['menu_list' => $this->menu_list, 'list' => $list, 'title' => $title]);
+        $list = Role::select('id', 'role_name', 'status')->where('id', '<>', '1')->get();
+        $rule_list = Menu::with(['rules' => function($query) {
+            $query->select('id', 'menu_id', 'name')->orderBy('sort', 'asc')->get();
+        }])->select('id', 'name', 'sort')->where(function($query) {
+            $parent_id = Menu::where('level', '<>', '1')->pluck('parent_id');
+            $query->whereNotIn('id', $parent_id);
+        })->orderBy('sort', 'asc')->get();
+//        dd($rule_list);
+        return view('admin.role.index', ['menu_list' => $this->menu_list, 'list' => $list, 'rule_list' => $rule_list, 'title' => $title]);
     }
 
     /**

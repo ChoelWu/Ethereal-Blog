@@ -116,6 +116,9 @@
                                 @endforeach
                                 </tbody>
                             </table>
+                            <div class="pull-right">
+                                {{ $list->appends(['route' => $route, 'menu_id' => $menu_id])->links() }}
+                            </div>
                         </div>
                     </div>
                 </div>

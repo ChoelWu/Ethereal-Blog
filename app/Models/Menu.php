@@ -23,4 +23,8 @@ class Menu extends Model
     {
         return $this->belongsTo('\App\Models\Menu', 'parent_id', 'id');
     }
+
+    public function rules() {
+        return $this->hasMany('\App\Models\Rule', 'menu_id', 'id');
+    }
 }
