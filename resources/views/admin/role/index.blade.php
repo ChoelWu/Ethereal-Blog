@@ -20,8 +20,11 @@
                             <div class="ibox float-e-margins">
                                 <div class="ibox-content">
                                     <div class="row">
-                                        <div class="col-sm-1 col-sm-offset-11">
-                                            <button type="button" class="btn btn-sm btn-primary pull-right"
+                                        <div class="col-sm-2 col-sm-offset-10">
+                                            <button type="button" class="btn btn-sm btn-default"
+                                                    id="clear-all-rule"> 清空
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-info"
                                                     id="choose-all-rule"> 全选
                                             </button>
                                         </div>
@@ -43,7 +46,8 @@
                                                 <tr>
                                                     <th colspan="6">{{ $menu->name }}
                                                         <span class="pull-right">
-                                                            <input type="checkbox" class="i-checks {{ $menu->id }} check-menu-all"
+                                                            <input type="checkbox"
+                                                                   class="i-checks {{ $menu->id }} check-menu-all"
                                                                    data-menu-id="{{ $menu->id }}" name="input[]">
                                                             全选
                                                         </span>
@@ -54,8 +58,9 @@
                                                         <td>
                                                             <input type="checkbox"
                                                                    class="i-checks {{ $menu->id }} check-item"
-                                                                   data-menu_id="{{ $menu->id }}"
-                                                                   name="input[]"> {{ $rule->name }}
+                                                                   data-menu-id="{{ $menu->id }}"
+                                                                   name="rule-item"
+                                                                   value="{{ $rule->id }}"> {{ $rule->name }}
                                                         </td>
                                                         @if(($key + 1) / 6 == 0)
                                                 </tr>
@@ -215,10 +220,16 @@
             $("#role-authorize").click(function () {
                 $('#role-authorize-modal').modal('show');
                 $('#submit-rules').data('item-id', $(this).data('id'));
-            });
-            $('#submit-rules').click(function () {
-                $.ajax({});
-                $(this).data('item-id', '');
+                $.get("{{ url('admin/role/get_authorize') }}", {"role_id": $(this).data("id")}, function (data) {
+                    $('.i-checks').each(function (index, element) {
+                        var ele = $(this);
+                        $.each(data, function (name, value) {
+                            if (ele.val() == value) {
+                                ele.iCheck('check');
+                            }
+                        });
+                    });
+                });
             });
             $('.i-checks').iCheck({
                 checkboxClass: 'icheckbox_square-green',
@@ -227,21 +238,57 @@
             $('#choose-all-rule').click(function () {
                 $('.i-checks').iCheck('check');
             });
+            $('#clear-all-rule').click(function () {
+                $('.i-checks').iCheck('uncheck');
+            });
             $('.check-menu-all').on('ifChecked', function () {
                 var checked_group = $(this).data('menu-id');
-                // $('.check-item,.' + checked_group).iCheck('check');
-                console.log('.check-item,.' + checked_group);
+                $('.check-item.' + checked_group).iCheck('check');
             });
             $('.check-item').on('ifUnchecked', function () {
                 var menu_id = $(this).data('menu-id');
-                $('.check-menu-all,.' + menu_id).iCheck('uncheck');
+                $('.check-menu-all.' + menu_id).iCheck('uncheck');
+            });
+            $('#submit-rules').click(function () {
+                var checkBoxArr = [];
+                var token = "{{ csrf_token() }}";
+                var role_id = $(this).data('item-id');
+                $('input[name="rule-item"]:checked').each(function () {
+                    checkBoxArr.push($(this).val());
+                });
+                $.ajax({
+                    type: "post",
+                    url: "{{ url('admin/role/authorize') }}",
+                    cache: false,
+                    data: {role_id: role_id, rules: checkBoxArr, _token: token},
+                    dataType: "json",
+                    success: function (data) {
+                        $('#role-authorize-modal').modal('hide');
+                        $('#role-authorize-modal').on('hidden.bs.modal', function () {
+                            $('#submit-rules').data('item-id', '');
+                            $('#message-modal-label').html(data['title']);
+                            if ('200' == data['status']) {
+                                $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-check-square text-info"></i> ' + data['message'] + '</h3>');
+                            } else {
+                                $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-exclamation-triangle text-danger"></i> ' + data['message'] + '</h3>');
+                            }
+                        });
+                        setTimeout(function () {
+                            $("#message-modal").modal({
+                                keyboard: false,
+                                backdrop: false
+                            });
+                            $('#message-modal').modal('show');
+                        }, 600);
+                        setTimeout(function () {
+                            window.location.href = '';
+                        }, 2500);
+                    }
+                });
             });
         });
     </script>
 @endsection
 
 
-{{--var checkBoxArr = [];--}}
-{{--$('input[name="optionName"]:checked').each(function() {--}}
-{{--checkBoxArr.push($(this).val());--}}
-{{--});--}}
+

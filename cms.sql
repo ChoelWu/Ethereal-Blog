@@ -10,10 +10,29 @@ Target Server Type    : MYSQL
 Target Server Version : 50721
 File Encoding         : 65001
 
-Date: 2018-08-28 09:56:48
+Date: 2018-08-28 16:15:30
 */
 
 SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for cms_authorize
+-- ----------------------------
+DROP TABLE IF EXISTS `cms_authorize`;
+CREATE TABLE `cms_authorize` (
+  `id` varchar(32) NOT NULL,
+  `role_id` varchar(32) NOT NULL COMMENT '角色id',
+  `rules_ids` text COMMENT '规则权限id',
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_authorize_role_id` (`role_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of cms_authorize
+-- ----------------------------
+INSERT INTO `cms_authorize` VALUES ('AUTHORIZE_201808280809347574', 'ROLE_201808280714554877', 'RULE_201808250222121966,RULE_201808250222362469,RULE_201808250226004819,RULE_201808250227073506,RULE_201808250229128549,RULE_201808250230067306,RULE_201808250230507623,RULE_201808250233539347,RULE_201808250234299011,RULE_201808250235376083,RULE_201808250236139314,RULE_201808250243294119,RULE_201808250247075817,RULE_201808250247391247,RULE_201808250248081073,RULE_201808250248312986,RULE_201808250249077536', '2018-08-28 08:09:34', '2018-08-28 08:09:34');
 
 -- ----------------------------
 -- Table structure for cms_menu
@@ -60,8 +79,8 @@ CREATE TABLE `cms_role` (
 -- ----------------------------
 -- Records of cms_role
 -- ----------------------------
-INSERT INTO `cms_role` VALUES ('ROLE_201808270734035809', '管理员', '1', '2018-08-27 07:34:03', '2018-08-27 07:34:03');
 INSERT INTO `cms_role` VALUES ('1', '超级管理员', '1', '2018-08-15 06:29:28', '2018-08-15 06:46:00');
+INSERT INTO `cms_role` VALUES ('ROLE_201808280714554877', '角色一', '1', '2018-08-28 07:14:55', '2018-08-28 07:14:55');
 
 -- ----------------------------
 -- Table structure for cms_rule

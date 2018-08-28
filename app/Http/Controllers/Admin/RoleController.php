@@ -26,6 +26,7 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Role;
 use App\Models\Menu;
 use Illuminate\Http\Request;
+use App\Models\Authorize;
 use Log;
 
 class RoleController extends CommonController
@@ -38,9 +39,9 @@ class RoleController extends CommonController
     {
         $title = ['title' => '角色管理', 'sub_title' => '角色列表'];
         $list = Role::select('id', 'role_name', 'status')->where('id', '<>', '1')->get();
-        $rule_list = Menu::with(['rules' => function($query) {
+        $rule_list = Menu::with(['rules' => function ($query) {
             $query->select('id', 'menu_id', 'name')->orderBy('sort', 'asc')->get();
-        }])->select('id', 'name', 'sort')->where(function($query) {
+        }])->select('id', 'name', 'sort')->where(function ($query) {
             $parent_id = Menu::where('level', '<>', '1')->pluck('parent_id');
             $query->whereNotIn('id', $parent_id);
         })->orderBy('sort', 'asc')->get();
@@ -128,12 +129,13 @@ class RoleController extends CommonController
     {
         $is_ajax = $request->ajax();
         $rel = '';
+        $role_id = $request->role_id;
         if ($is_ajax) {
-            $role_id = $request->role_id;
             $rel = Role::destroy($role_id);
         }
         $is_delete = empty($rel);
         if (!$is_delete) {
+            Authorize::where('role_id', $role_id)->delete();
             $rel_arr = [
                 'status' => '200',
                 'message' => '角色删除成功！'
@@ -163,7 +165,48 @@ class RoleController extends CommonController
         }
     }
 
-    public function authorizeRole() {
-        return 'todo';
+    /**
+     * 角色授权
+     * @param Request $request
+     * @return array
+     */
+    public function authorizeRole(Request $request)
+    {
+        $is_ajax = $request->ajax();
+        if ($is_ajax) {
+            $role_id = $request->role_id;
+            $rules = $request->rules;
+            $data = [
+                'id' => setModelId("Authorize"),
+                'role_id' => $role_id,
+                'rules_ids' => implode(',', $rules)
+            ];
+            try {
+                Authorize::where('role_id', $role_id)->delete();
+                Authorize::create($data);
+                $rel_arr = [
+                    'status' => '200',
+                    'message' => '授权成功！'
+                ];
+            } catch (\Exception $e) {
+                $rel_arr = [
+                    'status' => '400',
+                    'message' => '授权失败！'
+                ];
+            }
+            $rel_arr['title'] = '用户授权';
+            return $rel_arr;
+        }
+    }
+
+    public function getAuthorize(Request $request)
+    {
+        $is_ajax = $request->ajax();
+        if ($is_ajax) {
+            $role_id = $request->role_id;
+            $auth_str = Authorize::where('role_id', $role_id)->value('rules_ids');
+            $auth = explode(',', $auth_str);
+            return $auth;
+        }
     }
 }

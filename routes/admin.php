@@ -37,7 +37,8 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function() {
     Route::post('role/edit', 'RoleController@edit');
     Route::get('role/delete', 'RoleController@delete');
     Route::get('role/update_status', 'RoleController@updateStatus');
-    Route::get('role/authorize', 'RoleController@authorizeRole');
+    Route::post('role/authorize', 'RoleController@authorizeRole');
+    Route::get('role/get_authorize', 'RoleController@getAuthorize');
     //权限规则管理
     Route::get('rule/index', 'RuleController@index');
     Route::post('rule/index', 'RuleController@index');
