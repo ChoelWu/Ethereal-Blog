@@ -51,12 +51,12 @@ class AuthController extends Controller
         $user = User::select('id', 'password')->where('account', $account)->first();
         $encrypted_pwd = password_encrypt($password, $user->id);
         if ($user->password === $encrypted_pwd) {
+            $session_arr = [
+                'user_id' => $user->id,
+                'token' => encrypt_token($user->id, $user->id)
+            ];
+            session(['user' => base64_encode(json_encode($session_arr))]);
             if ('checked' == $remember_me) {
-                $session_arr = [
-                    'user_id' => $user->id,
-                    'token' => encrypt_token($user->id, $user->id)
-                ];
-                session(['user' => base64_encode(json_encode($session_arr))]);
                 $data = [
                     'token' => $session_arr['token'],
                     'identify' => 'ok',
@@ -65,7 +65,7 @@ class AuthController extends Controller
 //                User::where('id', $user->id)->update($data);
             }
             // 获取权限
-            // @TODO
+//            session(['user.id', ]);
             $rel = [
                 'status' => true,
                 'message' => "登陆成功，正在为你跳转"

@@ -59,6 +59,7 @@
                                 <div class="col-sm-5">
                                     <input type="text" class="form-control" name="account" placeholder="请输入用户登录账号">
                                 </div>
+                                <span class="text-danger">*</span>
                             </div>
                             <div class="hr-line-dashed"></div>
                             <div class="form-group">
@@ -66,6 +67,20 @@
                                 <div class="col-sm-5">
                                     <input type="text" class="form-control" name="nickname" placeholder="请输入用户名">
                                 </div>
+                                <span class="text-danger">*</span>
+                            </div>
+                            <div class="hr-line-dashed"></div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">用户角色：</label>
+                                <div class="col-sm-5">
+                                    <select class="form-control m-b" name="role_id">
+                                            <option selectd="selected">选择角色</option>
+                                        @foreach($role_list as $role)
+                                            <option value="{{ $role['id'] }}">{{ $role['role_name'] }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <span class="text-danger">*</span>
                             </div>
                             <div class="hr-line-dashed"></div>
                             <div class="form-group">
@@ -73,6 +88,7 @@
                                 <div class="col-sm-5">
                                     <input type="password" class="form-control" name="password" placeholder="请输入用户登录密码">
                                 </div>
+                                <span class="text-danger">*</span>
                             </div>
                             <div class="hr-line-dashed"></div>
                             <div class="form-group">

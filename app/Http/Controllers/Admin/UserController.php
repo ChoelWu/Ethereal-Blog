@@ -20,18 +20,30 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\User;
+use App\Models\Role;
+use App\Models\UserRole;
 use Illuminate\Http\Request;
 
 class UserController extends CommonController
 {
 
+    /**
+     * 用户列表显示
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function index()
     {
+        var_dump(session('user'));
         $title = ['title' => '用户管理', 'sub_title' => '用户列表'];
         $list = User::select('id', 'nickname', 'status', 'e_mail', 'status', 'phone', 'header_img')->get();
         return view('admin.user.index', ['menu_list' => $this->menu_list, 'list' => $list, 'title' => $title]);
     }
 
+    /**
+     * 添加用户
+     * @param Request $request
+     * @return array|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function add(Request $request)
     {
         $is_ajax = $request->ajax();
@@ -47,11 +59,20 @@ class UserController extends CommonController
                         $data['header_img'] = $file->storeAs('user/header_img', $filename);
                     }
                 }
+                $role_id = $data['role_id'];
                 unset($data['_token']);
+                unset($data['role_id']);
                 $data['id'] = setModelId("User");
+                $user_id = $data['id'];
                 $data['password'] = password_encrypt($data["password"], $data["id"]);
+                $user_role_data = [
+                    'id' => setModelId("UserRole"),
+                    'user_id' => $user_id,
+                    'role_id' => $role_id
+                ];
                 try {
                     User::create($data);
+                    UserRole::create($user_role_data);
                     $rel = [
                         'status' => '200',
                         'message' => '用户添加成功！'
@@ -66,10 +87,17 @@ class UserController extends CommonController
             }
         } else {
             $title = ['title' => '用户管理', 'sub_title' => '添加用户'];
-            return view('admin.user.add', ['menu_list' => $this->menu_list, 'title' => $title]);
+            $role_list = Role::select('id', 'role_name')->where('status', '1')->where('id', '<>', '1')->get();
+            return view('admin.user.add', ['menu_list' => $this->menu_list, 'role_list' => $role_list, 'title' => $title]);
         }
     }
 
+    /**
+     * 修改用户
+     * @param Request $request
+     * @param null $id
+     * @return array|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function edit(Request $request, $id = null)
     {
         $is_ajax = $request->ajax();
@@ -78,6 +106,7 @@ class UserController extends CommonController
             if ($is_post) {
                 $data = $request->all();
                 $id = $data['id'];
+                $role_id = $data['role_id'];
                 unset($data["_token"]);
                 unset($data["id"]);
                 if(empty($data["password"])) {
@@ -93,7 +122,11 @@ class UserController extends CommonController
                         $data['header_img'] = $file->storeAs('user/header_img', $filename);
                     }
                 }
+                $user_role_data = [
+                    'role_id' => $role_id
+                ];
                 try {
+                    UserRole::where('user_id', $id)->update($user_role_data);
                     User::where('id', $id)->update($data);
                     $rel= [
                         'status' => '200',
@@ -110,20 +143,27 @@ class UserController extends CommonController
         } else {
             $title = ['title' => '用户管理', 'sub_title' => '修改用户信息'];
             $user = User::select('id', 'account', 'nickname', 'phone', 'e_mail', 'header_img', 'status')->find($id);
-            return view('admin.user.edit', ['menu_list' => $this->menu_list, 'title' => $title, 'user' => $user, 'id' => $id]);
+            $role_list = Role::select('id', 'role_name')->where('status', '1')->where('id', '<>', '1')->get();
+            return view('admin.user.edit', ['menu_list' => $this->menu_list, 'title' => $title, 'user' => $user, 'role_list' => $role_list, 'id' => $id]);
         }
     }
 
+    /**
+     * 删除用户
+     * @param Request $request
+     * @return array
+     */
     public function delete(Request $request)
     {
         $is_ajax = $request->ajax();
         $rel = '';
+        $user_id = $request->user_id;
         if ($is_ajax) {
-            $user_id = $request->user_id;
             $rel = User::destroy($user_id);
         }
         $is_delete = empty($rel);
         if (!$is_delete) {
+            UserRole::where('user_id', $user_id)->delete();
             $rel_arr = [
                 'status' => '200',
                 'message' => '用户删除成功！'
@@ -138,6 +178,10 @@ class UserController extends CommonController
         return $rel_arr;
     }
 
+    /**
+     * 更新状态
+     * @param Request $request
+     */
     public function updateStatus(Request $request)
     {
         $is_ajax = $request->ajax();
