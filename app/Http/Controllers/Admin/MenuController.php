@@ -9,6 +9,8 @@
  * + --------------------------------------------------------------------
  * | @version            | v-1.0.0
  * + --------------------------------------------------------------------
+ * | @information        | 菜单管理
+ * + --------------------------------------------------------------------
  * | @create-date        | 2018-07-18
  * + --------------------------------------------------------------------
  * |          | @date    |
@@ -31,7 +33,7 @@ class MenuController extends CommonController
     public function index()
     {
         $title = ['title' => '菜单管理', 'sub_title' => '菜单列表'];
-        $menu_arr = Menu::select('id', 'name', 'level', 'parent_id', 'status', 'sort', 'url', 'icon')->get();
+        $menu_arr = Menu::select('id', 'name', 'level', 'parent_id', 'status', 'sort', 'url', 'icon')->orderBy('sort', 'asc')->get();
         $list = getMenu($menu_arr, 0, 1);
         return view('admin.menu.index', ['menu_list' => $this->menu_list, 'list' => $list, 'title' => $title]);
     }
@@ -139,6 +141,8 @@ class MenuController extends CommonController
      */
     public function delete(Request $request)
     {
+
+        return $request->all();
         $is_ajax = $request->ajax();
         $rel = '';
         if ($is_ajax) {

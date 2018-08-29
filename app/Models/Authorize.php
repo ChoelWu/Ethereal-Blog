@@ -16,5 +16,11 @@ class Authorize extends Model
     protected $keyType = 'string';
 
     //设置白名单
-    protected $fillable = ['id', 'role_id', 'rules_ids', 'created_at', 'updated_at'];
+    protected $fillable = ['id', 'role_id', 'rules', 'created_at', 'updated_at'];
+
+    //获得角色
+    public function role()
+    {
+        return $this->belongsTo('App\Models\Role', 'role_id', 'id');
+    }
 }

@@ -11,5 +11,11 @@
 |
 */
 
-//登录
+//网站入口
 Route::get('/', 'Admin\AuthController@index');
+//登录注销
+Route::post('admin/auth/login', 'Admin\AuthController@login');
+Route::post('admin/auth/logout', 'Admin\AuthController@logout');
+Route::get('admin/auth/check_account', 'Admin\AuthController@checkAccount');
+//无权限提示
+Route::get('admin/auth/forbidden', 'Admin\AuthController@forbidden');

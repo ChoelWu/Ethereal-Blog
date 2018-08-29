@@ -60,7 +60,7 @@
                                                                    class="i-checks {{ $menu->id }} check-item"
                                                                    data-menu-id="{{ $menu->id }}"
                                                                    name="rule-item"
-                                                                   value="{{ $rule->id }}"> {{ $rule->name }}
+                                                                   value="{{ $rule->route }}"> {{ $rule->name }}
                                                         </td>
                                                         @if(($key + 1) / 6 == 0)
                                                 </tr>

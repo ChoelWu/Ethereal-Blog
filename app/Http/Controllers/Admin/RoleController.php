@@ -40,12 +40,11 @@ class RoleController extends CommonController
         $title = ['title' => '角色管理', 'sub_title' => '角色列表'];
         $list = Role::select('id', 'role_name', 'status')->where('id', '<>', '1')->get();
         $rule_list = Menu::with(['rules' => function ($query) {
-            $query->select('id', 'menu_id', 'name')->orderBy('sort', 'asc')->get();
+            $query->select('id', 'menu_id', 'name', 'route')->orderBy('sort', 'asc')->get();
         }])->select('id', 'name', 'sort')->where(function ($query) {
             $parent_id = Menu::where('level', '<>', '1')->pluck('parent_id');
             $query->whereNotIn('id', $parent_id);
         })->orderBy('sort', 'asc')->get();
-//        dd($rule_list);
         return view('admin.role.index', ['menu_list' => $this->menu_list, 'list' => $list, 'rule_list' => $rule_list, 'title' => $title]);
     }
 
@@ -179,7 +178,7 @@ class RoleController extends CommonController
             $data = [
                 'id' => setModelId("Authorize"),
                 'role_id' => $role_id,
-                'rules_ids' => implode(',', $rules)
+                'rules' => implode(',', $rules)
             ];
             try {
                 Authorize::where('role_id', $role_id)->delete();
@@ -204,7 +203,7 @@ class RoleController extends CommonController
         $is_ajax = $request->ajax();
         if ($is_ajax) {
             $role_id = $request->role_id;
-            $auth_str = Authorize::where('role_id', $role_id)->value('rules_ids');
+            $auth_str = Authorize::where('role_id', $role_id)->value('rules');
             $auth = explode(',', $auth_str);
             return $auth;
         }

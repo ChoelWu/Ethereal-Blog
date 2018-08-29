@@ -33,7 +33,6 @@ class UserController extends CommonController
      */
     public function index()
     {
-        var_dump(session('user'));
         $title = ['title' => '用户管理', 'sub_title' => '用户列表'];
         $list = User::select('id', 'nickname', 'status', 'e_mail', 'status', 'phone', 'header_img')->get();
         return view('admin.user.index', ['menu_list' => $this->menu_list, 'list' => $list, 'title' => $title]);
@@ -107,6 +106,7 @@ class UserController extends CommonController
                 $data = $request->all();
                 $id = $data['id'];
                 $role_id = $data['role_id'];
+                unset($data["role_id"]);
                 unset($data["_token"]);
                 unset($data["id"]);
                 if(empty($data["password"])) {

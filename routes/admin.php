@@ -48,10 +48,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function() {
     Route::post('rule/edit', 'RuleController@edit');
     Route::get('rule/delete', 'RuleController@delete');
     Route::get('rule/update_status', 'RuleController@updateStatus');
-    //登录注销
-    Route::post('auth/login', 'AuthController@login');
-    Route::post('auth/logout', 'AuthController@logout');
-    Route::get('auth/check_account', 'AuthController@checkAccount');
+
 
 
 

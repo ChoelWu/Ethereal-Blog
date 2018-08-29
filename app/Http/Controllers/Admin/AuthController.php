@@ -24,8 +24,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\UserRole;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Menu;
+use App\Models\Authorize;
 
 class AuthController extends Controller
 {
@@ -51,19 +54,24 @@ class AuthController extends Controller
         $user = User::select('id', 'password')->where('account', $account)->first();
         $encrypted_pwd = password_encrypt($password, $user->id);
         if ($user->password === $encrypted_pwd) {
+            $role_id = UserRole::where('user_id', $user->id)->value('role_id');
+            $rules_str = Authorize::where('role_id', $role_id)->value('rules');
+            $rules = explode(',', $rules_str);
             $session_arr = [
                 'user_id' => $user->id,
-                'token' => encrypt_token($user->id, $user->id)
+                'token' => encrypt_token($user->id, $user->id),
+                'role_id' => $role_id,
+                'rules' => $rules
             ];
             session(['user' => base64_encode(json_encode($session_arr))]);
-            if ('checked' == $remember_me) {
-                $data = [
-                    'token' => $session_arr['token'],
-                    'identify' => 'ok',
-                    'deadline' => ''
-                ];
-//                User::where('id', $user->id)->update($data);
-            }
+//            if ('checked' == $remember_me) {
+//                $data = [
+//                    'token' => $session_arr['token'],
+//                    'identify' => 'ok',
+//                    'deadline' => ''
+//                ];
+////                User::where('id', $user->id)->update($data);
+//            }
             // 获取权限
 //            session(['user.id', ]);
             $rel = [
@@ -97,5 +105,15 @@ class AuthController extends Controller
             $rel = User::where('account', $account)->exists();
             return json_encode($rel);
         }
+    }
+
+    /**
+     * 处理沒有授权的操作
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function forbidden() {
+        $menu_arr = Menu::select('id', 'name', 'level', 'parent_id', 'url', 'icon')->where('status', '1')->get()->toArray();
+        $menu_list = getMenu($menu_arr, 0, 1);
+        return view('admin.common.forbidden', ['menu_list' => $menu_list]);
     }
 }
