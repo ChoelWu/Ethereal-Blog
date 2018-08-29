@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50721
 File Encoding         : 65001
 
-Date: 2018-08-28 16:15:30
+Date: 2018-08-29 17:54:50
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -22,7 +22,7 @@ DROP TABLE IF EXISTS `cms_authorize`;
 CREATE TABLE `cms_authorize` (
   `id` varchar(32) NOT NULL,
   `role_id` varchar(32) NOT NULL COMMENT '角色id',
-  `rules_ids` text COMMENT '规则权限id',
+  `rules` text COMMENT '规则权限id',
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -32,7 +32,7 @@ CREATE TABLE `cms_authorize` (
 -- ----------------------------
 -- Records of cms_authorize
 -- ----------------------------
-INSERT INTO `cms_authorize` VALUES ('AUTHORIZE_201808280809347574', 'ROLE_201808280714554877', 'RULE_201808250222121966,RULE_201808250222362469,RULE_201808250226004819,RULE_201808250227073506,RULE_201808250229128549,RULE_201808250230067306,RULE_201808250230507623,RULE_201808250233539347,RULE_201808250234299011,RULE_201808250235376083,RULE_201808250236139314,RULE_201808250243294119,RULE_201808250247075817,RULE_201808250247391247,RULE_201808250248081073,RULE_201808250248312986,RULE_201808250249077536', '2018-08-28 08:09:34', '2018-08-28 08:09:34');
+INSERT INTO `cms_authorize` VALUES ('AUTHORIZE_201808290302428454', 'ROLE_201808280714554877', 'admin/menu/index,admin/menu/add,admin/menu/edit,admin/menu/update_status,admin/menu/get_menu_level', '2018-08-29 03:02:42', '2018-08-29 03:02:42');
 
 -- ----------------------------
 -- Table structure for cms_menu
@@ -57,11 +57,9 @@ CREATE TABLE `cms_menu` (
 -- Records of cms_menu
 -- ----------------------------
 INSERT INTO `cms_menu` VALUES ('MENU_201807081232405884', '系统管理', '1', '0', 'gears', '1000', '#', '1', '2018-07-08 12:32:40', '2018-07-08 14:41:30');
-INSERT INTO `cms_menu` VALUES ('MENU_201807121319237643', '菜单管理', '2', 'MENU_201807081232405884', 'tasks', '1011', 'admin/menu/index', '1', '2018-07-12 13:19:23', '2018-07-12 13:19:23');
 INSERT INTO `cms_menu` VALUES ('MENU_201807121320122812', '用户管理', '2', 'MENU_201807081232405884', 'user', '1012', 'admin/user/index', '1', '2018-07-12 13:20:12', '2018-07-12 13:20:12');
 INSERT INTO `cms_menu` VALUES ('MENU_201808150058084292', '角色管理', '2', 'MENU_201807081232405884', 'vcard', '1013', 'admin/role/index', '1', '2018-08-15 00:58:08', '2018-08-15 00:58:08');
-INSERT INTO `cms_menu` VALUES ('MENU_201808150654154758', '权限规则', '2', 'MENU_201807081232405884', 'list-alt', '1014', 'admin/rule/index', '1', '2018-08-15 06:54:15', '2018-08-15 06:58:32');
-INSERT INTO `cms_menu` VALUES ('MENU_201808270946388356', '测试菜单', '1', '0', 'book', '2000', 'text', '1', '2018-08-27 09:46:38', '2018-08-27 09:46:38');
+INSERT INTO `cms_menu` VALUES ('MENU_201808290547345019', '菜单管理', '2', 'MENU_201807081232405884', 'book', '1011', 'admin/menu/index', '1', '2018-08-29 05:47:34', '2018-08-29 05:47:34');
 
 -- ----------------------------
 -- Table structure for cms_role
@@ -150,6 +148,26 @@ CREATE TABLE `cms_user` (
 -- ----------------------------
 -- Records of cms_user
 -- ----------------------------
-INSERT INTO `cms_user` VALUES ('USER_201807190229242575', 'admin', '吴超', 'fa5edb3a4496e51e24e6155de9cc696e', null, null, null, '775669127@qq.com', '18894330931', '1', 'user/header_img/201807190229245b4ff78440d3d.png', '2018-07-19 02:29:24', '2018-07-30 01:32:52');
-INSERT INTO `cms_user` VALUES ('USER_201807230214379184', 'choel', 'DedanlionWu', 'fa5edb3a4496e51e24e6155de9cc696e', null, null, null, '775669127@qq.com', '18894330931', '1', 'user/header_img/201807240804165b56dd806f3ef.jpg', '2018-07-23 02:14:37', '2018-07-24 08:04:16');
+INSERT INTO `cms_user` VALUES ('1', 'admin', '超级管理员', '35e078bcb1e78a69c9a88acbe79cefc2', null, null, null, '775669127@qq.com', '18894330931', '1', 'user/header_img/201807190229245b4ff78440d3d.png', '2018-07-19 02:29:24', '2018-08-29 02:37:16');
+INSERT INTO `cms_user` VALUES ('USER_201807230214379184', 'choel', 'Dedanlion', '8a6b3d6bc79413d8fceb9f7ce1bfb726', null, null, null, '775669127@qq.com', '18894330931', '1', 'user/header_img/201807240804165b56dd806f3ef.jpg', '2018-07-23 02:14:37', '2018-08-29 02:40:07');
 INSERT INTO `cms_user` VALUES ('USER_201807230244166701', 'wuchao', '吴超', 'b7bbf4fd0a96103338e63cc9b8332019', null, null, null, '775669127@qq.com', '18894330931', '0', '', '2018-07-23 02:44:16', '2018-07-24 08:05:13');
+
+-- ----------------------------
+-- Table structure for cms_user_role
+-- ----------------------------
+DROP TABLE IF EXISTS `cms_user_role`;
+CREATE TABLE `cms_user_role` (
+  `id` varchar(32) NOT NULL,
+  `user_id` varchar(32) NOT NULL COMMENT '用户id',
+  `role_id` varchar(32) NOT NULL COMMENT '角色id',
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_user_role_user_id` (`user_id`),
+  KEY `idx_user_role_role_id` (`role_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of cms_user_role
+-- ----------------------------
+INSERT INTO `cms_user_role` VALUES ('1231212123', 'USER_201807230214379184', 'ROLE_201808280714554877', null, null);
