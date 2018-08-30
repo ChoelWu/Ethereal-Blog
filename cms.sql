@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50721
 File Encoding         : 65001
 
-Date: 2018-08-29 17:54:50
+Date: 2018-08-30 19:08:25
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -32,7 +32,7 @@ CREATE TABLE `cms_authorize` (
 -- ----------------------------
 -- Records of cms_authorize
 -- ----------------------------
-INSERT INTO `cms_authorize` VALUES ('AUTHORIZE_201808290302428454', 'ROLE_201808280714554877', 'admin/menu/index,admin/menu/add,admin/menu/edit,admin/menu/update_status,admin/menu/get_menu_level', '2018-08-29 03:02:42', '2018-08-29 03:02:42');
+INSERT INTO `cms_authorize` VALUES ('AUTHORIZE_201808300334128529', 'ROLE_201808300246497861', 'admin/menu/index,admin/menu/edit,admin/menu/delete,admin/menu/update_status,admin/menu/get_menu_level', '2018-08-30 03:34:12', '2018-08-30 03:34:12');
 
 -- ----------------------------
 -- Table structure for cms_menu
@@ -56,10 +56,12 @@ CREATE TABLE `cms_menu` (
 -- ----------------------------
 -- Records of cms_menu
 -- ----------------------------
-INSERT INTO `cms_menu` VALUES ('MENU_201807081232405884', '系统管理', '1', '0', 'gears', '1000', '#', '1', '2018-07-08 12:32:40', '2018-07-08 14:41:30');
-INSERT INTO `cms_menu` VALUES ('MENU_201807121320122812', '用户管理', '2', 'MENU_201807081232405884', 'user', '1012', 'admin/user/index', '1', '2018-07-12 13:20:12', '2018-07-12 13:20:12');
-INSERT INTO `cms_menu` VALUES ('MENU_201808150058084292', '角色管理', '2', 'MENU_201807081232405884', 'vcard', '1013', 'admin/role/index', '1', '2018-08-15 00:58:08', '2018-08-15 00:58:08');
-INSERT INTO `cms_menu` VALUES ('MENU_201808290547345019', '菜单管理', '2', 'MENU_201807081232405884', 'book', '1011', 'admin/menu/index', '1', '2018-08-29 05:47:34', '2018-08-29 05:47:34');
+INSERT INTO `cms_menu` VALUES ('MENU_201808300232288030', '系统管理', '1', '0', 'gears', '0100', '#', '1', '2018-08-30 02:32:28', '2018-08-30 02:32:28');
+INSERT INTO `cms_menu` VALUES ('MENU_201808300237076705', '菜单管理', '2', 'MENU_201808300232288030', 'book', '0101', 'admin/menu/index', '1', '2018-08-30 02:37:07', '2018-08-30 02:37:07');
+INSERT INTO `cms_menu` VALUES ('MENU_201808300240082440', '权限管理', '2', 'MENU_201808300232288030', 'user', '0102', 'admin/rule/index', '1', '2018-08-30 02:40:08', '2018-08-30 02:40:08');
+INSERT INTO `cms_menu` VALUES ('MENU_201808300241344594', '角色管理', '2', 'MENU_201808300232288030', 'user', '0103', 'admin/role/index', '1', '2018-08-30 02:41:34', '2018-08-30 02:41:34');
+INSERT INTO `cms_menu` VALUES ('MENU_201808300242103500', '用户管理', '2', 'MENU_201808300232288030', 'user', '1014', 'admin/user/index', '1', '2018-08-30 02:42:10', '2018-08-30 02:42:10');
+INSERT INTO `cms_menu` VALUES ('MENU_201808300321167235', '测试菜单', '1', '0', 'book', '0200', '#', '1', '2018-08-30 03:21:16', '2018-08-30 03:30:52');
 
 -- ----------------------------
 -- Table structure for cms_role
@@ -77,8 +79,8 @@ CREATE TABLE `cms_role` (
 -- ----------------------------
 -- Records of cms_role
 -- ----------------------------
+INSERT INTO `cms_role` VALUES ('ROLE_201808300246497861', '角色一', '1', '2018-08-30 02:46:49', '2018-08-30 02:46:49');
 INSERT INTO `cms_role` VALUES ('1', '超级管理员', '1', '2018-08-15 06:29:28', '2018-08-15 06:46:00');
-INSERT INTO `cms_role` VALUES ('ROLE_201808280714554877', '角色一', '1', '2018-08-28 07:14:55', '2018-08-28 07:14:55');
 
 -- ----------------------------
 -- Table structure for cms_rule
@@ -100,29 +102,13 @@ CREATE TABLE `cms_rule` (
 -- ----------------------------
 -- Records of cms_rule
 -- ----------------------------
-INSERT INTO `cms_rule` VALUES ('RULE_201808250222121966', '菜单显示', 'admin/menu/index', 'MENU_201807121319237643', '0100', '1', '2018-08-25 02:22:12', '2018-08-25 02:25:10');
-INSERT INTO `cms_rule` VALUES ('RULE_201808250222362469', '添加菜单', 'admin/menu/add', 'MENU_201807121319237643', '0101', '1', '2018-08-25 02:22:36', '2018-08-25 02:25:22');
-INSERT INTO `cms_rule` VALUES ('RULE_201808250226004819', '编辑菜单', 'admin/menu/edit', 'MENU_201807121319237643', '0102', '1', '2018-08-25 02:26:00', '2018-08-25 02:40:16');
-INSERT INTO `cms_rule` VALUES ('RULE_201808250227073506', '删除菜单', 'admin/menu/delete', 'MENU_201807121319237643', '0103', '1', '2018-08-25 02:27:07', '2018-08-25 02:27:07');
-INSERT INTO `cms_rule` VALUES ('RULE_201808250229128549', '修改菜单状态', 'admin/menu/update_status', 'MENU_201807121319237643', '0104', '1', '2018-08-25 02:29:12', '2018-08-25 02:29:12');
-INSERT INTO `cms_rule` VALUES ('RULE_201808250230067306', '获取菜单级别', 'admin/menu/get_menu_level', 'MENU_201807121319237643', '0105', '1', '2018-08-25 02:30:06', '2018-08-25 02:30:06');
-INSERT INTO `cms_rule` VALUES ('RULE_201808250230507623', '用户列表显示', 'admin/user/index', 'MENU_201807121320122812', '0200', '1', '2018-08-25 02:30:50', '2018-08-25 02:30:50');
-INSERT INTO `cms_rule` VALUES ('RULE_201808250233539347', '添加用户', 'admin/user/add', 'MENU_201807121320122812', '0201', '1', '2018-08-25 02:33:53', '2018-08-25 02:33:53');
-INSERT INTO `cms_rule` VALUES ('RULE_201808250234299011', '修改用户', 'admin/user/edit', 'MENU_201807121320122812', '0202', '1', '2018-08-25 02:34:29', '2018-08-25 02:34:29');
-INSERT INTO `cms_rule` VALUES ('RULE_201808250235376083', '用户头像上传', 'admn/user/upload', 'MENU_201807121320122812', '0203', '1', '2018-08-25 02:35:37', '2018-08-25 02:35:37');
-INSERT INTO `cms_rule` VALUES ('RULE_201808250236139314', '删除用户', 'admin/user/delete', 'MENU_201807121320122812', '0204', '1', '2018-08-25 02:36:13', '2018-08-25 02:36:13');
-INSERT INTO `cms_rule` VALUES ('RULE_201808250238146110', '角色授权', 'admin/role/authorize', 'MENU_201808150058084292', '0305', '1', '2018-08-25 02:38:14', '2018-08-25 02:42:42');
-INSERT INTO `cms_rule` VALUES ('RULE_201808250239178260', '角色列表显示', 'admin/role/index', 'MENU_201808150058084292', '0300', '1', '2018-08-25 02:39:17', '2018-08-25 02:39:17');
-INSERT INTO `cms_rule` VALUES ('RULE_201808250239491074', '添加角色', 'admin/role/add', 'MENU_201808150058084292', '0301', '1', '2018-08-25 02:39:49', '2018-08-25 02:39:49');
-INSERT INTO `cms_rule` VALUES ('RULE_201808250240473046', '修改角色', 'admin/role/edit/', 'MENU_201808150058084292', '0302', '1', '2018-08-25 02:40:47', '2018-08-25 02:40:47');
-INSERT INTO `cms_rule` VALUES ('RULE_201808250241319108', '删除角色', 'admin/role/delete', 'MENU_201808150058084292', '0303', '1', '2018-08-25 02:41:31', '2018-08-25 02:41:31');
-INSERT INTO `cms_rule` VALUES ('RULE_201808250243294119', '用户账号状态更新', 'admin/user/update_status', 'MENU_201807121320122812', '0205', '1', '2018-08-25 02:43:29', '2018-08-25 02:43:29');
-INSERT INTO `cms_rule` VALUES ('RULE_201808250244273468', '修改角色状态', 'admin/role/update_status', 'MENU_201808150058084292', '0304', '1', '2018-08-25 02:44:27', '2018-08-25 02:44:27');
-INSERT INTO `cms_rule` VALUES ('RULE_201808250247075817', '权限规则显示', 'admin/rule/index', 'MENU_201808150654154758', '0400', '1', '2018-08-25 02:47:07', '2018-08-25 02:47:07');
-INSERT INTO `cms_rule` VALUES ('RULE_201808250247391247', '添加规则', 'admin/rule/add', 'MENU_201808150654154758', '0401', '1', '2018-08-25 02:47:39', '2018-08-25 02:47:39');
-INSERT INTO `cms_rule` VALUES ('RULE_201808250248081073', '修改规则', 'admin/rule/edit', 'MENU_201808150654154758', '0402', '1', '2018-08-25 02:48:08', '2018-08-25 02:48:08');
-INSERT INTO `cms_rule` VALUES ('RULE_201808250248312986', '删除规则', 'admin/rule/delete', 'MENU_201808150654154758', '0403', '1', '2018-08-25 02:48:31', '2018-08-25 02:48:31');
-INSERT INTO `cms_rule` VALUES ('RULE_201808250249077536', '修改规则状态', 'admin/rule/update_status', 'MENU_201808150654154758', '0404', '1', '2018-08-25 02:49:07', '2018-08-25 02:49:07');
+INSERT INTO `cms_rule` VALUES ('RULE_201808300243148041', '菜单列表', 'admin/menu/index', 'MENU_201808300237076705', '0101', '1', '2018-08-30 02:43:14', '2018-08-30 02:43:14');
+INSERT INTO `cms_rule` VALUES ('RULE_201808300243505712', '添加菜单', 'admin/menu/add', 'MENU_201808300237076705', '0102', '1', '2018-08-30 02:43:50', '2018-08-30 02:43:50');
+INSERT INTO `cms_rule` VALUES ('RULE_201808300244237279', '修改菜单', 'admin/menu/edit', 'MENU_201808300237076705', '0103', '1', '2018-08-30 02:44:23', '2018-08-30 02:44:23');
+INSERT INTO `cms_rule` VALUES ('RULE_201808300245038976', '删除菜单', 'admin/menu/delete', 'MENU_201808300237076705', '0104', '1', '2018-08-30 02:45:03', '2018-08-30 02:45:03');
+INSERT INTO `cms_rule` VALUES ('RULE_201808300245335999', '修改菜单状态', 'admin/menu/update_status', 'MENU_201808300237076705', '0105', '1', '2018-08-30 02:45:33', '2018-08-30 02:45:33');
+INSERT INTO `cms_rule` VALUES ('RULE_201808300245588259', '获取菜单状态', 'admin/menu/get_menu_level', 'MENU_201808300237076705', '0106', '1', '2018-08-30 02:45:58', '2018-08-30 02:45:58');
+INSERT INTO `cms_rule` VALUES ('RULE_201808300246294010', '权限列表', 'admin/rule/index', 'MENU_201808300240082440', '0201', '1', '2018-08-30 02:46:29', '2018-08-30 02:46:29');
 
 -- ----------------------------
 -- Table structure for cms_user
@@ -139,7 +125,7 @@ CREATE TABLE `cms_user` (
   `e_mail` varchar(30) DEFAULT NULL COMMENT '电子邮件',
   `phone` varchar(20) DEFAULT NULL COMMENT '电话',
   `status` char(1) NOT NULL DEFAULT '1' COMMENT '状态',
-  `header_img` varchar(50) DEFAULT NULL COMMENT '头像',
+  `header_img` varchar(100) DEFAULT NULL COMMENT '头像',
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -149,8 +135,7 @@ CREATE TABLE `cms_user` (
 -- Records of cms_user
 -- ----------------------------
 INSERT INTO `cms_user` VALUES ('1', 'admin', '超级管理员', '35e078bcb1e78a69c9a88acbe79cefc2', null, null, null, '775669127@qq.com', '18894330931', '1', 'user/header_img/201807190229245b4ff78440d3d.png', '2018-07-19 02:29:24', '2018-08-29 02:37:16');
-INSERT INTO `cms_user` VALUES ('USER_201807230214379184', 'choel', 'Dedanlion', '8a6b3d6bc79413d8fceb9f7ce1bfb726', null, null, null, '775669127@qq.com', '18894330931', '1', 'user/header_img/201807240804165b56dd806f3ef.jpg', '2018-07-23 02:14:37', '2018-08-29 02:40:07');
-INSERT INTO `cms_user` VALUES ('USER_201807230244166701', 'wuchao', '吴超', 'b7bbf4fd0a96103338e63cc9b8332019', null, null, null, '775669127@qq.com', '18894330931', '0', '', '2018-07-23 02:44:16', '2018-07-24 08:05:13');
+INSERT INTO `cms_user` VALUES ('USER_201808300301297631', 'choel', 'choel', 'c712d1741bc27b73cb27eb9d0149165e', null, null, null, 'choel_wu@foxmail.com', '18894330931', '1', 'uploads/user/header_img/201808300307175b875f654f594.jpg', '2018-08-30 03:01:29', '2018-08-30 03:10:21');
 
 -- ----------------------------
 -- Table structure for cms_user_role
@@ -170,4 +155,5 @@ CREATE TABLE `cms_user_role` (
 -- ----------------------------
 -- Records of cms_user_role
 -- ----------------------------
-INSERT INTO `cms_user_role` VALUES ('1231212123', 'USER_201807230214379184', 'ROLE_201808280714554877', null, null);
+INSERT INTO `cms_user_role` VALUES ('1', '1', '1', null, null);
+INSERT INTO `cms_user_role` VALUES ('USERROLE_201808300301296704', 'USER_201808300301297631', 'ROLE_201808300246497861', '2018-08-30 03:01:29', '2018-08-30 03:10:21');
