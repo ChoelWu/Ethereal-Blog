@@ -34,7 +34,7 @@ class UserController extends CommonController
     public function index()
     {
         $title = ['title' => '用户管理', 'sub_title' => '用户列表'];
-        $list = User::select('id', 'nickname', 'status', 'e_mail', 'status', 'phone', 'header_img')->get();
+        $list = User::select('id', 'nickname', 'status', 'e_mail', 'status', 'phone', 'header_img')->where('id', '<>', '1')->get();
         return view('admin.user.index', ['menu_list' => session('menu'), 'list' => $list, 'title' => $title]);
     }
 
@@ -55,7 +55,7 @@ class UserController extends CommonController
                     if ($file->isValid()) {
                         $ext = $file->getClientOriginalExtension();
                         $filename = date('YmdHis', time()) . uniqid() . '.' . $ext;
-                        $data['header_img'] = $file->storeAs('user/header_img', $filename);
+                        $data['header_img'] = $file->storeAs('uploads/user/header_img', $filename);
                     }
                 }
                 $role_id = $data['role_id'];
@@ -119,7 +119,7 @@ class UserController extends CommonController
                     if ($file->isValid()) {
                         $ext = $file->getClientOriginalExtension();
                         $filename = date('YmdHis', time()) . uniqid() . '.' . $ext;
-                        $data['header_img'] = $file->storeAs('user/header_img', $filename);
+                        $data['header_img'] = $file->storeAs('uploads/user/header_img', $filename);
                     }
                 }
                 $user_role_data = [

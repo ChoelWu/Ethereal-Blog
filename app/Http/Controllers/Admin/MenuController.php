@@ -141,8 +141,6 @@ class MenuController extends CommonController
      */
     public function delete(Request $request)
     {
-
-        return $request->all();
         $is_ajax = $request->ajax();
         $rel = '';
         if ($is_ajax) {

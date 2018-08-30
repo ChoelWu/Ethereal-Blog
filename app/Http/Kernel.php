@@ -58,6 +58,7 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\Auth::class,
+            \App\Http\Middleware\MenuTree::class,
         ]
     ];
 
@@ -76,5 +77,6 @@ class Kernel extends HttpKernel
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'menuTree' => \App\Http\Middleware\MenuTree::class,
     ];
 }

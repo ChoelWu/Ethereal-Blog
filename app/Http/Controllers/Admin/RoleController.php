@@ -41,7 +41,11 @@ class RoleController extends CommonController
         $list = Role::select('id', 'role_name', 'status')->where('id', '<>', '1')->get();
         $user_session = json_decode(base64_decode(session('user')));
         $rule_list = Menu::with(['rules' => function ($query) use ($user_session) {
-            $query->select('id', 'menu_id', 'name', 'route')->whereIn('name', $user_session->rules)->orderBy('sort', 'asc')->get();
+            if('1' == $user_session->user_id) {
+                $query->select('id', 'menu_id', 'name', 'route')->orderBy('sort', 'asc')->get();
+            } else {
+                $query->select('id', 'menu_id', 'name', 'route')->whereIn('route', $user_session->rules)->orderBy('sort', 'asc')->get();
+            }
         }])->select('id', 'name', 'sort')->where(function ($query) {
             $parent_id = Menu::where('level', '<>', '1')->pluck('parent_id');
             $query->whereNotIn('id', $parent_id);

@@ -27,7 +27,6 @@ use App\Http\Controllers\Controller;
 use App\Models\UserRole;
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\Menu;
 use App\Models\Authorize;
 
 class AuthController extends Controller
@@ -64,13 +63,6 @@ class AuthController extends Controller
                 'rules' => $rules
             ];
             session(['user' => base64_encode(json_encode($session_arr))]);
-            $menu_arr = Menu::select('id', 'name', 'level', 'parent_id', 'url', 'icon')->where('status', '1')->where(function ($query) use ($session_arr) {
-                if ('1' != $session_arr['user_id'] && '1' != $session_arr['role_id']) {
-                    $query->whereIn('url', $session_arr['rules']);
-                }
-            })->orderBy('sort', 'asc')->get()->toArray();
-            $menu_list = getMenu($menu_arr, 0, 1);
-            session(['menu' => $menu_list]);
 //            if ('checked' == $remember_me) {
 //                $data = [
 //                    'token' => $session_arr['token'],
@@ -120,8 +112,6 @@ class AuthController extends Controller
      */
     public function forbidden()
     {
-        $menu_arr = Menu::select('id', 'name', 'level', 'parent_id', 'url', 'icon')->where('status', '1')->get()->toArray();
-        $menu_list = getMenu($menu_arr, 0, 1);
-        return view('admin.common.forbidden', ['menu_list' => $menu_list]);
+        return view('admin.common.forbidden', ['menu_list' => session('menu')]);
     }
 }

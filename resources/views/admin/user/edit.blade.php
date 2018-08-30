@@ -117,7 +117,7 @@
                                 <label class="col-sm-2 control-label">账号头像：</label>
                                 <div class="col-sm-5">
                                     <img alt="image" class="img-circle img-sm" id="header-img"
-                                         src="@if('' != $user->header_img){{ asset('uploads/' . $user->header_img) }}@else{{ asset(config('view.admin_static_path') . '/img/male.png') }}@endif">
+                                         src="@if('' != $user->header_img){{ asset($user->header_img) }}@else{{ asset(config('view.admin_static_path') . '/img/male.png') }}@endif">
                                     <button class="btn btn-primary btn-rounded pull-right" type="button"
                                             id="edit-header-img"><i class="fa fa-edit"></i> 更改
                                     </button>
