@@ -21,15 +21,10 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Models\Menu;
-
 class IndexController extends CommonController
 {
     public function index()
     {
-        $session = session('user');
-        dd(json_decode(base64_decode($session)));
-        return view('admin.index.index', ['menu_list' => $this->menu_list]);
+        return view('admin.index.index', ['menu_list' => session('menu')]);
     }
 }

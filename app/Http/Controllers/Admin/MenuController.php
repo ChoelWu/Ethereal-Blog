@@ -35,7 +35,7 @@ class MenuController extends CommonController
         $title = ['title' => '菜单管理', 'sub_title' => '菜单列表'];
         $menu_arr = Menu::select('id', 'name', 'level', 'parent_id', 'status', 'sort', 'url', 'icon')->orderBy('sort', 'asc')->get();
         $list = getMenu($menu_arr, 0, 1);
-        return view('admin.menu.index', ['menu_list' => $this->menu_list, 'list' => $list, 'title' => $title]);
+        return view('admin.menu.index', ['menu_list' => session('menu'), 'list' => $list, 'title' => $title]);
     }
 
     /**
@@ -76,7 +76,7 @@ class MenuController extends CommonController
             $title = ['title' => '菜单管理', 'sub_title' => '添加菜单'];
             $parent_menu_arr = Menu::select('id', 'name', 'level', 'parent_id', 'status', 'sort', 'url', 'icon')->get()->toArray();
             $parent_menu_list = getMenu($parent_menu_arr, 0, 1);
-            return view('admin.menu.add', ['menu_list' => $this->menu_list, 'parent_menu_list' => $parent_menu_list, 'title' => $title]);
+            return view('admin.menu.add', ['menu_list' => session('menu'), 'parent_menu_list' => $parent_menu_list, 'title' => $title]);
         }
     }
 
@@ -115,7 +115,7 @@ class MenuController extends CommonController
             $parent_menu_arr = Menu::select('id', 'name', 'level', 'parent_id', 'status', 'sort', 'url', 'icon')->get()->toArray();
             $parent_menu_list = getMenu($parent_menu_arr, 0, 1);
             $menu = Menu::select('id', 'name', 'parent_id', 'sort', 'url', 'sort', 'status', 'icon')->find($id);
-            return view('admin.menu.edit', ['menu_list' => $this->menu_list, 'parent_menu_list' => $parent_menu_list, 'menu' => $menu, 'title' => $title]);
+            return view('admin.menu.edit', ['menu_list' => session('menu'), 'parent_menu_list' => $parent_menu_list, 'menu' => $menu, 'title' => $title]);
         }
     }
 

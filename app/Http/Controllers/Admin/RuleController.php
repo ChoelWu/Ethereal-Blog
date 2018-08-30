@@ -49,7 +49,7 @@ class RuleController extends CommonController
                 $query->where('route', $route)->orWhere('name', 'like', '%' . $route . '%');
             }
         })->orderBy('sort', 'asc')->paginate(10);;
-        return view('admin.rule.index', ['menu_list' => $this->menu_list, 'list' => $list, 'title' => $title,
+        return view('admin.rule.index', ['menu_list' => session('menu'), 'list' => $list, 'title' => $title,
             'menu_id' => $menu_id, 'route' => $route]);
     }
 
@@ -90,7 +90,7 @@ class RuleController extends CommonController
             }
         } else {
             $title = ['title' => '规则管理', 'sub_title' => '添加规则'];
-            return view('admin.rule.add', ['menu_list' => $this->menu_list, 'title' => $title]);
+            return view('admin.rule.add', ['menu_list' => session('menu'), 'title' => $title]);
         }
     }
 
@@ -134,7 +134,7 @@ class RuleController extends CommonController
         } else {
             $title = ['title' => '规则管理', 'sub_title' => '修改规则信息'];
             $rule = Rule::select('id', 'name', 'route', 'menu_id', 'status', 'sort')->find($id);
-            return view('admin.rule.edit', ['menu_list' => $this->menu_list, 'title' => $title, 'rule' => $rule, 'id' => $id]);
+            return view('admin.rule.edit', ['menu_list' => session('menu'), 'title' => $title, 'rule' => $rule, 'id' => $id]);
         }
     }
 

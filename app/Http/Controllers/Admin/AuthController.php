@@ -64,6 +64,13 @@ class AuthController extends Controller
                 'rules' => $rules
             ];
             session(['user' => base64_encode(json_encode($session_arr))]);
+            $menu_arr = Menu::select('id', 'name', 'level', 'parent_id', 'url', 'icon')->where('status', '1')->where(function ($query) use ($session_arr) {
+                if ('1' != $session_arr['user_id'] && '1' != $session_arr['role_id']) {
+                    $query->whereIn('url', $session_arr['rules']);
+                }
+            })->orderBy('sort', 'asc')->get()->toArray();
+            $menu_list = getMenu($menu_arr, 0, 1);
+            session(['menu' => $menu_list]);
 //            if ('checked' == $remember_me) {
 //                $data = [
 //                    'token' => $session_arr['token'],
@@ -111,7 +118,8 @@ class AuthController extends Controller
      * 处理沒有授权的操作
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function forbidden() {
+    public function forbidden()
+    {
         $menu_arr = Menu::select('id', 'name', 'level', 'parent_id', 'url', 'icon')->where('status', '1')->get()->toArray();
         $menu_list = getMenu($menu_arr, 0, 1);
         return view('admin.common.forbidden', ['menu_list' => $menu_list]);

@@ -39,13 +39,14 @@ class RoleController extends CommonController
     {
         $title = ['title' => '角色管理', 'sub_title' => '角色列表'];
         $list = Role::select('id', 'role_name', 'status')->where('id', '<>', '1')->get();
-        $rule_list = Menu::with(['rules' => function ($query) {
-            $query->select('id', 'menu_id', 'name', 'route')->orderBy('sort', 'asc')->get();
+        $user_session = json_decode(base64_decode(session('user')));
+        $rule_list = Menu::with(['rules' => function ($query) use ($user_session) {
+            $query->select('id', 'menu_id', 'name', 'route')->whereIn('name', $user_session->rules)->orderBy('sort', 'asc')->get();
         }])->select('id', 'name', 'sort')->where(function ($query) {
             $parent_id = Menu::where('level', '<>', '1')->pluck('parent_id');
             $query->whereNotIn('id', $parent_id);
         })->orderBy('sort', 'asc')->get();
-        return view('admin.role.index', ['menu_list' => $this->menu_list, 'list' => $list, 'rule_list' => $rule_list, 'title' => $title]);
+        return view('admin.role.index', ['menu_list' => session('menu'), 'list' => $list, 'rule_list' => $rule_list, 'title' => $title]);
     }
 
     /**
@@ -78,7 +79,7 @@ class RoleController extends CommonController
             }
         } else {
             $title = ['title' => '角色管理', 'sub_title' => '添加角色'];
-            return view('admin.role.add', ['menu_list' => $this->menu_list, 'title' => $title]);
+            return view('admin.role.add', ['menu_list' => session('menu'), 'title' => $title]);
         }
     }
 
@@ -115,7 +116,7 @@ class RoleController extends CommonController
         } else {
             $title = ['title' => '角色管理', 'sub_title' => '修改角色信息'];
             $role = Role::select('id', 'role_name', 'status')->find($id);
-            return view('admin.role.edit', ['menu_list' => $this->menu_list, 'title' => $title, 'role' => $role, 'id' => $id]);
+            return view('admin.role.edit', ['menu_list' => session('menu'), 'title' => $title, 'role' => $role, 'id' => $id]);
         }
     }
 
