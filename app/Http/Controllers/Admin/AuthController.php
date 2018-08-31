@@ -73,8 +73,8 @@ class AuthController extends Controller
         $user = User::select('id', 'password')->where('account', $account)->first();
         $encrypted_pwd = password_encrypt($password, $user->id);
         if ($user->password === $encrypted_pwd) {
-            // 获取权限
             $token = encrypt_token($user->id, $user->id);
+            $identify = base64_encode(md5($user->account . time() . rand(100, 999)));
             $minute = 60 * 24 * 7;
             if ('checked' == $remember_me) {
                 $data = [
