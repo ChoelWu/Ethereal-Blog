@@ -28,16 +28,36 @@ use App\Models\UserRole;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Authorize;
+use Cookie;
 
 class AuthController extends Controller
 {
     /**
-     * 登录页
+     * 登录页面显示
+     * @param Request $request
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('admin.auth.login');
+        $identify_cookie = $request->cookie('CMS-IDENTIFY');
+        $has_identify_cookie = !empty($identify_cookie);
+        if ($has_identify_cookie) {
+            $identify_arr = json_decode(base64_decode($identify_cookie), true);
+            $user = User::where('identify', $identify_arr['identify'])->first();
+            $has_user = !empty($user);
+            if (!$has_user) {
+                return view('admin.auth.login');
+            }
+            $is_overtime = $user->deadline <= date('Y-m-d H:i:s', time());
+            $is_allow = $user->token == $identify_arr['token'];
+            if ($is_overtime || !$is_allow) {
+                return view('admin.auth.login');
+            }
+            $this->storeUser($user->id);
+            return view('admin.auth.turn', ['user' => $user]);
+        } else {
+            return view('admin.auth.login');
+        }
     }
 
     /**
@@ -53,26 +73,20 @@ class AuthController extends Controller
         $user = User::select('id', 'password')->where('account', $account)->first();
         $encrypted_pwd = password_encrypt($password, $user->id);
         if ($user->password === $encrypted_pwd) {
-            $role_id = UserRole::where('user_id', $user->id)->value('role_id');
-            $rules_str = Authorize::where('role_id', $role_id)->value('rules');
-            $rules = explode(',', $rules_str);
-            $session_arr = [
-                'user_id' => $user->id,
-                'token' => encrypt_token($user->id, $user->id),
-                'role_id' => $role_id,
-                'rules' => $rules
-            ];
-            session(['user' => base64_encode(json_encode($session_arr))]);
-//            if ('checked' == $remember_me) {
-//                $data = [
-//                    'token' => $session_arr['token'],
-//                    'identify' => 'ok',
-//                    'deadline' => ''
-//                ];
-////                User::where('id', $user->id)->update($data);
-//            }
             // 获取权限
-//            session(['user.id', ]);
+            $token = encrypt_token($user->id, $user->id);
+            $minute = 60 * 24 * 7;
+            if ('checked' == $remember_me) {
+                $data = [
+                    'token' => $token,
+                    'identify' => $identify,
+                    'deadline' => date('Y-m-d H:i:s', time() + $minute * 60)
+                ];
+                User::where('id', $user->id)->update($data);
+                $identify_cookie = base64_encode(json_encode($data));
+                Cookie::queue('CMS-IDENTIFY', $identify_cookie, $minute);
+            }
+            $this->storeUser($user->id);
             $rel = [
                 'status' => true,
                 'message' => "登陆成功，正在为你跳转"
@@ -84,6 +98,19 @@ class AuthController extends Controller
             ];
         }
         return json_encode($rel);
+    }
+
+    private function storeUser($user_id)
+    {
+        $role_id = UserRole::where('user_id', $user_id)->value('role_id');
+        $rules_str = Authorize::where('role_id', $role_id)->value('rules');
+        $rules = explode(',', $rules_str);
+        $session_arr = [
+            'user_id' => $user_id,
+            'role_id' => $role_id,
+            'rules' => $rules
+        ];
+        session(['user' => base64_encode(json_encode($session_arr))]);
     }
 
     public function logout()
