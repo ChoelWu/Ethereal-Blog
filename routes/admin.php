@@ -8,7 +8,7 @@
 |
 */
 
-Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function() {
+Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
     //后台首页
     Route::get('index', 'IndexController@index');
     //菜单管理
@@ -48,9 +48,25 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function() {
     Route::post('rule/edit', 'RuleController@edit');
     Route::get('rule/delete', 'RuleController@delete');
     Route::get('rule/update_status', 'RuleController@updateStatus');
-
-
-
+    //基本信息配置
+    Route::get('info/index', 'InfoController@index');
+    //导航管理
+    Route::get('nav/index', 'NavController@index');
+    Route::get('nav/add', 'NavController@add');
+    Route::post('nav/add', 'NavController@add');
+    Route::get('nav/edit/{id?}', 'NavController@edit');
+    Route::post('nav/edit', 'NavController@edit');
+    Route::get('nav/delete', 'NavController@delete');
+    Route::get('nav/update_status', 'NavController@updateStatus');
+    Route::get('nav/get_nav_level', 'NavController@getNavlevel');
+    //文章管理
+    Route::get('article/index', 'ArticleController@index');
+    Route::get('article/add', 'ArticleController@add');
+    Route::post('article/add', 'ArticleController@add');
+    Route::get('article/edit/{id?}', 'ArticleController@edit');
+    Route::post('article/edit', 'ArticleController@edit');
+    Route::get('article/delete', 'ArticleController@delete');
+    Route::get('article/update_status', 'ArticleController@updateStatus');
 
     Route::get('send_email', 'MailtestController@sendEmail');
 

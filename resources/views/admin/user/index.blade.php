@@ -49,7 +49,7 @@
                                 <tr>
                                     <td>{{ $key + 1 }}</td>
                                     <td><img alt="image" class="img-circle img-sm"
-                                             src="@if('' != $user['header_img']){{ asset($user['header_img']) }}@else{{ asset(config('view.admin_static_path') . '/img/male.png') }}@endif">
+                                             src="@if('' != $user['header_img']){{ asset($user['header_img']) }}@else{{ asset(config('view.admin_static_path') . '/img/default_user.png') }}@endif">
                                     </td>
                                     <td>{{ $user['nickname'] }}</td>
                                     <td>{{ $user['e_mail'] }}

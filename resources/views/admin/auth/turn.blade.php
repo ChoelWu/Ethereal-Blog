@@ -17,7 +17,7 @@
     <div>
         <div class="m-b-md">
             <img alt="image" class="img-circle circle-border" style="width: 100px; height: 100px;"
-                 src="@if('' != $user->header_img){{ asset($user->header_img) }}@else{{ asset(config('view.admin_static_path') . '/img/male.png') }}@endif">
+                 src="@if('' != $user->header_img){{ asset($user->header_img) }}@else{{ asset(config('view.admin_static_path') . '/img/default_user.png') }}@endif">
         </div>
         <h3>{{ $user->nickname }}</h3>
         <p style="line-height: 25px;">你已经在最近几天登录过本网站稍等几秒后我们将会为你进行跳转，，您也可及点击下方按钮进行跳转</p>

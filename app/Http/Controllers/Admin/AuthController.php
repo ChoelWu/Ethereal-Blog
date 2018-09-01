@@ -27,6 +27,7 @@ use App\Http\Controllers\Controller;
 use App\Models\UserRole;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Role;
 use App\Models\Authorize;
 use Cookie;
 
@@ -53,7 +54,7 @@ class AuthController extends Controller
             if ($is_overtime || !$is_allow) {
                 return view('admin.auth.login');
             }
-            $this->storeUser($user->id);
+            $this->storeUser($user);
             return view('admin.auth.turn', ['user' => $user]);
         } else {
             return view('admin.auth.login');
@@ -63,14 +64,14 @@ class AuthController extends Controller
     /**
      * 登录校验
      * @param Request $request
-     * @return string
+     * @return array
      */
     public function login(Request $request)
     {
         $account = $request->account;
         $password = $request->password;
         $remember_me = $request->remember_me;
-        $user = User::select('id', 'password')->where('account', $account)->first();
+        $user = User::select('id', 'password', 'nickname', 'header_img')->where('account', $account)->first();
         $encrypted_pwd = password_encrypt($password, $user->id);
         if ($user->password === $encrypted_pwd) {
             $token = encrypt_token($user->id, $user->id);
@@ -86,7 +87,7 @@ class AuthController extends Controller
                 $identify_cookie = base64_encode(json_encode($data));
                 Cookie::queue('CMS-IDENTIFY', $identify_cookie, $minute);
             }
-            $this->storeUser($user->id);
+            $this->storeUser($user);
             $rel = [
                 'status' => true,
                 'message' => "登陆成功，正在为你跳转"
@@ -97,25 +98,35 @@ class AuthController extends Controller
                 'message' => "登陆失败，密码错误"
             ];
         }
-        return json_encode($rel);
+        return $rel;
     }
 
-    private function storeUser($user_id)
+    /**
+     * 存储用户信息到session中
+     * @param $user
+     */
+    private function storeUser($user)
     {
-        $role_id = UserRole::where('user_id', $user_id)->value('role_id');
+        $role_id = UserRole::where('user_id', $user->id)->value('role_id');
+        $role_name = Role::where('id', $role_id)->value('role_name');
         $rules_str = Authorize::where('role_id', $role_id)->value('rules');
         $rules = explode(',', $rules_str);
         $session_arr = [
-            'user_id' => $user_id,
+            'user_id' => $user->id,
+            'nickname' => $user->nickname,
+            'role_name' => $role_name,
+            'header_img' => $user->header_img,
             'role_id' => $role_id,
             'rules' => $rules
         ];
         session(['user' => base64_encode(json_encode($session_arr))]);
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
-
+        $request->session()->flush();
+        $cookie = Cookie::forget('CMS-IDENTIFY');
+        return redirect('/')->withCookie($cookie);
     }
 
     /**

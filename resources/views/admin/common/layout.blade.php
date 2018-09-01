@@ -14,7 +14,8 @@
     <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
                 <h4 class="modal-title" id="action-modal-label"></h4>
             </div>
             <div class="modal-body">
@@ -43,15 +44,20 @@
         <div class="sidebar-collapse">
             <ul class="nav metismenu" id="side-menu">
                 <li class="nav-header">
-                    <div class="dropdown profile-element"> <span>
-                            <img alt="image" class="img-circle"
-                                 src="{{ asset(config('view.admin_static_path') . '/img/profile_small.jpg') }}"/>
-                             </span>
+                    <div class="dropdown profile-element">
+                        <span>
+                            <img alt="image" class="img-circle" style="width: 50px; height: 50px;"
+                                 src="@if('' != json_decode(base64_decode(session('user')))->header_img){{ asset(json_decode(base64_decode(session('user')))->header_img) }}@else{{ asset(config('view.admin_static_path') . '/img/default_user.png') }}@endif"/>
+                        </span>
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                            <span class="clear"> <span class="block m-t-xs"> <strong
-                                            class="font-bold">David Williams</strong>
-                             </span> <span class="text-muted text-xs block">Art Director <b
-                                            class="caret"></b></span> </span> </a>
+                            <span class="clear"> <span class="block m-t-xs">
+                                    <strong class="font-bold">{{ json_decode(base64_decode(session('user')))->nickname }}</strong>
+                             </span>
+                                <span class="text-muted text-xs block">{{ json_decode(base64_decode(session('user')))->role_name }}
+                                    <b class="caret"></b>
+                                </span>
+                            </span>
+                        </a>
                         <ul class="dropdown-menu animated fadeInRight m-t-xs">
                             <li><a href="profile.html">Profile</a></li>
                             <li><a href="contacts.html">Contacts</a></li>
@@ -61,7 +67,7 @@
                         </ul>
                     </div>
                     <div class="logo-element">
-                        IN+
+                        CMS
                     </div>
                 </li>
                 @foreach($menu_list as $vo_m)
@@ -94,14 +100,14 @@
                     </a>
                     <form role="search" class="navbar-form-custom" action="search_results.html">
                         <div class="form-group">
-                            <input type="text" placeholder="Search for something..." class="form-control"
+                            <input type="text" placeholder="在此处进行查找 . . ." class="form-control"
                                    name="top-search" id="top-search">
                         </div>
                     </form>
                 </div>
                 <ul class="nav navbar-top-links navbar-right">
                     <li>
-                        <span class="m-r-sm text-muted welcome-message">Welcome to INSPINIA+ Admin Theme.</span>
+                        <span class="m-r-sm text-muted welcome-message">欢迎使用cms系统</span>
                     </li>
                     <li class="dropdown">
                         <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
@@ -204,8 +210,8 @@
                         </ul>
                     </li>
                     <li>
-                        <a href="{{ asset(config('view.admin_static_path') . '/login.html') }}">
-                            <i class="fa fa-sign-out"></i> Log out
+                        <a href="{{ url('admin/auth/logout') }}">
+                            <i class="fa fa-sign-out"></i> 退出
                         </a>
                     </li>
                     <li>
