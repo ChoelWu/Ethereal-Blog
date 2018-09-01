@@ -48,7 +48,7 @@ class RuleController extends CommonController
             if ($has_route) {
                 $query->where('route', $route)->orWhere('name', 'like', '%' . $route . '%');
             }
-        })->orderBy('sort', 'asc')->paginate(10);;
+        })->orderBy('sort', 'asc')->paginate(5);
         return view('admin.rule.index', ['menu_list' => session('menu'), 'list' => $list, 'title' => $title,
             'menu_id' => $menu_id, 'route' => $route]);
     }

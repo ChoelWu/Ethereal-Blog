@@ -16,11 +16,17 @@ class Article extends Model
     protected $keyType = 'string';
 
     //设置白名单
-    protected $fillable = ['id', 'name', 'route', 'menu_id', 'status', 'sort', 'updated_at', 'created_date'];
+    protected $fillable = ['id', 'title', 'is_title_bold', 'title_color', 'sub_title', 'view_number', 'thumb_img', 'is_top', 'summary', 'source', 'content', 'status', 'publish_date', 'created_at', 'updated_date'];
 
-    //获取菜单信息
-    public function Nav()
+    //获取导航信息
+    public function nav()
     {
         return $this->belongsTo('\App\Models\Nav');
+    }
+
+    //获取导航信息
+    public function tag()
+    {
+        return $this->belongsTo('\App\Models\Tag');
     }
 }

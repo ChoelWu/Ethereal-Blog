@@ -52,9 +52,8 @@
                                              src="@if('' != $user['header_img']){{ asset($user['header_img']) }}@else{{ asset(config('view.admin_static_path') . '/img/default_user.png') }}@endif">
                                     </td>
                                     <td>{{ $user['nickname'] }}</td>
-                                    <td>{{ $user['e_mail'] }}
-                                    <td>{{ $user['phone'] }}
-                                    </td>
+                                    <td>{{ $user['e_mail'] }}</td>
+                                    <td>{{ $user['phone'] }}</td>
                                     <td>
                                         @if($user['status'] == '1')
                                             <button class="btn btn-xs btn-primary edit-user-status"
@@ -68,8 +67,8 @@
                                         @endif
                                     </td>
                                     <td>
-                                    <span class="btn btn-xs btn-primary edit-user" data-id="{{ $user['id'] }}"><i
-                                                class="fa fa-edit"></i> 修改</span>
+                                        <span class="btn btn-xs btn-primary edit-user" data-id="{{ $user['id'] }}"><i
+                                                    class="fa fa-edit"></i> 修改</span>
                                         <span class="btn btn-xs btn-danger delete-user" data-id="{{ $user['id'] }}"><i
                                                     class="fa fa-times"></i> 删除</span>
                                     </td>

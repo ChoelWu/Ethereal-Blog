@@ -9,9 +9,9 @@
  * + --------------------------------------------------------------------
  * | @version            | v-1.0.0
  * + --------------------------------------------------------------------
- * | @information        | 首頁
+ * | @information        | 网站基本信息
  * + --------------------------------------------------------------------
- * | @create-date        | 2018-07-17
+ * | @create-date        | 2018-09-01
  * + --------------------------------------------------------------------
  * |          | @date    |
  * +  @update + ---------------------------------------------------------
@@ -21,10 +21,14 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Article;
+
 class InfoController extends CommonController
 {
     public function index()
     {
-        return view('admin.info.index', ['menu_list' => session('menu')]);
+        $title = ['title' => '文章管理', 'sub_title' => '文章列表'];
+        $list = Article::get();
+        return view('admin.user.index', ['menu_list' => session('menu'), 'list' => $list, 'title' => $title]);
     }
 }
