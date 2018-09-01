@@ -37,7 +37,8 @@ class ArticleController extends CommonController
     }
 
     public function add() {
-
+        $title = ['title' => '文章管理', 'sub_title' => '新增文章'];
+        return view('admin.article.add', ['menu_list' => session('menu'), 'title' => $title]);
     }
 
     public function edit() {
