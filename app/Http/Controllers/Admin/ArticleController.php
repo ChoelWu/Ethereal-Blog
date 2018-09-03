@@ -33,6 +33,7 @@ class ArticleController extends CommonController
         $title = ['title' => '文章管理', 'sub_title' => '文章列表'];
         $list = Article::with(['nav' => function ($query) {
             $query->select('id', 'name');
+        }, 'tag' => function ($query) {
             $query->select('id', 'name');
         }])->where('status', '<>', '0')->orderBy('id', 'desc')->paginate(3);
         $tag_list = Tag::select('id', 'name')->where('status', '1')->get();
