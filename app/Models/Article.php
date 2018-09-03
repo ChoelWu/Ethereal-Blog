@@ -16,7 +16,7 @@ class Article extends Model
     protected $keyType = 'string';
 
     //设置白名单
-    protected $fillable = ['id', 'title', 'is_title_bold', 'title_color', 'sub_title', 'view_number', 'thumb_img', 'is_top', 'summary', 'source', 'content', 'status', 'publish_date', 'created_at', 'updated_date'];
+    protected $fillable = ['id', 'title', 'is_title_bold', 'is_title_italic', 'title_color', 'sub_title', 'view_number', 'thumb_img', 'is_top', 'summary', 'source', 'content', 'status', 'publish_date', 'created_at', 'updated_date'];
 
     //获取导航信息
     public function nav()
