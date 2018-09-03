@@ -19,12 +19,12 @@
                 </div>
                 <div class="modal-body">
                     <form class="form-horizontal" id="add-article-form">
-                    @csrf
+                        @csrf
                         <div class="form-group">
                             <label class="col-sm-3 control-label">标题颜色：</label>
                             <div id="cp2" class="col-sm-7 input-group colorpicker-component"
                                  style="padding-left: 15px;">
-                                <input type="text" class="form-control" name="title_color" value="#DD0F20"/>
+                                <input type="text" class="form-control" name="title_color" value="#000000"/>
                                 <span class="input-group-addon"><i></i></span>
                             </div>
                         </div>
@@ -157,11 +157,17 @@
                                         <td>@if(!empty($article->tag)){{ $article->tag->name }}@endif</td>
                                         <td>{{ $article->view_number }}</td>
                                         <td>{{ $article->publish_date }}</td>
-                                        <td>@if('1' == $article->is_top) <span class="btn btn-warning btn-xs"
-                                                                               title="取消置顶"><i
-                                                        class="fa fa-level-down"></i></span> @else<span
-                                                    class="btn btn-default btn-xs" title="置顶"><i
-                                                        class="fa fa-level-up"></i></span>@endif</td>
+                                        <td>
+                                            @if('1' == $article->is_top)
+                                                <span class="btn btn-warning btn-xs" title="取消置顶">
+                                                    <i class="fa fa-level-down"></i>
+                                                </span>
+                                            @else
+                                                <span class="btn btn-default btn-xs" title="置顶">
+                                                    <i class="fa fa-level-up"></i>
+                                                </span>
+                                            @endif
+                                        </td>
                                         <td>
                                             @if($article->status == '2')
                                                 <button class="btn btn-xs btn-default publish-article"

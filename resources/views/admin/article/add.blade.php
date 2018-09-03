@@ -11,6 +11,7 @@
           rel="stylesheet">
     <!-- Validator -->
     <link rel="stylesheet" href="{{ asset(config('view.admin_static_path') . '/css/bootstrapValidator.css') }}"/>
+    <link rel="stylesheet" href="{{ asset(config('view.admin_static_path') . '/css/plugins/jasny/jasny-bootstrap.min.css') }}"/>
 @endsection
 @section('content')
     <div class="row wrapper border-bottom white-bg page-heading">
@@ -56,9 +57,29 @@
                             </div>
                             <div class="hr-line-dashed"></div>
                             <div class="form-group">
+                                <label class="col-sm-2 control-label">账号头像：</label>
+                                <div class="col-sm-5">
+                                    <div class="fileinput fileinput-new input-group" data-provides="fileinput">
+                                        <div class="form-control" data-trigger="fileinput">
+                                            <i class="glyphicon glyphicon-file fileinput-exists"></i>
+                                            <span class="fileinput-filename"></span>
+                                        </div>
+                                        <span class="input-group-addon btn btn-default btn-file">
+                                            <span class="fileinput-new">选择文件</span>
+                                            <span class="fileinput-exists">更改</span>
+                                            <input type="file" name="upload_file">
+                                        </span>
+                                        <a href="#" class="input-group-addon btn btn-default fileinput-exists"
+                                           data-dismiss="fileinput">删除</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="hr-line-dashed"></div>
+                            <div class="form-group">
                                 <label class="col-sm-2 control-label">文章简述：</label>
                                 <div class="col-sm-5">
-                                    <textarea name="summary" class="form-control" id="" rows="5" style="resize:none" maxlength="150"></textarea>
+                                    <textarea name="summary" class="form-control" id="" rows="5" style="resize:none"
+                                              maxlength="150"></textarea>
                                     <span class="help-block m-b-none">请控制在150字符以内</span>
                                 </div>
                             </div>
@@ -100,6 +121,8 @@
     <script src="{{ asset(config('view.admin_static_path') . '/js/plugins/bootstrap-markdown/markdown.js') }}"></script>
     <script src="{{ asset(config('view.admin_static_path') . '/js/language/bootstrap-markdown.zh.js') }}"></script>
     <script src="{{ asset(config('view.admin_static_path') . '/js/language/bootstrap-markdown.zh.js') }}"></script>
+    <!-- Jasny -->
+    <script src="{{ asset(config('view.admin_static_path') . '/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
     <script>
         $(document).ready(function () {
             $('#editor').summernote({
@@ -151,7 +174,7 @@
                     }
                 }
             });
-            $('#add-article-submit').click(function() {
+            $('#add-article-submit').click(function () {
                 var ajax_data;
                 $('#add-article-form').bootstrapValidator('validate');
                 var flag = $('#add-article-form').data('bootstrapValidator').isValid();
