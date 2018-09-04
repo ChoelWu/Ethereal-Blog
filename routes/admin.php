@@ -66,7 +66,10 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
     Route::get('article/edit/{id?}', 'ArticleController@edit');
     Route::post('article/edit', 'ArticleController@edit');
     Route::get('article/delete', 'ArticleController@delete');
-    Route::get('article/update_status', 'ArticleController@updateStatus');
+    Route::get('article/update_attribute', 'ArticleController@updateAttribute');
+    Route::get('article/stick', 'ArticleController@stick');
+    Route::post('article/publish', 'ArticleController@publish');
+    Route::get('article/publish', 'ArticleController@publish');
 
     Route::get('send_email', 'MailtestController@sendEmail');
 

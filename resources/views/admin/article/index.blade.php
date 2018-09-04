@@ -7,6 +7,8 @@
           rel="stylesheet">
     <link href="{{ asset(config('view.admin_static_path') . '/css/plugins/datapicker/datepicker3.css') }}"
           rel="stylesheet">
+    <link href="{{ asset(config('view.admin_static_path') . '/css/plugins/switchery/switchery.css') }}"
+          rel="stylesheet">
 @endsection
 @section('content')
     <div class="modal inmodal fade" id="publish-article-modal" tabindex="-1" role="dialog" aria-hidden="true">
@@ -18,13 +20,16 @@
                     <h4 class="modal-title">角色授权</h4>
                 </div>
                 <div class="modal-body">
-                    <form class="form-horizontal" id="add-article-form">
+                    <form class="form-horizontal" id="publish-article-form">
                         @csrf
                         <div class="form-group">
                             <label class="col-sm-3 control-label">标题颜色：</label>
-                            <div id="cp2" class="col-sm-7 input-group colorpicker-component"
-                                 style="padding-left: 15px;">
-                                <input type="text" class="form-control" name="title_color" value="#000000"/>
+                            <div class="col-sm-5">
+                                <input type="checkbox" class="js-switch" unchecked/>
+                            </div>
+                            <div id="cp2" class="col-sm-7 col-sm-offset-3 input-group colorpicker-component hidden"
+                                 style="padding-left: 15px; padding-top:10px;">
+                                <input type="text" class="form-control" name="title_color" value="#000000" disabled="disabled"/>
                                 <span class="input-group-addon"><i></i></span>
                             </div>
                         </div>
@@ -35,7 +40,7 @@
                                     <span class="input-group-addon">
                                         <i class="fa fa-calendar"></i>
                                     </span>
-                                <input class="form-control" type="text" value="{{ date('Y-m-d', time()) }}"
+                                <input class="form-control" type="text" name="publish_date" value="{{ date('Y-m-d', time()) }}"
                                        id="datetimepicker" readonly="readonly">
                             </div>
                         </div>
@@ -81,11 +86,12 @@
                                        placeholder="请输入文章来源">
                             </div>
                         </div>
+                        <input type="hidden" name="id" id="article-publish-id" value="">
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
-                    <div class="btn btn-primary" data-item-id="" id="submit-rules">提交</div>
+                    <div class="btn btn-primary" data-item-id="" id="submit-to-publish">提交</div>
                 </div>
             </div>
         </div>
@@ -139,31 +145,29 @@
                                     <tr>
                                         <td>{{ $key + 1 }}</td>
                                         <td style="width:5%;">
-                                            @if('1' == $article->is_title_bold)
-                                                <span class="btn btn-primary btn-xs"><i class="fa fa-bold"></i></span>
-                                            @else
-                                                <span class="btn btn-default btn-xs"><i class="fa fa-bold"></i></span>
-                                            @endif
-
-                                            @if('1' == $article->is_title_italic)
-                                                <span class="btn btn-primary btn-xs"><i class="fa fa-italic"></i></span>
-                                            @else
-                                                <span class="btn btn-default btn-xs"><i class="fa fa-italic"></i></span>
-                                            @endif
+                                            <span class="btn @if('1' == $article->is_title_bold) btn-primary @else btn-default @endif btn-xs update-attribute"
+                                                  data-action="bold" data-id="{{ $article->id }}"><i
+                                                        class="fa fa-bold"></i></span>
+                                            <span class="btn @if('1' == $article->is_title_italic) btn-primary @else btn-default @endif btn-xs update-attribute"
+                                                  data-action="italic" data-id="{{ $article->id }}"><i
+                                                        class="fa fa-italic"></i></span>
                                         </td>
-                                        <td>{{ $article->title }} @if('' != $article->sub_title)
-                                                —— {{ $article->sub_title }}@endif</td>
+                                        <td style=" @if('1' == $article->is_title_bold) font-weight: bold; @endif @if('1' == $article->is_title_italic) font-style: italic; @endif">
+                                            {{ $article->title }}
+                                        </td>
                                         <td>@if(!empty($article->nav)){{ $article->nav->name }}@endif</td>
                                         <td>@if(!empty($article->tag)){{ $article->tag->name }}@endif</td>
                                         <td>{{ $article->view_number }}</td>
                                         <td>{{ $article->publish_date }}</td>
                                         <td>
                                             @if('1' == $article->is_top)
-                                                <span class="btn btn-warning btn-xs" title="取消置顶">
+                                                <span class="btn btn-warning btn-xs cancel-stick"
+                                                      data-id="{{ $article->id }}" data-val="1" title="取消置顶">
                                                     <i class="fa fa-level-down"></i>
                                                 </span>
                                             @else
-                                                <span class="btn btn-default btn-xs" title="置顶">
+                                                <span class="btn btn-default btn-xs cancel-stick"
+                                                      data-id="{{ $article->id }}" data-val="0" title="置顶">
                                                     <i class="fa fa-level-up"></i>
                                                 </span>
                                             @endif
@@ -206,6 +210,8 @@
     </div>
 @endsection
 @section('foot_files')
+    <!-- Switchery -->
+    <script src="{{ asset(config('view.admin_static_path') . '/js/plugins/switchery/switchery.js') }}"></script>
     <!-- Peity -->
     <script src="{{ asset(config('view.admin_static_path') . '/js/plugins/peity/jquery.peity.min.js') }}"></script>
     <!-- iCheck -->
@@ -218,6 +224,23 @@
     <script src="{{ asset(config('view.admin_static_path') . '/js/plugins/datapicker/bootstrap-datepicker.js') }}"></script>
     <script>
         $(document).ready(function () {
+            var elem = document.querySelector('.js-switch');
+            var switchery = new Switchery(elem, {color: '#1AB394'});
+            elem.onchange = function () {
+                if (elem.checked) {
+                    $('#cp2 input').removeAttr('disabled');
+                    $('#cp2').removeClass('hidden');
+                } else {
+                    $('#cp2').addClass('hidden');
+                    $('#cp2 input').attr('disabled', 'disabled');
+                }
+            };
+            function setSwitchery(switchElement, checkedBool) {
+                if ((checkedBool && !switchElement.isChecked()) || (!checkedBool && switchElement.isChecked())) {
+                    switchElement.setPosition(true);
+                    switchElement.handleOnchange(true);
+                }
+            }
             $(function () {
                 $('#cp2').colorpicker();
             });
@@ -271,7 +294,77 @@
                 }
             });
             $(".publish-article").click(function () {
+                $('#article-publish-id').val('');
+                $('#publish-article-form').find('input').val('');
+                setSwitchery(switchery, false);
+                $('#publish-article-form').find('input[name="title_color"]').attr('disabled', 'disabled');
+                $('#publish-article-form').find("select").find("option:nth-child(0)").attr("selected", "selected");
+                var id = $(this).data('id');
+                $.get("{{ url('admin/article/publish') }}", {
+                    id: id
+                }, function (data) {
+                    $('#publish-article-form').find('input[name="source"]').val(data['source']);
+                    if(data['title_color'] != '') {
+                        setSwitchery(switchery, true);
+                        $('#publish-article-form').find('input[name="title_color"]').removeAttr('disabled');
+                        $('#publish-article-form').find('input[name="title_color"]').val(data['title_color']);
+                    }
+                    $('#publish-article-form').find("select[name='nav_id']").find("option[value=" + data['nav_id'] + "]").attr("selected", "selected");
+                    $('#publish-article-form').find("select[name='tag_id']").find("option[value=" + data['tag_id'] + "]").attr("selected", "selected");
+                    $('#publish-article-form').find('input[name="publish_date"]').val(data['publish_date']);
+                    $('#article-publish-id').val(id);
+                });
                 $('#publish-article-modal').modal('show');
+            });
+            $(".update-attribute").click(function () {
+                $.get("{{ url('admin/article/update_attribute') }}", {
+                    "article_id": $(this).data("id"),
+                    "action": $(this).data("action")
+                }, function () {
+                    location.reload();
+                });
+            });
+            $(".cancel-stick").click(function () {
+                $.get("{{ url('admin/article/stick') }}", {
+                    "article_id": $(this).data("id"),
+                    "value": $(this).data("val")
+                }, function () {
+                    location.reload();
+                });
+            });
+            $('#submit-to-publish').click(function () {
+                var form_data = $('#publish-article-form').serialize();
+                $.ajax({
+                    type: "post",
+                    url: "{{ url('admin/article/publish') }}",
+                    cache: false,
+                    data: form_data,
+                    dataType: "json",
+                    success: function (data) {
+                        $('#publish-article-modal').modal('hide');
+                        $('#publish-article-modal').on('hidden.bs.modal', function () {
+                            $('#message-modal-label').html(data['title']);
+                            if ('200' == data['status']) {
+                                $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-check-square text-info"></i> ' + data['message'] + '</h3>');
+                            } else {
+                                $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-exclamation-triangle text-danger"></i> ' + data['message'] + '</h3>');
+                            }
+                        });
+                        setTimeout(function () {
+                            $("#message-modal").modal({
+                                keyboard: false,
+                                backdrop: false
+                            });
+                            $('#message-modal').modal('show');
+                        }, 600);
+                        // setTimeout(function () {
+                        //     window.location.href = '';
+                        // }, 2500);
+                        $('#publish-article-modal').on('hidden.bs.modal', function () {
+
+                        });
+                    }
+                });
             });
         });
     </script>
