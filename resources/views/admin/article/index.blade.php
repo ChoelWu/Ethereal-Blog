@@ -17,7 +17,7 @@
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal"><span
                                 aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                    <h4 class="modal-title">角色授权</h4>
+                    <h4 class="modal-title">发布文章</h4>
                 </div>
                 <div class="modal-body">
                     <form class="form-horizontal" id="publish-article-form">
@@ -29,7 +29,8 @@
                             </div>
                             <div id="cp2" class="col-sm-7 col-sm-offset-3 input-group colorpicker-component hidden"
                                  style="padding-left: 15px; padding-top:10px;">
-                                <input type="text" class="form-control" name="title_color" value="#000000" disabled="disabled"/>
+                                <input type="text" class="form-control" name="title_color" value="#000000"
+                                       disabled="disabled"/>
                                 <span class="input-group-addon"><i></i></span>
                             </div>
                         </div>
@@ -40,7 +41,8 @@
                                     <span class="input-group-addon">
                                         <i class="fa fa-calendar"></i>
                                     </span>
-                                <input class="form-control" type="text" name="publish_date" value="{{ date('Y-m-d', time()) }}"
+                                <input class="form-control" type="text" name="publish_date"
+                                       value="{{ date('Y-m-d', time()) }}"
                                        id="datetimepicker" readonly="readonly">
                             </div>
                         </div>
@@ -125,6 +127,61 @@
                         </div>
                     </div>
                     <div class="ibox-content">
+                        <div class="row">
+                            <form class="form-horizontal" id="index-article-form" method="get">
+                                @csrf
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input placeholder="请输入文章标题/标题关键字进行搜索..." class="form-control" type="text"
+                                               name="article_title"
+                                               value="{{ $article_title }}">
+                                        <span class="input-group-btn">
+                                        <button type="submit" class="btn btn-primary"> 搜索 </button>
+                                    </span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2 m-b-xs">
+                                    <select class="form-control input-s-xs inline" name="nav_id" id="nav-selection">
+                                        <option disabled="disabled">- - - - - - - - - - - - - - - - - - - - - - - - -
+                                        </option>
+                                        <option value="">所有导航</option>
+                                        <option disabled="disabled">- - - - - - - - - - - - - - - - - - - - - - - - -
+                                        </option>
+                                        @foreach($nav_list as $item)
+                                            <option value="{{ $item['id'] }}"
+                                                    @if($nav_id == $item['id']) selected="selected" @endif>{{ $item['name'] }}</option>
+                                            @foreach($item['children'] as $v)
+                                                <option value="{{ $v['id'] }}"
+                                                        @if($nav_id == $v['id']) selected="selected" @endif>&nbsp;&nbsp;&nbsp;&nbsp;|
+                                                    -
+                                                    - {{ $v['name'] }}</option>
+                                            @endforeach
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-sm-2 m-b-xs">
+                                    <select class="form-control input-s-xs inline" name="tag_id" id="tag-selection">
+                                        <option value="">所有标签</option>
+                                        @foreach($tag_list as $item)
+                                            <option value="{{ $item['id'] }}"
+                                                    @if($tag_id == $item['id']) selected="selected" @endif>{{ $item['name'] }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-sm-2 m-b-xs">
+                                    <select class="form-control input-s-xs inline" name="status" id="status-selection">
+                                        <option value="">所有状态</option>
+                                        <option value="1" @if($status == '1') selected="selected" @endif>未发布</option>
+                                        <option value="2" @if($status == '2') selected="selected" @endif>已发布</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-1">
+                                    <div class="input-group">
+                                        <span id="search-reset" class="btn btn-warning"> 重置 </span>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
                         <div class="table-responsive">
                             <table class="table table-hover">
                                 <thead>
@@ -174,7 +231,7 @@
                                         </td>
                                         <td>
                                             @if($article->status == '2')
-                                                <button class="btn btn-xs btn-default publish-article"
+                                                <button class="btn btn-xs btn-default cancel-publish-article"
                                                         data-id="{{ $article->id }}"><i
                                                             class="fa fa-mail-reply"></i> 取消
                                                 </button>
@@ -200,7 +257,7 @@
                                 </tbody>
                             </table>
                             <div class="pull-right">
-                                {{ $list->links() }}
+                                {{ $list->appends(['article_title' => $article_title, 'nav_id' => $nav_id, 'tag_id' => $tag_id, 'status' => $status])->links() }}
                             </div>
                         </div>
                     </div>
@@ -235,12 +292,14 @@
                     $('#cp2 input').attr('disabled', 'disabled');
                 }
             };
+
             function setSwitchery(switchElement, checkedBool) {
                 if ((checkedBool && !switchElement.isChecked()) || (!checkedBool && switchElement.isChecked())) {
                     switchElement.setPosition(true);
                     switchElement.handleOnchange(true);
                 }
             }
+
             $(function () {
                 $('#cp2').colorpicker();
             });
@@ -295,7 +354,9 @@
             });
             $(".publish-article").click(function () {
                 $('#article-publish-id').val('');
-                $('#publish-article-form').find('input').val('');
+                $('#publish-article-form').find('input[name=publish_date]').val('');
+                $('#publish-article-form').find('input[name=source]').val('');
+                $('#publish-article-form').find('input[name=title_color]').val('');
                 setSwitchery(switchery, false);
                 $('#publish-article-form').find('input[name="title_color"]').attr('disabled', 'disabled');
                 $('#publish-article-form').find("select").find("option:nth-child(0)").attr("selected", "selected");
@@ -304,14 +365,19 @@
                     id: id
                 }, function (data) {
                     $('#publish-article-form').find('input[name="source"]').val(data['source']);
-                    if(data['title_color'] != '') {
+                    if (data['title_color'] != '') {
                         setSwitchery(switchery, true);
                         $('#publish-article-form').find('input[name="title_color"]').removeAttr('disabled');
                         $('#publish-article-form').find('input[name="title_color"]').val(data['title_color']);
                     }
+                    // alert(data['publish_date']);
+                    if (data['publish_date'] == null) {
+                        $('#publish-article-form').find('input[name="publish_date"]').val("{{ date('Y-m-d', time()) }}");
+                    } else {
+                        $('#publish-article-form').find('input[name="publish_date"]').val(data['publish_date']);
+                    }
                     $('#publish-article-form').find("select[name='nav_id']").find("option[value=" + data['nav_id'] + "]").attr("selected", "selected");
                     $('#publish-article-form').find("select[name='tag_id']").find("option[value=" + data['tag_id'] + "]").attr("selected", "selected");
-                    $('#publish-article-form').find('input[name="publish_date"]').val(data['publish_date']);
                     $('#article-publish-id').val(id);
                 });
                 $('#publish-article-modal').modal('show');
@@ -334,6 +400,7 @@
             });
             $('#submit-to-publish').click(function () {
                 var form_data = $('#publish-article-form').serialize();
+                console.log(form_data);
                 $.ajax({
                     type: "post",
                     url: "{{ url('admin/article/publish') }}",
@@ -357,14 +424,37 @@
                             });
                             $('#message-modal').modal('show');
                         }, 600);
-                        // setTimeout(function () {
-                        //     window.location.href = '';
-                        // }, 2500);
+                        setTimeout(function () {
+                            window.location.href = '';
+                        }, 2500);
                         $('#publish-article-modal').on('hidden.bs.modal', function () {
 
                         });
                     }
                 });
+            });
+            $('.cancel-publish-article').click(function () {
+                $.get("{{ url('admin/article/cancel_publish') }}", {
+                    "article_id": $(this).data("id")
+                }, function () {
+                    location.reload();
+                });
+            });
+            $('#nav-selection').change(function () {
+                $("#index-article-form").attr("action", "{{ url('admin/article/index') }}").submit();
+            });
+            $('#tag-selection').change(function () {
+                $("#index-article-form").attr("action", "{{ url('admin/article/index') }}").submit();
+            });
+            $('#status-selection').change(function () {
+                $("#index-article-form").attr("action", "{{ url('admin/article/index') }}").submit();
+            });
+            $('#search-reset').click(function () {
+                $('#index-article-form div').find('input').val('');
+                $('#nav-selection').find("option:nth-child(2)").attr("selected", "selected");
+                $('#tag-selection').find("option:nth-child(1)").attr("selected", "selected");
+                $('#status-selection').find("option:nth-child(1)").attr("selected", "selected");
+                window.location.href = "{{ url('admin/article/index') }}";
             });
         });
     </script>

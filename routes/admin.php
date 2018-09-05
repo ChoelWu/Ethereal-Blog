@@ -70,6 +70,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
     Route::get('article/stick', 'ArticleController@stick');
     Route::post('article/publish', 'ArticleController@publish');
     Route::get('article/publish', 'ArticleController@publish');
+    Route::get('article/cancel_publish', 'ArticleController@cancelPublish');
 
     Route::get('send_email', 'MailtestController@sendEmail');
 
