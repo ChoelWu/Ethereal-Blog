@@ -130,7 +130,7 @@
                         <div class="row">
                             <form class="form-horizontal" id="index-article-form" method="get">
                                 @csrf
-                                <div class="col-sm-2">
+                                <div class="col-sm-4">
                                     <div class="input-group">
                                         <input placeholder="请输入文章标题/标题关键字进行搜索..." class="form-control" type="text"
                                                name="article_title"
@@ -142,10 +142,10 @@
                                 </div>
                                 <div class="col-sm-2 m-b-xs">
                                     <select class="form-control input-s-xs inline" name="nav_id" id="nav-selection">
-                                        <option disabled="disabled">- - - - - - - - - - - - - - - - - - - - - - - - -
+                                        <option disabled="disabled">- - - - - - - - - - - - - - - - - -
                                         </option>
                                         <option value="">所有导航</option>
-                                        <option disabled="disabled">- - - - - - - - - - - - - - - - - - - - - - - - -
+                                        <option disabled="disabled">- - - - - - - - - - - - - - - - - -
                                         </option>
                                         @foreach($nav_list as $item)
                                             <option value="{{ $item['id'] }}"

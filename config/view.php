@@ -32,6 +32,6 @@ return [
 
     'admin_static_path' => 'static/admin',
 
-    'index_static_path' => '123',
+    'index_static_path' => 'static/index',
 
 ];

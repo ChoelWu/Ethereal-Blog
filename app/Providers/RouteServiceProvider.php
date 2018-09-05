@@ -41,6 +41,8 @@ class RouteServiceProvider extends ServiceProvider
 
         $this->mapAdminRoutes();
 
+        $this->mapIndexRoutes();
+
         $this->mapWeChatRoutes();
     }
 
@@ -81,6 +83,16 @@ class RouteServiceProvider extends ServiceProvider
         Route::middleware('admin')
             ->namespace($this->namespace)
             ->group(base_path('routes/admin.php'));
+    }
+
+    /**
+     * Define the "index" routes for the application.
+     */
+    protected function mapIndexRoutes()
+    {
+        Route::middleware('index')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/index.php'));
     }
 
     /**
