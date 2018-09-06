@@ -23,11 +23,13 @@ namespace App\Http\Controllers\Index;
 
 use App\Models\Article;
 
-class IndexController extends CommonController
+class InfoController extends CommonController
 {
-    public function index()
+    public function index($id)
     {
-        $article_list = Article::where('status', '2')->get();
-        return view('index.index', ['nav_list' => $this->nav_list, 'article_list' => $article_list]);
+        $article = Article::where('status', '2')->find($id);
+        $next_article = Article::where('id', '<', $id)->orderBy('id', 'desc')->first();
+        $pre_article = Article::where('id', '>', $id)->orderBy('id', 'asc')->first();
+        return view('index.info', ['nav_list' => $this->nav_list, 'article' => $article, 'next_article' => $next_article, 'pre_article' => $pre_article]);
     }
 }

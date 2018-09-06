@@ -22,12 +22,21 @@
 namespace App\Http\Controllers\Index;
 
 use App\Models\Article;
+use App\Models\Tag;
+use Illuminate\Http\Request;
 
-class IndexController extends CommonController
+class ListController extends CommonController
 {
-    public function index()
+    public function index(Request $request)
     {
-        $article_list = Article::where('status', '2')->get();
-        return view('index.index', ['nav_list' => $this->nav_list, 'article_list' => $article_list]);
+        $article_list = Article::where(function($query) use ($request) {
+            $has_keyboard = $request->has('keyboard');
+            if($has_keyboard) {
+                $keyboard = $request->keyboard;
+                $tag = Tag::where('name', 'like', '%' . $keyboard . '%')->pluck('id');
+                $query->whereIn('tag_id', $tag)->orWhere('title', 'like', '%' . $keyboard . '%');
+            }
+        })->where(['status' => '2'])->paginate(1);
+        return view('index.list', ['nav_list' => $this->nav_list, 'article_list' => $article_list]);
     }
 }
