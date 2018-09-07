@@ -120,10 +120,10 @@
                     <div class="ibox-title">
                         <h5>{{ $title['sub_title'] }}</h5>
                         <div class="ibox-tools">
-                        <span class="btn btn-xs btn-primary" id="article-add">
-                            <i class="fa fa-plus"></i>
-                            新增
-                        </span>
+                            <span class="btn btn-xs btn-primary" id="article-add">
+                                <i class="fa fa-plus"></i>
+                                新增
+                            </span>
                         </div>
                     </div>
                     <div class="ibox-content">
