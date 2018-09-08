@@ -36,44 +36,48 @@
                         </div>
                     </div>
                     <div class="ibox-content">
-                        <form method="post" class="form-horizontal" id="module-form">
+                        <form class="form-horizontal">
                             @csrf
                             @foreach($content_module as $module)
                                 <div class="form-group">
                                     <div class="col-sm-2 col-sm-offset-2">
                                         <input type="text" class="form-control" value="{{ $module->name }}"
-                                               name="name[]" placeholder="请输入变量名">
+                                               name="name" placeholder="请输入变量名">
                                     </div>
                                     <div class="col-sm-3">
                                         <div class="input-group">
                                             <input class="form-control" type="text" value="{{ $module->number }}"
-                                                   name="number[]" placeholder="请输入条数">
+                                                   name="number" placeholder="请输入条数">
                                             <span class="input-group-addon">条</span>
                                             <input class="form-control" type="text" value="{{ $module->single_length }}"
-                                                   name="single_length[]" placeholder="请输入字数">
+                                                   name="single_length" placeholder="请输入字数">
                                             <span class="input-group-addon">字</span>
                                         </div>
                                     </div>
                                     <div class="col-sm-2">
-                                        <select class="form-control input-s-xs inline nav-selection" name="nav_id[]">
+                                        <select class="form-control input-s-xs inline nav-selection" name="attach">
                                             <option value="0">选择数据来源</option>
                                             <option disabled="disabled"> - - - - - - - - - - - - - - - - - - -</option>
-                                            <option value="0">首页图</option>
-                                            <option value="0">广告标语</option>
+                                            <option value="1" @if($module->attach == '1') selected="selected" @endif>
+                                                首页图
+                                            </option>
+                                            <option value="2" @if($module->attach == '2') selected="selected" @endif>
+                                                广告标语
+                                            </option>
                                             <option disabled="disabled"> - - - - - - - - - - - - - - - - - - -</option>
                                             @foreach($nav_list as $item)
                                                 <option value="{{ $item['id'] }}"
-                                                        @if($module->nav_id == $item['id']) selected="selected" @endif>|
+                                                        @if($module->attach == $item['id']) selected="selected" @endif>|
                                                     - {{ $item['name'] }}</option>
                                                 @foreach($item['children'] as $v)
                                                     <option value="{{ $v['id'] }}"
-                                                            @if($module->nav_id == $v['id']) selected="selected" @endif>
+                                                            @if($module->attach == $v['id']) selected="selected" @endif>
                                                         &nbsp;&nbsp;&nbsp;&nbsp;| - - {{ $v['name'] }}</option>
                                                 @endforeach
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-2 btn-action">
                                         <div class="btn btn-danger module-delete" data-id="{{ $module->id }}"><i
                                                     class="fa fa-times"></i> 删除
                                         </div>
@@ -114,16 +118,85 @@
                     }
                 }
                 var add_element = '<div class="form-group"><div class="col-sm-2 col-sm-offset-2">' +
-                    '<input type="text" class="form-control" name="name[]" placeholder="请输入变量名"></div><div class="col-sm-3"><div class="input-group"><input class="form-control" type="text" name="number[]"  placeholder="请输入条数">' +
-                    '<span class="input-group-addon">条</span><input class="form-control" type="text" name="single_length[]" placeholder="请输入字数">' +
+                    '<input type="text" class="form-control" name="name" placeholder="请输入变量名"></div><div class="col-sm-3">' +
+                    '<div class="input-group"><input class="form-control" type="text" name="number"  placeholder="请输入条数">' +
+                    '<span class="input-group-addon">条</span><input class="form-control" type="text" name="single_length" placeholder="请输入字数">' +
                     '<span class="input-group-addon">字</span></div></div><div class="col-sm-2">' +
-                    '<select class="form-control input-s-xs nav-selection" name="nav_id[]"><option value="0">选择数据来源</option>' +
-                    '<option disabled="disabled"> - - - - - - - - - - - - - - - - - - - </option><option value="0">首页图</option>' +
-                    '<option value="0">广告标语</option><option disabled="disabled"> - - - - - - - - - - - - - - - - - - - </option>' +
-                    option + '</select></div><div class="col-sm-2"><div class="btn btn-warning module-cancel"><i class="fa fa-mail-reply">' +
+                    '<select class="form-control input-s-xs nav-selection" name="attach"><option value="0">选择数据来源</option>' +
+                    '<option disabled="disabled"> - - - - - - - - - - - - - - - - - - - </option><option value="1">首页图</option>' +
+                    '<option value="2">广告标语</option><option disabled="disabled"> - - - - - - - - - - - - - - - - - - - </option>' +
+                    option + '</select></div><div class="col-sm-2 btn-action"><div class="btn btn-warning module-cancel"><i class="fa fa-mail-reply">' +
                     '</i> 撤销</div> <div class="btn btn-primary module-submit"><i class="fa fa-check"></i> 提交</div></div></div>' +
                     '<div class="hr-line-dashed"></div>';
                 $('div.hr-line-dashed:last').after(add_element);
+            });
+            $('.ibox-content').on("click", '.module-submit', function (e) {
+                var element = $(e.target);
+                var name = element.parent().siblings().find('input[name="name"]').val();
+                var number = element.parent().siblings().find('input[name="number"]').val();
+                var single_length = element.parent().siblings().find('input[name="single_length"]').val();
+                var attach = element.parent().siblings().find('select[name="attach"]').val();
+                var id = element.data('id');
+                var url = "{{ url('admin/module/modify') }}";
+                var token = "{{ csrf_token() }}";
+                $.ajax({
+                    url: url,
+                    type: 'post',
+                    async: true,
+                    data: {
+                        _token: token,
+                        id: id,
+                        name: name,
+                        number: number,
+                        single_length: single_length,
+                        attach: attach
+                    },
+                    success: function ($data) {
+                        $('#message-modal-label').html($data['title']);
+                        if ('200' == $data['status']) {
+                            $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-check-square text-info"></i> ' + $data['message'] + '</h3>');
+                        } else {
+                            $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-exclamation-triangle text-danger"></i> ' + $data['message'] + '</h3>');
+                        }
+                        $("#message-modal").modal({
+                            keyboard: false,
+                            backdrop: false
+                        });
+                        $('#message-modal').modal('show');
+                        setTimeout(function () {
+                            location.reload();
+                        }, 2000);
+                    }
+                });
+            });
+            $(".module-delete").click(function () {
+                var id = $(this).data('id');
+                var url = "{{ url('admin/module/delete') }}";
+                $.get(url, {id: id}, function (data, status) {
+                    $('#message-modal-label').html(data['title']);
+                    if ('success' == status) {
+                        if ('200' == data['status']) {
+                            $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-check-square text-info"></i> ' + data['message'] + '</h3>');
+                        } else {
+                            $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-exclamation-triangle text-danger"></i> ' + data['message'] + '</h3>');
+                        }
+                    }
+                });
+                setTimeout(function () {
+                    $("#message-modal").modal({
+                        keyboard: false,
+                        backdrop: false
+                    });
+                    $('#message-modal').modal('show');
+                }, 600);
+                setTimeout(function () {
+                    location.reload();
+                }, 2500);
+            });
+            $('.ibox-content').on("click", '.module-cancel', function (e) {
+                var element = $(e.target);
+                $(element).parent().parent().next().remove();
+                $(element).parent().parent().remove();
             });
         });
     </script>

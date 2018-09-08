@@ -83,6 +83,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
     //前台模块管理
     Route::get('module/index', 'ContentModuleController@index');
     Route::post('module/modify', 'ContentModuleController@modify');
+    Route::get('module/delete', 'ContentModuleController@delete');
 
     Route::get('send_email', 'MailtestController@sendEmail');
 
