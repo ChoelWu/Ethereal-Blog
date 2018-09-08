@@ -44,7 +44,7 @@
                             </thead>
                             <tbody>
                             @foreach($list as $menu)
-                                <tr>
+                                <tr class="active">
                                     <td>{{ $menu['sort'] }}</td>
                                     <td>{{ $menu['name'] }}</td>
                                     <td><i class="fa fa-{{ $menu['icon'] }}"></i></td>
@@ -53,8 +53,7 @@
                                             <button class="btn btn-xs btn-primary edit-menu-status"
                                                     data-id="{{ $menu['id'] }}"
                                                     @if(!empty($menu['children']))disabled="disabled" @endif title="启用">
-                                                <i
-                                                        class="fa fa-eye"></i></button>
+                                                <i class="fa fa-eye"></i></button>
                                         @else
                                             <button class="btn btn-xs btn-default edit-menu-status"
                                                     data-id="{{ $menu['id'] }}"

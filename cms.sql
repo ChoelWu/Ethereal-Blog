@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50721
 File Encoding         : 65001
 
-Date: 2018-09-08 10:41:00
+Date: 2018-09-08 17:20:35
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -78,7 +78,7 @@ CREATE TABLE `cms_content_module` (
   `id` varchar(32) NOT NULL,
   `name` varchar(30) NOT NULL COMMENT '变量名称',
   `type` char(1) NOT NULL DEFAULT '0' COMMENT '模块类型 0-普通列表 1-首页图 2-广告标语',
-  `nav_id` varchar(32) DEFAULT NULL COMMENT '关联',
+  `attach` varchar(32) DEFAULT NULL COMMENT '关联',
   `number` int(11) NOT NULL DEFAULT '4' COMMENT '内容数量',
   `single_length` int(11) DEFAULT '20' COMMENT '单条长度',
   `status` char(1) NOT NULL DEFAULT '1' COMMENT '状态 1-启用 0-禁用',
@@ -86,15 +86,13 @@ CREATE TABLE `cms_content_module` (
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_content_module_name` (`name`),
-  KEY `idx_content_module_nav_id` (`nav_id`)
+  KEY `idx_content_module_nav_id` (`attach`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of cms_content_module
 -- ----------------------------
-INSERT INTO `cms_content_module` VALUES ('1', '12313', '0', 'NAV_201809030640057728', '4', '20', '1', null, '2018-09-08 01:33:47');
-INSERT INTO `cms_content_module` VALUES ('123121', 'index_par', '1', '0', '10', '100', '1', '2018-09-11 18:04:13', '2018-09-08 01:33:47');
-INSERT INTO `cms_content_module` VALUES ('CONTENTMODULE_201809080133477348', '111', '0', 'NAV_201809050939183546', '222', '222', '1', '2018-09-08 01:33:47', '2018-09-08 01:33:47');
+INSERT INTO `cms_content_module` VALUES ('CONTENTMODULE_201809080133477348', '111', '0', 'NAV_201809050939183546', '222', '222', '1', '2018-09-08 01:33:47', '2018-09-08 07:31:45');
 
 -- ----------------------------
 -- Table structure for cms_menu
@@ -133,6 +131,8 @@ INSERT INTO `cms_menu` VALUES ('MENU_201809080228053901', '微信管理', '1', '
 INSERT INTO `cms_menu` VALUES ('MENU_201809080228528828', '评论管理', '2', 'MENU_201809010246201199', 'comment', '0205', 'admin/comment/index', '1', '2018-09-08 02:28:52', '2018-09-08 02:28:52');
 INSERT INTO `cms_menu` VALUES ('MENU_201809080230029492', '博客基本信息', '2', 'MENU_201809010246201199', 'info', '0206', 'admin/index_info/index', '1', '2018-09-08 02:30:02', '2018-09-08 02:37:48');
 INSERT INTO `cms_menu` VALUES ('MENU_201809080240134377', '用户信息管理', '1', '0', 'vcard', '0400', 'admin/user_info/index', '1', '2018-09-08 02:40:13', '2018-09-08 02:40:13');
+INSERT INTO `cms_menu` VALUES ('MENU_201809080811077112', '海报管理', '2', 'MENU_201809010246201199', 'picture-o', '0207', 'admin/poster/index', '1', '2018-09-08 08:11:07', '2018-09-08 08:11:07');
+INSERT INTO `cms_menu` VALUES ('MENU_201809080813149756', '广告标语', '2', 'MENU_201809010246201199', 'bullhorn', '0208', 'admin/slogan/index', '1', '2018-09-08 08:13:14', '2018-09-08 08:13:14');
 
 -- ----------------------------
 -- Table structure for cms_nav
