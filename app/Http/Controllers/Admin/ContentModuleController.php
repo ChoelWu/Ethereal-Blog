@@ -37,7 +37,29 @@ class ContentModuleController extends CommonController
         return view('admin.module.index', ['menu_list' => session('menu'), 'title' => $title, 'content_module' => $content_module, 'nav_list' => $nav_list, 'nav_json_list' => $nav_json_list]);
     }
 
-    public function add(Request $request) {
-        var_dump($request->all());
+    public function modify(Request $request)
+    {
+        $data = $request->all();
+        unset($data['_token']);
+        $modify_data = [];
+        foreach ($data as $key1 => $item) {
+            foreach ($item as $key2 => $d) {
+                $modify_data[$key2][$key1] = $d;
+            }
+        }
+        try {
+            foreach ($modify_data as $item) {
+                if ('0' == $item['id']) {
+                    $item['id'] = setModelId('ContentModule');
+                    ContentModule::create($item);
+                } else {
+                    $id = $item['id'];
+                    unset($item['id']);
+                    ContentModule::where('id', $id)->update($item);
+                }
+            }
+        } catch (\Exception $e) {
+
+        }
     }
 }

@@ -40,34 +40,31 @@
                             @csrf
                             @foreach($content_module as $module)
                                 <div class="form-group">
-                                    <div class="col-sm-3 col-sm-offset-2">
-                                        <div class="input-group m-b">
-                                            <div class="input-group-btn">
-                                                <button data-toggle="dropdown" class="btn btn-white dropdown-toggle"
-                                                        type="button">类型 <span class="caret"></span></button>
-                                                <ul class="dropdown-menu">
-                                                    <li><a href="#">普通列表</a></li>
-                                                    <li><a href="#">首页图</a></li>
-                                                    <li><a href="#">广告标语</a></li>
-                                                </ul>
-                                            </div>
-                                            <input class="form-control" type="text" value="{{ $module->name }}" name="name[]" placeholder="请输入变量名">
-                                        </div>
+                                    <div class="col-sm-2 col-sm-offset-2">
+                                        <input type="text" class="form-control" value="{{ $module->name }}"
+                                               name="name[]" placeholder="请输入变量名">
                                     </div>
                                     <div class="col-sm-3">
                                         <div class="input-group">
-                                            <input class="form-control" type="text"  value="{{ $module->number }}" name="number[]" placeholder="请输入条数">
+                                            <input class="form-control" type="text" value="{{ $module->number }}"
+                                                   name="number[]" placeholder="请输入条数">
                                             <span class="input-group-addon">条</span>
-                                            <input class="form-control" type="text" value="{{ $module->single_length }}" name="single_length[]" placeholder="请输入字数">
+                                            <input class="form-control" type="text" value="{{ $module->single_length }}"
+                                                   name="single_length[]" placeholder="请输入字数">
                                             <span class="input-group-addon">字</span>
                                         </div>
                                     </div>
                                     <div class="col-sm-2">
-                                        <select class="form-control input-s-xs inline" name="nav_id" id="nav-selection">
-                                            <option>选择导航</option>
+                                        <select class="form-control input-s-xs inline nav-selection" name="nav_id[]">
+                                            <option value="0">选择数据来源</option>
+                                            <option disabled="disabled"> - - - - - - - - - - - - - - - - - - -</option>
+                                            <option value="0">首页图</option>
+                                            <option value="0">广告标语</option>
+                                            <option disabled="disabled"> - - - - - - - - - - - - - - - - - - -</option>
                                             @foreach($nav_list as $item)
                                                 <option value="{{ $item['id'] }}"
-                                                        @if($module->nav_id == $item['id']) selected="selected" @endif>{{ $item['name'] }}</option>
+                                                        @if($module->nav_id == $item['id']) selected="selected" @endif>|
+                                                    - {{ $item['name'] }}</option>
                                                 @foreach($item['children'] as $v)
                                                     <option value="{{ $v['id'] }}"
                                                             @if($module->nav_id == $v['id']) selected="selected" @endif>
@@ -76,14 +73,22 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                </div>
-                                <div class="hr-line-dashed"></div>
-                                <div class="form-group">
-                                    <div class="col-sm-4 col-sm-offset-5">
-                                        <div class="btn btn-primary" id="module-submit">保存</div>
+                                    <div class="col-sm-2">
+                                        <div class="btn btn-danger module-delete" data-id="{{ $module->id }}"><i
+                                                    class="fa fa-times"></i> 删除
+                                        </div>
+                                        <div class="btn btn-primary module-submit" data-id="{{ $module->id }}"><i
+                                                    class="fa fa-check"></i> 提交
+                                        </div>
                                     </div>
                                 </div>
+                                <div class="hr-line-dashed"></div>
                             @endforeach
+                            <div class="form-group">
+                                <div class="col-sm-4 col-sm-offset-5">
+                                    <div class="btn btn-info" onclick="location.reload();">一键还原</div>
+                                </div>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -108,18 +113,17 @@
                         }
                     }
                 }
-                var add_element = '<div class="form-group"><div class="col-sm-3 col-sm-offset-2"><div class="input-group m-b">' +
-                    '<div class="input-group-btn"><button data-toggle="dropdown" class="btn btn-white dropdown-toggle" type="button">类型 <span class="caret">' +
-                    '</span></button><ul class="dropdown-menu"><li><a href="#">普通列表</a></li><li><a href="#">首页图</a>' +
-                    '</li><li><a href="#">广告标语</a></li></ul></div><input class="form-control" type="text" name="name[]" placeholder="请输入变量名">' +
-                    '</div></div><div class="col-sm-3"><div class="input-group"><input class="form-control" type="text" name="number[]"  placeholder="请输入条数">' +
-                    '<span class="input-group-addon">条</span><input class="form-control" type="text" name="single_length[]" placeholder="请输入字数"><span class="input-group-addon">字</span>' +
-                    '</div></div><div class="col-sm-2"><select class="form-control input-s-xs inline" name="nav_id" id="nav-selection">' +
-                    '<option>选择导航</option>' + option + '</select></div></div><div class="hr-line-dashed"></div>';
+                var add_element = '<div class="form-group"><div class="col-sm-2 col-sm-offset-2">' +
+                    '<input type="text" class="form-control" name="name[]" placeholder="请输入变量名"></div><div class="col-sm-3"><div class="input-group"><input class="form-control" type="text" name="number[]"  placeholder="请输入条数">' +
+                    '<span class="input-group-addon">条</span><input class="form-control" type="text" name="single_length[]" placeholder="请输入字数">' +
+                    '<span class="input-group-addon">字</span></div></div><div class="col-sm-2">' +
+                    '<select class="form-control input-s-xs nav-selection" name="nav_id[]"><option value="0">选择数据来源</option>' +
+                    '<option disabled="disabled"> - - - - - - - - - - - - - - - - - - - </option><option value="0">首页图</option>' +
+                    '<option value="0">广告标语</option><option disabled="disabled"> - - - - - - - - - - - - - - - - - - - </option>' +
+                    option + '</select></div><div class="col-sm-2"><div class="btn btn-warning module-cancel"><i class="fa fa-mail-reply">' +
+                    '</i> 撤销</div> <div class="btn btn-primary module-submit"><i class="fa fa-check"></i> 提交</div></div></div>' +
+                    '<div class="hr-line-dashed"></div>';
                 $('div.hr-line-dashed:last').after(add_element);
-            });
-            $('#module-submit').click(function() {
-                $('#module-form').attr("action", "{{ url('admin/module/add') }}").submit();
             });
         });
     </script>

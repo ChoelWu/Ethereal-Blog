@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50721
 File Encoding         : 65001
 
-Date: 2018-09-05 18:10:55
+Date: 2018-09-08 10:41:00
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -48,6 +48,8 @@ CREATE TABLE `cms_article` (
 -- ----------------------------
 -- Records of cms_article
 -- ----------------------------
+INSERT INTO `cms_article` VALUES ('ARTICLE_201809060209077253', '陌上花开，可缓缓归矣', '0', '0', '', null, 'NAV_201809030640057728', '1', '0', null, '0', '用最简单的代码，实现瀑布流布局，没有繁琐的css，没有jq，只需要做到以下就可以实现瀑布流的效果。思路很简单，看成是三列布局，分别用三个ul来调用。帝国cms列表模板', 'Choel', '<p>用最简单的代码，实现瀑布流布局，没有繁琐的css，没有jq，只需要做到以下就可以实现瀑布流的效果。思路很简单，看成是三列布局，分别用三个ul来调用。帝国cms列表模板用最简单的代码，实现瀑布流布局，没有繁琐的css，没有jq，只需要做到以下就可以实现瀑布流的效果。思路很简单，看成是三列布局，分别用三个ul来调用。帝国cms列表模板用最简单的代码，实现瀑布流布局，没有繁琐的css，没有jq，只需要做到以下就可以实现瀑布流的效果。思路很简单，看成是三列布局，分别用三个ul来调用。帝国cms列表模板用最简单的代码，实现瀑布流布局，没有繁琐的css，没有jq，只需要做到以下就可以实现瀑布流的效果。思路很简单，看成是三列布局，分别用三个ul来调用。帝国cms列表模板用最简单的代码，实现瀑布流布局，没有繁琐的css，没有jq，只需要做到以下就可以实现瀑布流的效果。思路很简单，看成是三列布局，分别用三个ul来调用。帝国cms列表模板用最简单的代码，实现瀑布流布局，没有繁琐的css，没有jq，只需要做到以下就可以实现瀑布流的效果。思路很简单，看成是三列布局，分别用三个ul来调用。帝国cms列表模板<br></p>', '2018-09-06', '2', '2018-09-06 02:09:07', '2018-09-06 02:35:01');
+INSERT INTO `cms_article` VALUES ('ARTICLE_201809060338035337', '[ Laravel 5.6 文档 ] 数据库操作 —— 查询构建', '0', '0', '', null, 'NAV_201809050936235569', 'TAG_201809051007124367', '0', null, '0', '[ Laravel 5.6 文档 ] 数据库操作 —— 查询构建', '学院君', null, '2018-09-06', '2', '2018-09-06 03:38:03', '2018-09-06 03:38:23');
 
 -- ----------------------------
 -- Table structure for cms_authorize
@@ -67,6 +69,32 @@ CREATE TABLE `cms_authorize` (
 -- Records of cms_authorize
 -- ----------------------------
 INSERT INTO `cms_authorize` VALUES ('AUTHORIZE_201808300334128529', 'ROLE_201808300246497861', 'admin/menu/index,admin/menu/edit,admin/menu/delete,admin/menu/update_status,admin/menu/get_menu_level', '2018-08-30 03:34:12', '2018-08-30 03:34:12');
+
+-- ----------------------------
+-- Table structure for cms_content_module
+-- ----------------------------
+DROP TABLE IF EXISTS `cms_content_module`;
+CREATE TABLE `cms_content_module` (
+  `id` varchar(32) NOT NULL,
+  `name` varchar(30) NOT NULL COMMENT '变量名称',
+  `type` char(1) NOT NULL DEFAULT '0' COMMENT '模块类型 0-普通列表 1-首页图 2-广告标语',
+  `nav_id` varchar(32) DEFAULT NULL COMMENT '关联',
+  `number` int(11) NOT NULL DEFAULT '4' COMMENT '内容数量',
+  `single_length` int(11) DEFAULT '20' COMMENT '单条长度',
+  `status` char(1) NOT NULL DEFAULT '1' COMMENT '状态 1-启用 0-禁用',
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_content_module_name` (`name`),
+  KEY `idx_content_module_nav_id` (`nav_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of cms_content_module
+-- ----------------------------
+INSERT INTO `cms_content_module` VALUES ('1', '12313', '0', 'NAV_201809030640057728', '4', '20', '1', null, '2018-09-08 01:33:47');
+INSERT INTO `cms_content_module` VALUES ('123121', 'index_par', '1', '0', '10', '100', '1', '2018-09-11 18:04:13', '2018-09-08 01:33:47');
+INSERT INTO `cms_content_module` VALUES ('CONTENTMODULE_201809080133477348', '111', '0', 'NAV_201809050939183546', '222', '222', '1', '2018-09-08 01:33:47', '2018-09-08 01:33:47');
 
 -- ----------------------------
 -- Table structure for cms_menu
@@ -92,14 +120,19 @@ CREATE TABLE `cms_menu` (
 -- ----------------------------
 INSERT INTO `cms_menu` VALUES ('MENU_201808300232288030', '系统管理', '1', '0', 'gears', '0100', '#', '1', '2018-08-30 02:32:28', '2018-08-30 02:32:28');
 INSERT INTO `cms_menu` VALUES ('MENU_201808300237076705', '菜单管理', '2', 'MENU_201808300232288030', 'book', '0101', 'admin/menu/index', '1', '2018-08-30 02:37:07', '2018-08-30 02:37:07');
-INSERT INTO `cms_menu` VALUES ('MENU_201808300240082440', '权限管理', '2', 'MENU_201808300232288030', 'user', '0102', 'admin/rule/index', '1', '2018-08-30 02:40:08', '2018-08-30 02:40:08');
+INSERT INTO `cms_menu` VALUES ('MENU_201808300240082440', '权限管理', '2', 'MENU_201808300232288030', 'toggle-on', '0102', 'admin/rule/index', '1', '2018-08-30 02:40:08', '2018-09-08 02:34:32');
 INSERT INTO `cms_menu` VALUES ('MENU_201808300241344594', '角色管理', '2', 'MENU_201808300232288030', 'user', '0103', 'admin/role/index', '1', '2018-08-30 02:41:34', '2018-08-30 02:41:34');
-INSERT INTO `cms_menu` VALUES ('MENU_201808300242103500', '用户管理', '2', 'MENU_201808300232288030', 'user', '0104', 'admin/user/index', '1', '2018-08-30 02:42:10', '2018-09-01 02:25:28');
-INSERT INTO `cms_menu` VALUES ('MENU_201809010226592963', '基本信息设置', '2', 'MENU_201808300232288030', 'gear', '0105', 'admin/info/index', '1', '2018-09-01 02:26:59', '2018-09-01 02:33:57');
+INSERT INTO `cms_menu` VALUES ('MENU_201808300242103500', '用户管理', '2', 'MENU_201808300232288030', 'vcard-o', '0104', 'admin/user/index', '1', '2018-08-30 02:42:10', '2018-09-08 02:35:13');
+INSERT INTO `cms_menu` VALUES ('MENU_201809010226592963', '网站基本信息', '2', 'MENU_201808300232288030', 'gear', '0105', 'admin/info/index', '1', '2018-09-01 02:26:59', '2018-09-08 02:38:20');
 INSERT INTO `cms_menu` VALUES ('MENU_201809010246201199', '内容管理', '1', '0', 'files-o', '0200', '#', '1', '2018-09-01 02:46:20', '2018-09-01 02:46:20');
 INSERT INTO `cms_menu` VALUES ('MENU_201809010252314085', '导航管理', '2', 'MENU_201809010246201199', 'sitemap', '0201', 'admin/nav/index', '1', '2018-09-01 02:52:31', '2018-09-01 02:52:31');
 INSERT INTO `cms_menu` VALUES ('MENU_201809010315324304', '文章管理', '2', 'MENU_201809010246201199', 'file', '0203', 'admin/article/index', '1', '2018-09-01 03:15:32', '2018-09-05 09:43:25');
 INSERT INTO `cms_menu` VALUES ('MENU_201809050943051002', '标签管理', '2', 'MENU_201809010246201199', 'tag', '0202', 'admin/tag/index', '1', '2018-09-05 09:43:05', '2018-09-05 09:43:35');
+INSERT INTO `cms_menu` VALUES ('MENU_201809070741541677', '模块管理', '2', 'MENU_201809010246201199', 'window-maximize', '0204', 'admin/module/index', '1', '2018-09-07 07:41:54', '2018-09-08 02:37:21');
+INSERT INTO `cms_menu` VALUES ('MENU_201809080228053901', '微信管理', '1', '0', 'wechat', '0300', 'admin/wechat/index', '1', '2018-09-08 02:28:05', '2018-09-08 02:28:05');
+INSERT INTO `cms_menu` VALUES ('MENU_201809080228528828', '评论管理', '2', 'MENU_201809010246201199', 'comment', '0205', 'admin/comment/index', '1', '2018-09-08 02:28:52', '2018-09-08 02:28:52');
+INSERT INTO `cms_menu` VALUES ('MENU_201809080230029492', '博客基本信息', '2', 'MENU_201809010246201199', 'info', '0206', 'admin/index_info/index', '1', '2018-09-08 02:30:02', '2018-09-08 02:37:48');
+INSERT INTO `cms_menu` VALUES ('MENU_201809080240134377', '用户信息管理', '1', '0', 'vcard', '0400', 'admin/user_info/index', '1', '2018-09-08 02:40:13', '2018-09-08 02:40:13');
 
 -- ----------------------------
 -- Table structure for cms_nav
@@ -221,7 +254,7 @@ CREATE TABLE `cms_user` (
 -- ----------------------------
 -- Records of cms_user
 -- ----------------------------
-INSERT INTO `cms_user` VALUES ('1', 'admin', 'superadmin', '35e078bcb1e78a69c9a88acbe79cefc2', 'NWM5MTg0ZWY0MDFjYTJjNDQ5MzY5NGE4ZjNkNjY5YmY=', 'bc7235a51e34c1d3ebfddeb538c20c71', '2018-09-11 09:14:00', '775669127@qq.com', '18894330931', '1', 'static/admin/img/admin.png', '2018-07-19 02:29:24', '2018-09-04 09:14:00');
+INSERT INTO `cms_user` VALUES ('1', 'admin', 'superadmin', '35e078bcb1e78a69c9a88acbe79cefc2', 'YjE2OTQ4MWFiNWViM2MzMzE1MzBmZTVlYjZhOTgzNzY=', 'bc7235a51e34c1d3ebfddeb538c20c71', '2018-09-15 00:51:45', '775669127@qq.com', '18894330931', '1', 'static/admin/img/admin.png', '2018-07-19 02:29:24', '2018-09-08 00:51:45');
 INSERT INTO `cms_user` VALUES ('USER_201808300301297631', 'choel', 'choel', 'c712d1741bc27b73cb27eb9d0149165e', 'MmEyYTEyNjFjNmUzNjI0MGQ1MWYyZDUzMmZlNzE4NzQ=', 'bd4da34a1b327d0d35bad998ef535b02', '2018-09-07 03:53:33', 'choel_wu@foxmail.com', '18894330931', '1', 'uploads/user/header_img/201808300307175b875f654f594.jpg', '2018-08-30 03:01:29', '2018-08-31 03:53:33');
 
 -- ----------------------------

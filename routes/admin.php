@@ -82,7 +82,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
     Route::get('article/cancel_publish', 'ArticleController@cancelPublish');
     //前台模块管理
     Route::get('module/index', 'ContentModuleController@index');
-    Route::post('module/add', 'ContentModuleController@add');
+    Route::post('module/modify', 'ContentModuleController@modify');
 
     Route::get('send_email', 'MailtestController@sendEmail');
 
