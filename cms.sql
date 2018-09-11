@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50721
 File Encoding         : 65001
 
-Date: 2018-09-08 17:20:35
+Date: 2018-09-11 18:04:31
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -71,6 +71,49 @@ CREATE TABLE `cms_authorize` (
 INSERT INTO `cms_authorize` VALUES ('AUTHORIZE_201808300334128529', 'ROLE_201808300246497861', 'admin/menu/index,admin/menu/edit,admin/menu/delete,admin/menu/update_status,admin/menu/get_menu_level', '2018-08-30 03:34:12', '2018-08-30 03:34:12');
 
 -- ----------------------------
+-- Table structure for cms_comment
+-- ----------------------------
+DROP TABLE IF EXISTS `cms_comment`;
+CREATE TABLE `cms_comment` (
+  `id` varchar(32) NOT NULL,
+  `user_id` varchar(32) NOT NULL COMMENT '用户id',
+  `article_id` varchar(32) NOT NULL COMMENT '文章id',
+  `content` varchar(900) NOT NULL COMMENT '评论内容',
+  `type` char(1) NOT NULL DEFAULT '1' COMMENT '1-评论 2-回复',
+  `response_id` varchar(32) NOT NULL DEFAULT '' COMMENT '回复的信息的id',
+  `praise` int(11) NOT NULL DEFAULT '0' COMMENT '赞数',
+  `is_top` char(1) NOT NULL DEFAULT '0' COMMENT '是否置顶 0-不置顶   1-置顶',
+  `status` char(1) NOT NULL DEFAULT '1' COMMENT '状态 1-正常 0-删除',
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_comment_user_id` (`user_id`),
+  KEY `idx_comment_article_id` (`article_id`),
+  KEY `idx_comment_response_id` (`response_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of cms_comment
+-- ----------------------------
+INSERT INTO `cms_comment` VALUES ('1', 'USER_201808300301297631', 'ARTICLE_201809060209077253', 'Support for adding emoji into textarea or editable div, automatic identification of element types.如果是textarea，则选择表情后插入表情代码，如果是可编辑div，则直接插入表情图片', '2', '1', '0', '0', '1', null, '2018-09-11 07:41:47');
+
+-- ----------------------------
+-- Table structure for cms_comment_sensitive_word
+-- ----------------------------
+DROP TABLE IF EXISTS `cms_comment_sensitive_word`;
+CREATE TABLE `cms_comment_sensitive_word` (
+  `id` varchar(50) NOT NULL,
+  `word` varchar(30) NOT NULL DEFAULT '' COMMENT '敏感词',
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of cms_comment_sensitive_word
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for cms_content_module
 -- ----------------------------
 DROP TABLE IF EXISTS `cms_content_module`;
@@ -123,16 +166,17 @@ INSERT INTO `cms_menu` VALUES ('MENU_201808300241344594', '角色管理', '2', '
 INSERT INTO `cms_menu` VALUES ('MENU_201808300242103500', '用户管理', '2', 'MENU_201808300232288030', 'vcard-o', '0104', 'admin/user/index', '1', '2018-08-30 02:42:10', '2018-09-08 02:35:13');
 INSERT INTO `cms_menu` VALUES ('MENU_201809010226592963', '网站基本信息', '2', 'MENU_201808300232288030', 'gear', '0105', 'admin/info/index', '1', '2018-09-01 02:26:59', '2018-09-08 02:38:20');
 INSERT INTO `cms_menu` VALUES ('MENU_201809010246201199', '内容管理', '1', '0', 'files-o', '0200', '#', '1', '2018-09-01 02:46:20', '2018-09-01 02:46:20');
-INSERT INTO `cms_menu` VALUES ('MENU_201809010252314085', '导航管理', '2', 'MENU_201809010246201199', 'sitemap', '0201', 'admin/nav/index', '1', '2018-09-01 02:52:31', '2018-09-01 02:52:31');
+INSERT INTO `cms_menu` VALUES ('MENU_201809010252314085', '导航管理', '2', 'MENU_201809110156247217', 'sitemap', '0401', 'admin/nav/index', '1', '2018-09-01 02:52:31', '2018-09-11 01:57:09');
 INSERT INTO `cms_menu` VALUES ('MENU_201809010315324304', '文章管理', '2', 'MENU_201809010246201199', 'file', '0203', 'admin/article/index', '1', '2018-09-01 03:15:32', '2018-09-05 09:43:25');
 INSERT INTO `cms_menu` VALUES ('MENU_201809050943051002', '标签管理', '2', 'MENU_201809010246201199', 'tag', '0202', 'admin/tag/index', '1', '2018-09-05 09:43:05', '2018-09-05 09:43:35');
-INSERT INTO `cms_menu` VALUES ('MENU_201809070741541677', '模块管理', '2', 'MENU_201809010246201199', 'window-maximize', '0204', 'admin/module/index', '1', '2018-09-07 07:41:54', '2018-09-08 02:37:21');
+INSERT INTO `cms_menu` VALUES ('MENU_201809070741541677', '模块管理', '2', 'MENU_201809110156247217', 'window-maximize', '0402', 'admin/module/index', '1', '2018-09-07 07:41:54', '2018-09-11 01:57:47');
 INSERT INTO `cms_menu` VALUES ('MENU_201809080228053901', '微信管理', '1', '0', 'wechat', '0300', 'admin/wechat/index', '1', '2018-09-08 02:28:05', '2018-09-08 02:28:05');
 INSERT INTO `cms_menu` VALUES ('MENU_201809080228528828', '评论管理', '2', 'MENU_201809010246201199', 'comment', '0205', 'admin/comment/index', '1', '2018-09-08 02:28:52', '2018-09-08 02:28:52');
-INSERT INTO `cms_menu` VALUES ('MENU_201809080230029492', '博客基本信息', '2', 'MENU_201809010246201199', 'info', '0206', 'admin/index_info/index', '1', '2018-09-08 02:30:02', '2018-09-08 02:37:48');
+INSERT INTO `cms_menu` VALUES ('MENU_201809080230029492', '博客基本信息', '2', 'MENU_201809110156247217', 'info', '0405', 'admin/index_info/index', '1', '2018-09-08 02:30:02', '2018-09-11 01:58:57');
 INSERT INTO `cms_menu` VALUES ('MENU_201809080240134377', '用户信息管理', '1', '0', 'vcard', '0400', 'admin/user_info/index', '1', '2018-09-08 02:40:13', '2018-09-08 02:40:13');
-INSERT INTO `cms_menu` VALUES ('MENU_201809080811077112', '海报管理', '2', 'MENU_201809010246201199', 'picture-o', '0207', 'admin/poster/index', '1', '2018-09-08 08:11:07', '2018-09-08 08:11:07');
-INSERT INTO `cms_menu` VALUES ('MENU_201809080813149756', '广告标语', '2', 'MENU_201809010246201199', 'bullhorn', '0208', 'admin/slogan/index', '1', '2018-09-08 08:13:14', '2018-09-08 08:13:14');
+INSERT INTO `cms_menu` VALUES ('MENU_201809080811077112', '海报管理', '2', 'MENU_201809110156247217', 'picture-o', '0403', 'admin/poster/index', '1', '2018-09-08 08:11:07', '2018-09-11 01:58:23');
+INSERT INTO `cms_menu` VALUES ('MENU_201809080813149756', '广告标语', '2', 'MENU_201809110156247217', 'bullhorn', '0404', 'admin/slogan/index', '1', '2018-09-08 08:13:14', '2018-09-11 01:58:41');
+INSERT INTO `cms_menu` VALUES ('MENU_201809110156247217', '博客管理', '1', '0', 'sliders', '0500', '#', '1', '2018-09-11 01:56:24', '2018-09-11 01:56:24');
 
 -- ----------------------------
 -- Table structure for cms_nav
@@ -161,6 +205,30 @@ CREATE TABLE `cms_nav` (
 INSERT INTO `cms_nav` VALUES ('NAV_201809030640057728', '导航一', '1', '0', 'book', '0100', null, null, 'www.baidu.com', '1', '2018-09-03 06:40:05', '2018-09-03 06:40:05');
 INSERT INTO `cms_nav` VALUES ('NAV_201809050936235569', '导航二', '1', '0', 'book', '0200', null, null, 'https://www.baidu.com', '1', '2018-09-05 09:36:23', '2018-09-05 09:36:33');
 INSERT INTO `cms_nav` VALUES ('NAV_201809050939183546', '导航三', '1', '0', 'gear', '0300', null, null, 'www.baidu.com', '1', '2018-09-05 09:39:18', '2018-09-05 09:39:18');
+
+-- ----------------------------
+-- Table structure for cms_poster
+-- ----------------------------
+DROP TABLE IF EXISTS `cms_poster`;
+CREATE TABLE `cms_poster` (
+  `id` varchar(32) NOT NULL,
+  `title` varchar(100) NOT NULL COMMENT '海报标题',
+  `summary` varchar(900) NOT NULL COMMENT '简介',
+  `url` varchar(200) DEFAULT NULL COMMENT '链接地址',
+  `img` varchar(100) NOT NULL COMMENT '图片地址',
+  `is_top` char(1) NOT NULL DEFAULT '0' COMMENT '是否置顶 0-不置顶   1-置顶',
+  `status` char(1) NOT NULL DEFAULT '1' COMMENT '状态 1-启用 0-禁用',
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_poster_title` (`title`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of cms_poster
+-- ----------------------------
+INSERT INTO `cms_poster` VALUES ('1', '标题aaaaaaaaaaa', 'posterposterposterposterposterposterposterposter', 'http://www.baidu.com', 'uploads/poster/img/201808300307175b875f654f594.png', '0', '1', null, null);
+INSERT INTO `cms_poster` VALUES ('2', '百年师大喜迎7000多名2018级新同学', '初秋金城，瓜果飘香。9月3日，西北师范大学迎来自全国各地的2018级新生。4242名本科生，134名预科生，161名专升本，2680名硕士研究生，124名博士研究生，179名留学生怀揣着对大学生活的憧憬，迈入百年学府西北师范大学。', 'https://www.nwnu.edu.cn/upload/420180903071031.jpg', 'https://www.nwnu.edu.cn/upload/420180903071031.jpg', '0', '1', null, null);
 
 -- ----------------------------
 -- Table structure for cms_role
