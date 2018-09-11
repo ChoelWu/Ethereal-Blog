@@ -96,6 +96,9 @@
         </div>
         <div class="news_pl">
             <h2>文章评论</h2>
+            <div>
+                <textarea name="" id="" cols="30" rows="10"></textarea>
+            </div>
             <ul>
                 <div class="gbko"></div>
             </ul>
