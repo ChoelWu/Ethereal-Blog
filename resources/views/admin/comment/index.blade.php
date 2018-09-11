@@ -149,37 +149,35 @@
     <script>
         $(document).ready(function () {
             $(".delete-comment").click(function () {
-                var is_disabled = $(this).attr("disabled");
-                if (is_disabled != "disabled") {
-                    var comment_id = $(this).data("id");
-                    $('#action-modal').find('.modal-body').html('<h3><i class="fa fa-exclamation-triangle text-warning"></i> 是否要删除评论？</h3>');
-                    $('#action-modal').modal('show');
-                    $('#action-modal').find('.confirm').click(function () {
-                        $('#action-modal').modal('hide');
-                        $('#action-modal').on('hidden.bs.modal', function () {
-                            $.get("{{ url('admin/comment/delete') }}", {"comment_id": comment_id}, function (data, status) {
-                                $('#message-modal-label').html(data['title']);
-                                if ('success' == status) {
-                                    if ('200' == data['status']) {
-                                        $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-check-square text-info"></i> ' + data['message'] + '</h3>');
-                                    } else {
-                                        $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-exclamation-triangle text-danger"></i> ' + data['message'] + '</h3>');
-                                    }
+
+                var comment_id = $(this).data("id");
+                $('#action-modal').find('.modal-body').html('<h3><i class="fa fa-exclamation-triangle text-warning"></i> 是否要删除评论？</h3>');
+                $('#action-modal').modal('show');
+                $('#action-modal').find('.confirm').click(function () {
+                    $('#action-modal').modal('hide');
+                    $('#action-modal').on('hidden.bs.modal', function () {
+                        $.get("{{ url('admin/comment/delete') }}", {"comment_id": comment_id}, function (data, status) {
+                            $('#message-modal-label').html(data['title']);
+                            if ('success' == status) {
+                                if ('200' == data['status']) {
+                                    $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-check-square text-info"></i> ' + data['message'] + '</h3>');
+                                } else {
+                                    $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-exclamation-triangle text-danger"></i> ' + data['message'] + '</h3>');
                                 }
-                            });
+                            }
                         });
-                        setTimeout(function () {
-                            $("#message-modal").modal({
-                                keyboard: false,
-                                backdrop: false
-                            });
-                            $('#message-modal').modal('show');
-                        }, 600);
-                        setTimeout(function () {
-                            location.reload();
-                        }, 2500);
                     });
-                }
+                    setTimeout(function () {
+                        $("#message-modal").modal({
+                            keyboard: false,
+                            backdrop: false
+                        });
+                        $('#message-modal').modal('show');
+                    }, 600);
+                    setTimeout(function () {
+                        location.reload();
+                    }, 2500);
+                });
             });
             $('.view-comment').click(function () {
                 var url = "{{ url('admin/comment/view') }}";

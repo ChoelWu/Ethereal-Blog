@@ -146,8 +146,7 @@
     </div>
 @endsection
 @section('foot_files')
-    <script type="text/javascript"
-            src="{{ asset(config('view.admin_static_path') . '/js/bootstrapValidator.js') }}"></script>
+    <script src="{{ asset(config('view.admin_static_path') . '/js/bootstrapValidator.js') }}"></script>
     <!-- Jasny -->
     <script src="{{ asset(config('view.admin_static_path') . '/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
     <!-- DROPZONE -->

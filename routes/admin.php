@@ -85,6 +85,9 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
     Route::get('comment/view', 'CommentController@view');
     Route::get('comment/delete', 'CommentController@delete');
     Route::get('comment/stick', 'CommentController@stick');
+    //海报管理
+    Route::get('poster/index', 'PosterController@index');
+
     //前台模块管理
     Route::get('module/index', 'ContentModuleController@index');
     Route::post('module/modify', 'ContentModuleController@modify');

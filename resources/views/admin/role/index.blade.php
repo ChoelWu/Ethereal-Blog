@@ -108,10 +108,10 @@
                     <div class="ibox-title">
                         <h5>{{ $title['sub_title'] }}</h5>
                         <div class="ibox-tools">
-                        <span class="btn btn-xs btn-primary" id="role-add">
-                            <i class="fa fa-plus"></i>
-                            添加
-                        </span>
+                            <span class="btn btn-xs btn-primary" id="role-add">
+                                <i class="fa fa-plus"></i>
+                                添加
+                            </span>
                         </div>
                     </div>
                     <div class="ibox-content">
