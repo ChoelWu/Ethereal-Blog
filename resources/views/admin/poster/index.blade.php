@@ -119,7 +119,7 @@
                                         </td>
                                         <td class="desc">
                                             <h3>
-                                                <a href="#" class="text-navy">{{ $poster->title }}</a>
+                                                <a href="{{ $poster->url }}" class="text-navy">{{ $poster->title }}</a>
                                             </h3>
                                             <p class="small">{{ $poster->summary }}</p>
                                             <div class="m-t-sm">
