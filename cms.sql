@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50721
 File Encoding         : 65001
 
-Date: 2018-09-11 18:04:31
+Date: 2018-09-12 18:22:22
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -69,6 +69,34 @@ CREATE TABLE `cms_authorize` (
 -- Records of cms_authorize
 -- ----------------------------
 INSERT INTO `cms_authorize` VALUES ('AUTHORIZE_201808300334128529', 'ROLE_201808300246497861', 'admin/menu/index,admin/menu/edit,admin/menu/delete,admin/menu/update_status,admin/menu/get_menu_level', '2018-08-30 03:34:12', '2018-08-30 03:34:12');
+
+-- ----------------------------
+-- Table structure for cms_blog
+-- ----------------------------
+DROP TABLE IF EXISTS `cms_blog`;
+CREATE TABLE `cms_blog` (
+  `id` varchar(32) NOT NULL,
+  `title` varchar(50) NOT NULL COMMENT '博客名',
+  `footer` varchar(100) DEFAULT NULL COMMENT '博客页脚',
+  `slogan` varchar(150) DEFAULT NULL COMMENT '标语',
+  `user_english_name` varchar(32) DEFAULT NULL COMMENT '用户英文名',
+  `user_chinese_name` varchar(32) NOT NULL COMMENT '用户中文名',
+  `user_open_img` varchar(200) NOT NULL COMMENT '公开头像',
+  `user_profession` varchar(100) NOT NULL COMMENT '职业',
+  `user_announce` varchar(200) DEFAULT NULL COMMENT '声明',
+  `user_bak` varchar(600) DEFAULT NULL COMMENT '用户备注信息',
+  `user_wechat` varchar(50) DEFAULT NULL COMMENT '用户公开微信',
+  `user_QQ` varchar(30) DEFAULT NULL COMMENT '用户公开QQ',
+  `user_email` varchar(50) DEFAULT NULL COMMENT '用户公开邮箱',
+  `user_github` varchar(50) DEFAULT NULL COMMENT '用户公开github',
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of cms_blog
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for cms_comment
@@ -164,7 +192,7 @@ INSERT INTO `cms_menu` VALUES ('MENU_201808300237076705', '菜单管理', '2', '
 INSERT INTO `cms_menu` VALUES ('MENU_201808300240082440', '权限管理', '2', 'MENU_201808300232288030', 'toggle-on', '0102', 'admin/rule/index', '1', '2018-08-30 02:40:08', '2018-09-08 02:34:32');
 INSERT INTO `cms_menu` VALUES ('MENU_201808300241344594', '角色管理', '2', 'MENU_201808300232288030', 'user', '0103', 'admin/role/index', '1', '2018-08-30 02:41:34', '2018-08-30 02:41:34');
 INSERT INTO `cms_menu` VALUES ('MENU_201808300242103500', '用户管理', '2', 'MENU_201808300232288030', 'vcard-o', '0104', 'admin/user/index', '1', '2018-08-30 02:42:10', '2018-09-08 02:35:13');
-INSERT INTO `cms_menu` VALUES ('MENU_201809010226592963', '网站基本信息', '2', 'MENU_201808300232288030', 'gear', '0105', 'admin/info/index', '1', '2018-09-01 02:26:59', '2018-09-08 02:38:20');
+INSERT INTO `cms_menu` VALUES ('MENU_201809010226592963', '网站基本信息', '2', 'MENU_201808300232288030', 'gear', '0105', 'admin/system/index', '1', '2018-09-01 02:26:59', '2018-09-12 07:47:13');
 INSERT INTO `cms_menu` VALUES ('MENU_201809010246201199', '内容管理', '1', '0', 'files-o', '0200', '#', '1', '2018-09-01 02:46:20', '2018-09-01 02:46:20');
 INSERT INTO `cms_menu` VALUES ('MENU_201809010252314085', '导航管理', '2', 'MENU_201809110156247217', 'sitemap', '0401', 'admin/nav/index', '1', '2018-09-01 02:52:31', '2018-09-11 01:57:09');
 INSERT INTO `cms_menu` VALUES ('MENU_201809010315324304', '文章管理', '2', 'MENU_201809010246201199', 'file', '0203', 'admin/article/index', '1', '2018-09-01 03:15:32', '2018-09-05 09:43:25');
@@ -172,10 +200,10 @@ INSERT INTO `cms_menu` VALUES ('MENU_201809050943051002', '标签管理', '2', '
 INSERT INTO `cms_menu` VALUES ('MENU_201809070741541677', '模块管理', '2', 'MENU_201809110156247217', 'window-maximize', '0402', 'admin/module/index', '1', '2018-09-07 07:41:54', '2018-09-11 01:57:47');
 INSERT INTO `cms_menu` VALUES ('MENU_201809080228053901', '微信管理', '1', '0', 'wechat', '0300', 'admin/wechat/index', '1', '2018-09-08 02:28:05', '2018-09-08 02:28:05');
 INSERT INTO `cms_menu` VALUES ('MENU_201809080228528828', '评论管理', '2', 'MENU_201809010246201199', 'comment', '0205', 'admin/comment/index', '1', '2018-09-08 02:28:52', '2018-09-08 02:28:52');
-INSERT INTO `cms_menu` VALUES ('MENU_201809080230029492', '博客基本信息', '2', 'MENU_201809110156247217', 'info', '0405', 'admin/index_info/index', '1', '2018-09-08 02:30:02', '2018-09-11 01:58:57');
+INSERT INTO `cms_menu` VALUES ('MENU_201809080230029492', '博客基本信息', '2', 'MENU_201809110156247217', 'info', '0405', 'admin/blog/index', '1', '2018-09-08 02:30:02', '2018-09-12 07:47:35');
 INSERT INTO `cms_menu` VALUES ('MENU_201809080240134377', '用户信息管理', '1', '0', 'vcard', '0400', 'admin/user_info/index', '1', '2018-09-08 02:40:13', '2018-09-08 02:40:13');
 INSERT INTO `cms_menu` VALUES ('MENU_201809080811077112', '海报管理', '2', 'MENU_201809110156247217', 'picture-o', '0403', 'admin/poster/index', '1', '2018-09-08 08:11:07', '2018-09-11 01:58:23');
-INSERT INTO `cms_menu` VALUES ('MENU_201809080813149756', '广告标语', '2', 'MENU_201809110156247217', 'bullhorn', '0404', 'admin/slogan/index', '1', '2018-09-08 08:13:14', '2018-09-11 01:58:41');
+INSERT INTO `cms_menu` VALUES ('MENU_201809080813149756', '广告位管理', '2', 'MENU_201809110156247217', 'bullhorn', '0404', 'admin/slogan/index', '1', '2018-09-08 08:13:14', '2018-09-12 07:45:58');
 INSERT INTO `cms_menu` VALUES ('MENU_201809110156247217', '博客管理', '1', '0', 'sliders', '0500', '#', '1', '2018-09-11 01:56:24', '2018-09-11 01:56:24');
 
 -- ----------------------------
@@ -227,8 +255,11 @@ CREATE TABLE `cms_poster` (
 -- ----------------------------
 -- Records of cms_poster
 -- ----------------------------
-INSERT INTO `cms_poster` VALUES ('1', '标题aaaaaaaaaaa', 'posterposterposterposterposterposterposterposter', 'http://www.baidu.com', 'uploads/poster/img/201808300307175b875f654f594.png', '0', '1', null, null);
 INSERT INTO `cms_poster` VALUES ('2', '百年师大喜迎7000多名2018级新同学', '初秋金城，瓜果飘香。9月3日，西北师范大学迎来自全国各地的2018级新生。4242名本科生，134名预科生，161名专升本，2680名硕士研究生，124名博士研究生，179名留学生怀揣着对大学生活的憧憬，迈入百年学府西北师范大学。', 'https://www.nwnu.edu.cn/upload/420180903071031.jpg', 'https://www.nwnu.edu.cn/upload/420180903071031.jpg', '0', '1', null, null);
+INSERT INTO `cms_poster` VALUES ('POSTER_201809120354093603', '西北师大联合主办第二届中国与中亚人文交流与合作国际论坛', '在“一带一路”倡议提出5周年之际，为了深入发掘中国与中亚国家在丝绸之路上交往的历史，进一步加强中国与中亚国家的人文交流与合作，9月7日至10日，第二届中国与中亚人文交流与合作国际论坛在甘肃敦煌召开，该论坛是2018年丝绸之路（敦煌）国际文化博览会系列活动之一。', 'http://news.nwnu.edu.cn/index.php/content/3619.html', 'uploads/poster/img/201809120354095b988de15bf24.png', '0', '1', '2018-09-12 03:54:09', '2018-09-12 03:54:09');
+INSERT INTO `cms_poster` VALUES ('POSTER_201809120357376007', '西北师大张新艳同学荣获亚运会女子3000米障碍赛第四名', '在8月27日举行的2018年雅加达亚运会女子3000米障碍赛中，西北师范大学体育学院2018级研究生张新艳以9分46秒30的优异成绩勇夺第四名，为祖国和母校赢得了荣誉。', 'http://news.nwnu.edu.cn/index.php/content/3536.html', 'uploads/poster/img/201809120357375b988eb149881.jpg', '0', '1', '2018-09-12 03:57:37', '2018-09-12 03:57:37');
+INSERT INTO `cms_poster` VALUES ('POSTER_201809120556174792', '百年师大喜迎7000多名2018级新同学', '初秋金城，瓜果飘香。9月3日，西北师范大学迎来自全国各地的2018级新生。4242名本科生，134名预科生，161名专升本，2680名硕士研究生，124名博士研究生，179名留学生怀揣着对大学生活的憧憬，迈入百年学府西北师范大学。', 'http://news.nwnu.edu.cn/Index.php/jinqiyaowen/3561.html', 'uploads/poster/img/201809120556175b98aa81838ee.jpg', '1', '1', '2018-09-12 05:56:17', '2018-09-12 07:12:53');
+INSERT INTO `cms_poster` VALUES ('POSTER_201809120559328741', '百年师大喜迎7000多名2018级新同学', '广东籍的尹同学参观完校园后，感叹到：“学校智慧餐厅快捷安全、菜品繁多。我很喜欢这里，想更快地熟悉校园环境，尽快融入其中。” “第一次带孩子出远门，我们对报到流程不熟悉，有点紧张。学校迎新工作做得很好，一进校门就有志愿者接待、帮忙搬行李、指引道路。”一位新生家长告诉记者。', 'http://news.nwnu.edu.cn/Index.php/jinqiyaowen/3561.html', 'uploads/poster/img/201809120559325b98ab44b4e7a.jpg', '0', '0', '2018-09-12 05:59:32', '2018-09-12 07:16:45');
 
 -- ----------------------------
 -- Table structure for cms_role
@@ -277,6 +308,29 @@ INSERT INTO `cms_rule` VALUES ('RULE_201808300245038976', '删除菜单', 'admin
 INSERT INTO `cms_rule` VALUES ('RULE_201808300245335999', '修改菜单状态', 'admin/menu/update_status', 'MENU_201808300237076705', '0105', '1', '2018-08-30 02:45:33', '2018-08-30 02:45:33');
 INSERT INTO `cms_rule` VALUES ('RULE_201808300245588259', '获取菜单状态', 'admin/menu/get_menu_level', 'MENU_201808300237076705', '0106', '1', '2018-08-30 02:45:58', '2018-08-30 02:45:58');
 INSERT INTO `cms_rule` VALUES ('RULE_201808300246294010', '权限列表', 'admin/rule/index', 'MENU_201808300240082440', '0201', '1', '2018-08-30 02:46:29', '2018-08-30 02:46:29');
+
+-- ----------------------------
+-- Table structure for cms_slogan
+-- ----------------------------
+DROP TABLE IF EXISTS `cms_slogan`;
+CREATE TABLE `cms_slogan` (
+  `id` varchar(32) NOT NULL,
+  `title` varchar(100) NOT NULL COMMENT '标题',
+  `url` varchar(100) DEFAULT NULL COMMENT '链接地址',
+  `img` varchar(100) NOT NULL COMMENT '图片地址',
+  `is_top` char(1) NOT NULL DEFAULT '0' COMMENT '是否置顶 0-不置顶   1-置顶',
+  `summary` varchar(900) DEFAULT NULL COMMENT '内容简要',
+  `status` char(1) NOT NULL DEFAULT '1' COMMENT '状态 1-启用 0-禁用',
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_slogan_title` (`title`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of cms_slogan
+-- ----------------------------
+INSERT INTO `cms_slogan` VALUES ('SLOGAN_201809120742006010', '广告位招租', 'www.baidu.com', '', '0', '广告位招租www.baidu.com', '1', '2018-09-12 07:42:00', '2018-09-12 07:42:00');
 
 -- ----------------------------
 -- Table structure for cms_tag
