@@ -91,7 +91,12 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
     Route::get('poster/delete', 'PosterController@delete');
     Route::get('poster/stick', 'PosterController@stick');
     Route::get('poster/updateStatus', 'PosterController@updateStatus');
-
+    //广告位管理
+    Route::get('slogan/index', 'SloganController@index');
+    Route::post('slogan/add', 'SloganController@add');
+    Route::get('slogan/delete', 'SloganController@delete');
+    Route::get('slogan/stick', 'SloganController@stick');
+    Route::get('slogan/updateStatus', 'SloganController@updateStatus');
     //前台模块管理
     Route::get('module/index', 'ContentModuleController@index');
     Route::post('module/modify', 'ContentModuleController@modify');

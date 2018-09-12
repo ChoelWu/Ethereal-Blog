@@ -23,7 +23,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Article;
 
-class InfoController extends CommonController
+class SystemController extends CommonController
 {
     public function index()
     {
