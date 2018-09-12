@@ -25,6 +25,7 @@ class BlogController extends CommonController
 {
     public function index()
     {
-        return view('admin.blog.index', ['menu_list' => session('menu')]);
+        $title = ['title' => '博客基本信息', 'sub_title' => '基本信息配置'];
+        return view('admin.blog.index', ['menu_list' => session('menu'), 'title' => $title]);
     }
 }
