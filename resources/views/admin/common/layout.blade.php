@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>CMS | @yield('title')</title>
+    <title>Ethereal Blog | @yield('title')</title>
     @include('admin.common.head')
     @yield('head_files')
 </head>

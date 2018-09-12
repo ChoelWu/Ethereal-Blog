@@ -47,14 +47,14 @@
                         <div class="form-group">
                             <label class="col-sm-3 control-label">内容简要：</label>
                             <div class="col-sm-8">
-                                <textarea class="form-control" name="" id="" rows="5"
+                                <textarea class="form-control" name="summary" rows="5"
                                           style="resize: vertical;"></textarea>
                             </div>
                             <span class="text-danger">*</span>
                         </div>
                         <div class="hr-line-dashed"></div>
                         <div class="form-group">
-                            <label class="col-sm-3 control-label">账号头像：</label>
+                            <label class="col-sm-3 control-label">海报图片：</label>
                             <div class="col-sm-8">
                                 <div class="fileinput fileinput-new input-group" data-provides="fileinput">
                                     <div class="form-control" data-trigger="fileinput"><i
@@ -64,7 +64,7 @@
                                     <span class="input-group-addon btn btn-default btn-file">
                                         <span class="fileinput-new">选择文件</span>
                                         <span class="fileinput-exists">更改</span>
-                                        <input type="file" name="header_img">
+                                        <input type="file" name="img">
                                     </span>
                                     <a href="#" class="input-group-addon btn btn-default fileinput-exists"
                                        data-dismiss="fileinput">删除</a>
@@ -74,7 +74,8 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">关闭</button>
+                    <div class="btn btn-default" data-dismiss="modal">关闭</div>
+                    <div class="btn btn-primary" id="submit-poster">提交</div>
                 </div>
             </div>
         </div>
@@ -119,15 +120,34 @@
                                         </td>
                                         <td class="desc">
                                             <h3>
-                                                <a href="{{ $poster->url }}" class="text-navy">{{ $poster->title }}</a>
+                                                <a href="{{ $poster->url }}" class="text-navy"
+                                                   target="_blank">{{ $poster->title }}</a>
                                             </h3>
                                             <p class="small">{{ $poster->summary }}</p>
                                             <div class="m-t-sm">
-                                                <a href="#" class="text-warning"><i class="fa fa-level-up"></i> 置顶</a>
+                                                <a class="text-info edit-poster" data-id="{{ $poster->id }}"><i
+                                                            class="fa fa-edit"></i> 修改</a>
                                                 |
-                                                <a href="#" class="text-danger"><i class="fa fa-trash"></i> 删除</a>
+                                                <a class="text-danger delete-poster" data-id="{{ $poster->id }}"><i
+                                                            class="fa fa-trash"></i> 删除</a>
                                                 |
-                                                <a href="#" class="text-success"><i class="fa fa-eye"></i> 禁用</a>
+                                                @if($poster->status == '1')
+                                                    <a class="text-muted update-status-poster"
+                                                       data-id="{{ $poster->id }}"><i class="fa fa-eye-slash"></i>
+                                                        禁用</a>
+                                                @else
+                                                    <a class="text-success update-status-poster"
+                                                       data-id="{{ $poster->id }}"><i class="fa fa-eye"></i> 启用</a>
+                                                @endif
+                                                |
+                                                @if($poster->is_top == '0')
+                                                    <a class="text-warning stick-poster"
+                                                       data-id="{{ $poster->id }}"><i class="fa fa-level-up"></i> 置顶</a>
+                                                @else
+                                                    <a class="text-muted stick-poster"
+                                                       data-id="{{ $poster->id }}"><i class="fa fa-level-down"></i> 取消置顶</a>
+                                                @endif
+
                                             </div>
                                         </td>
                                         <td></td>
@@ -135,6 +155,10 @@
                                 @endforeach
                                 </tbody>
                             </table>
+                            <div class="hr-line-dashed"></div>
+                            <div class="pull-right">
+                                {{ $list->links() }}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -151,6 +175,66 @@
         $(document).ready(function () {
             $("#poster-add").click(function () {
                 $('#add-modal').modal('show');
+            });
+            $("#submit-poster").click(function () {
+                var url = "{{ url('admin/poster/add') }}";
+                var form_data = new FormData($("#add-poster-form")[0]);
+                $.ajax({
+                    url: url,
+                    type: "post",
+                    cache: false,
+                    processData: false,
+                    contentType: false,
+                    async: false,
+                    data: form_data,
+                    dataType: "json",
+                    success: function (data) {
+                        $('#add-modal').modal('hide');
+                        $('#message-modal-label').html("添加用户");
+                        if ('200' == data['status']) {
+                            $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-check-square text-info"></i> ' + data['message'] + '</h3>');
+                        } else {
+                            $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-exclamation-triangle text-danger"></i> ' + data['message'] + '</h3>');
+                        }
+                        setTimeout(function () {
+                            $("#message-modal").modal({
+                                keyboard: false,
+                                backdrop: false
+                            });
+                            $('#message-modal').modal('show');
+                        }, 600);
+                        if ('200' == data['status']) {
+                            setTimeout(function () {
+                                window.location.href = "{{ url('admin/poster/index') }}";
+                            }, 2500);
+                        } else {
+                            setTimeout(function () {
+                                $('#message-modal').modal('hide');
+                            }, 2500);
+                        }
+                    }
+                });
+            });
+            $(".delete-poster").click(function () {
+                var url = "{{ url('admin/poster/delete') }}";
+                var id = $(this).data('id');
+                $.get(url, {id: id}, function (data) {
+                    console.log(data);
+                });
+            });
+            $(".stick-poster").click(function () {
+                var url = "{{ url('admin/poster/stick') }}";
+                var id = $(this).data('id');
+                $.get(url, {id: id}, function (data) {
+                    console.log(data);
+                });
+            });
+            $(".update-status-poster").click(function () {
+                var url = "{{ url('admin/poster/updateStatus') }}";
+                var id = $(this).data('id');
+                $.get(url, {id: id}, function (data) {
+                    console.log(data);
+                });
             });
         });
     </script>
