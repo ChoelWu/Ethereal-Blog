@@ -6,3 +6,4 @@
 <!-- Custom and plugin javascript -->
 <script src="{{ asset(config('view.admin_static_path') . '/js/inspinia.js') }}"></script>
 <script src="{{ asset(config('view.admin_static_path') . '/js/plugins/pace/pace.min.js') }}"></script>
+<script src="{{ asset(config('view.admin_static_path') . '/js/admin.js') }}"></script>

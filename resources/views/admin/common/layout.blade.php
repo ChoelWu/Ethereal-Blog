@@ -9,32 +9,14 @@
     @yield('head_files')
 </head>
 <body>
-<!-- Modal -->
-<div class="modal fade" id="action-modal" tabindex="-1" role="dialog" aria-labelledby="action-modal-label">
-    <div class="modal-dialog modal-sm" role="document">
+<div class="modal inmodal" id="showMessageModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
-                </button>
-                <h4 class="modal-title" id="action-modal-label"></h4>
+                <h6 class="modal-title"></h6>
             </div>
             <div class="modal-body">
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-info confirm btn-sm">确定</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="message-modal" tabindex="-1" role="dialog" aria-labelledby="message-modal-label">
-    <div class="modal-dialog modal-sm" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
-                <h4 class="modal-title" id="message-modal-label"></h4>
-            </div>
-            <div class="modal-body">
+                删除失败
             </div>
         </div>
     </div>
