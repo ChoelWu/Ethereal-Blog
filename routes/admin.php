@@ -103,6 +103,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
     Route::get('module/delete', 'ContentModuleController@delete');
     //博客基本信息
     Route::get('blog/index', 'BlogController@index');
+    Route::post('blog/modify', 'BlogController@modify');
 
 
 

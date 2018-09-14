@@ -21,11 +21,28 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Blog;
+use Illuminate\Http\Request;
+
 class BlogController extends CommonController
 {
     public function index()
     {
         $title = ['title' => '博客基本信息', 'sub_title' => '基本信息配置'];
-        return view('admin.blog.index', ['menu_list' => session('menu'), 'title' => $title]);
+        $list = Blog::first();
+        return view('admin.blog.index', ['menu_list' => session('menu'), 'title' => $title, 'list' => $list]);
+    }
+
+    public function modify(Request $request) {
+        $is_ajax = $request->ajax();
+        if($is_ajax) {
+            $data = $request->all();
+            unset($data['_token']);
+            try{
+                Blog::where('id', '1')->update($data);
+            } catch(\Exception $e) {
+               dd($e->getMessage());
+            }
+        }
     }
 }

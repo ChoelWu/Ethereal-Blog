@@ -27,139 +27,43 @@
     </div>
     <div class="wrapper wrapper-content animated fadeInRight">
         <div class="row">
-
-
             <div class="col-lg-8">
-
                 <div class="row">
-                    <div class="col-lg-6">
+                    <div class="col-lg-12">
                         <div class="ibox float-e-margins">
                             <div class="ibox-title">
-                                <h5>User project list</h5>
-                                <div class="ibox-tools">
-                                    <a class="collapse-link">
-                                        <i class="fa fa-chevron-up"></i>
-                                    </a>
-                                    <a class="close-link">
-                                        <i class="fa fa-times"></i>
-                                    </a>
-                                </div>
+                                <h5>博客页面信息</h5>
                             </div>
                             <div class="ibox-content">
-                                <table class="table table-hover no-margins">
-                                    <thead>
-                                    <tr>
-                                        <th>Status</th>
-                                        <th>Date</th>
-                                        <th>User</th>
-                                        <th>Value</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr>
-                                        <td>
-                                            <small>Pending...</small>
-                                        </td>
-                                        <td><i class="fa fa-clock-o"></i> 11:20pm</td>
-                                        <td>Samantha</td>
-                                        <td class="text-navy"><i class="fa fa-level-up"></i> 24%</td>
-                                    </tr>
-                                    <tr>
-                                        <td><span class="label label-warning">Canceled</span></td>
-                                        <td><i class="fa fa-clock-o"></i> 10:40am</td>
-                                        <td>Monica</td>
-                                        <td class="text-navy"><i class="fa fa-level-up"></i> 66%</td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <small>Pending...</small>
-                                        </td>
-                                        <td><i class="fa fa-clock-o"></i> 01:30pm</td>
-                                        <td>John</td>
-                                        <td class="text-navy"><i class="fa fa-level-up"></i> 54%</td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <small>Pending...</small>
-                                        </td>
-                                        <td><i class="fa fa-clock-o"></i> 02:20pm</td>
-                                        <td>Agnes</td>
-                                        <td class="text-navy"><i class="fa fa-level-up"></i> 12%</td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <small>Pending...</small>
-                                        </td>
-                                        <td><i class="fa fa-clock-o"></i> 09:40pm</td>
-                                        <td>Janet</td>
-                                        <td class="text-navy"><i class="fa fa-level-up"></i> 22%</td>
-                                    </tr>
-                                    <tr>
-                                        <td><span class="label label-primary">Completed</span></td>
-                                        <td><i class="fa fa-clock-o"></i> 04:10am</td>
-                                        <td>Amelia</td>
-                                        <td class="text-navy"><i class="fa fa-level-up"></i> 66%</td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <small>Pending...</small>
-                                        </td>
-                                        <td><i class="fa fa-clock-o"></i> 12:08am</td>
-                                        <td>Damian</td>
-                                        <td class="text-navy"><i class="fa fa-level-up"></i> 23%</td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="ibox float-e-margins">
-                            <div class="ibox-title">
-                                <h5>Small todo list</h5>
-                                <div class="ibox-tools">
-                                    <a class="collapse-link">
-                                        <i class="fa fa-chevron-up"></i>
-                                    </a>
-                                    <a class="close-link">
-                                        <i class="fa fa-times"></i>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="ibox-content">
-                                <ul class="todo-list m-t small-list">
-                                    <li>
-                                        <a href="#" class="check-link"><i class="fa fa-check-square"></i> </a>
-                                        <span class="m-l-xs todo-completed">Buy a milk</span>
-
-                                    </li>
-                                    <li>
-                                        <a href="#" class="check-link"><i class="fa fa-square-o"></i> </a>
-                                        <span class="m-l-xs">Go to shop and find some products.</span>
-
-                                    </li>
-                                    <li>
-                                        <a href="#" class="check-link"><i class="fa fa-square-o"></i> </a>
-                                        <span class="m-l-xs">Send documents to Mike</span>
-                                        <small class="label label-primary"><i class="fa fa-clock-o"></i> 1 mins</small>
-                                    </li>
-                                    <li>
-                                        <a href="#" class="check-link"><i class="fa fa-square-o"></i> </a>
-                                        <span class="m-l-xs">Go to the doctor dr Smith</span>
-                                    </li>
-                                    <li>
-                                        <a href="#" class="check-link"><i class="fa fa-check-square"></i> </a>
-                                        <span class="m-l-xs todo-completed">Plan vacation</span>
-                                    </li>
-                                    <li>
-                                        <a href="#" class="check-link"><i class="fa fa-square-o"></i> </a>
-                                        <span class="m-l-xs">Create new stuff</span>
-                                    </li>
-                                    <li>
-                                        <a href="#" class="check-link"><i class="fa fa-square-o"></i> </a>
-                                        <span class="m-l-xs">Call to Anna for dinner</span>
-                                    </li>
-                                </ul>
+                                <form class="form-horizontal block1">
+                                    @csrf
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label">博客标题</label>
+                                        <div class="col-lg-10">
+                                            <input type="text" class="form-control" placeholder="请填写博客标题" name="title"
+                                                   value="{{ $list->title }}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label">博客页脚</label>
+                                        <div class="col-lg-10">
+                                            <input type="text" class="form-control" placeholder="请填写博客页脚" name="footer"
+                                                   value="{{ $list->footer }}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label">博客标语</label>
+                                        <div class="col-lg-10">
+                                            <input type="text" class="form-control" placeholder="请填写博客标语" name="slogan"
+                                                   value="{{ $list->slogan }}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-lg-offset-6">
+                                            <div class="btn btn-sm btn-primary submit-info" data-block="1">确定</div>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -168,177 +72,111 @@
                     <div class="col-lg-12">
                         <div class="ibox float-e-margins">
                             <div class="ibox-title">
-                                <h5>Transactions worldwide</h5>
-                                <div class="ibox-tools">
-                                    <a class="collapse-link">
-                                        <i class="fa fa-chevron-up"></i>
-                                    </a>
-                                    <a class="close-link">
-                                        <i class="fa fa-times"></i>
-                                    </a>
-                                </div>
+                                <h5>作者信息</h5>
                             </div>
                             <div class="ibox-content">
-
                                 <div class="row">
-                                    <div class="col-lg-6">
-                                        <table class="table table-hover margin bottom">
-                                            <thead>
-                                            <tr>
-                                                <th style="width: 1%" class="text-center">No.</th>
-                                                <th>Transaction</th>
-                                                <th class="text-center">Date</th>
-                                                <th class="text-center">Amount</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr>
-                                                <td class="text-center">1</td>
-                                                <td> Security doors
-                                                </td>
-                                                <td class="text-center small">16 Jun 2014</td>
-                                                <td class="text-center"><span class="label label-primary">$483.00</span>
-                                                </td>
-
-                                            </tr>
-                                            <tr>
-                                                <td class="text-center">2</td>
-                                                <td> Wardrobes
-                                                </td>
-                                                <td class="text-center small">10 Jun 2014</td>
-                                                <td class="text-center"><span class="label label-primary">$327.00</span>
-                                                </td>
-
-                                            </tr>
-                                            <tr>
-                                                <td class="text-center">3</td>
-                                                <td> Set of tools
-                                                </td>
-                                                <td class="text-center small">12 Jun 2014</td>
-                                                <td class="text-center"><span class="label label-warning">$125.00</span>
-                                                </td>
-
-                                            </tr>
-                                            <tr>
-                                                <td class="text-center">4</td>
-                                                <td> Panoramic pictures</td>
-                                                <td class="text-center small">22 Jun 2013</td>
-                                                <td class="text-center"><span class="label label-primary">$344.00</span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="text-center">5</td>
-                                                <td>Phones</td>
-                                                <td class="text-center small">24 Jun 2013</td>
-                                                <td class="text-center"><span class="label label-primary">$235.00</span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="text-center">6</td>
-                                                <td>Monitors</td>
-                                                <td class="text-center small">26 Jun 2013</td>
-                                                <td class="text-center"><span class="label label-primary">$100.00</span>
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
+                                    <div class="col-sm-6 b-r"><h3 class="m-t-none m-b">基本信息</h3>
+                                        <form class="block2">
+                                            @csrf
+                                            <div class="form-group">
+                                                <label>作者名</label>
+                                                <input type="text" placeholder="请填写博客作者昵称" class="form-control" name="user_name"
+                                                       value="{{ $list->user_name }}">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>职业</label>
+                                                <input type="text" placeholder="请填写博客作者职业" class="form-control" name="user_profession"
+                                                       value="{{ $list->user_profession }}">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>个性动态</label>
+                                                <input type="text" placeholder="请填写博客作者个性动态" class="form-control" name="user_announce"
+                                                       value="{{ $list->user_announce }}">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>简介</label>
+                                                <input type="text" placeholder="请填写博客作者作者简介" class="form-control" name="user_bak"
+                                                       value="{{ $list->user_bak }}">
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="col-lg-offset-6">
+                                                    <div class="btn btn-sm btn-primary submit-info" data-block="2">
+                                                        确定
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
                                     </div>
-                                    <div class="col-lg-6">
-                                        <div id="world-map" style="height: 300px;"></div>
+                                    <div class="col-sm-6">
+                                        <h3>头像</h3>
+                                        <p>点击上传头像</p>
+                                        <p class="text-center" style="padding-top: 60px;">
+                                            <a href=""><i class="fa fa-upload big-icon" aria-hidden="true"></i></a>
+                                        </p>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
             </div>
-
             <div class="col-lg-4">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
-                        <h5>Messages</h5>
-                        <div class="ibox-tools">
-                            <a class="collapse-link">
-                                <i class="fa fa-chevron-up"></i>
-                            </a>
-                            <a class="close-link">
-                                <i class="fa fa-times"></i>
-                            </a>
-                        </div>
+                        <h5>社交信息</h5>
                     </div>
                     <div class="ibox-content ibox-heading">
-                        <h3><i class="fa fa-envelope-o"></i> New messages</h3>
-                        <small><i class="fa fa-tim"></i> You have 22 new messages and 16 waiting in draft folder.
+                        <h3><i class="fa fa-comments-o"></i> 社交信息</h3>
+                        <small>
+                            <i class="fa fa-tim"></i> 你可以填写下面这些或其中一部分的社交信息，它们（它）将会公被开发布到你的微博
                         </small>
                     </div>
                     <div class="ibox-content">
                         <div class="feed-activity-list">
-
-                            <div class="feed-element">
-                                <div>
-                                    <small class="pull-right text-navy">1m ago</small>
-                                    <strong>Monica Smith</strong>
-                                    <div>Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-                                        Lorem Ipsum
+                            <form class="block3">
+                                @csrf
+                                <div class="feed-element">
+                                    <div class="form-group">
+                                        <label><i class="fa fa-qq"></i> 腾讯QQ</label>
+                                        <input type="text" placeholder="请填入需要公开的QQ账号" name="user_QQ" value="{{ $list->user_QQ }}"
+                                               class="form-control">
                                     </div>
-                                    <small class="text-muted">Today 5:60 pm - 12.06.2014</small>
                                 </div>
-                            </div>
-
-                            <div class="feed-element">
-                                <div>
-                                    <small class="pull-right">2m ago</small>
-                                    <strong>Jogn Angel</strong>
-                                    <div>There are many variations of passages of Lorem Ipsum available</div>
-                                    <small class="text-muted">Today 2:23 pm - 11.06.2014</small>
+                                <div class="feed-element">
+                                    <div class="form-group">
+                                        <label><i class="fa fa-envelope"></i> 电子邮箱</label>
+                                        <input type="text" placeholder="请填入需要公开的电子邮箱账号" name="user_email" value="{{ $list->user_email }}"
+                                               class="form-control">
+                                    </div>
                                 </div>
-                            </div>
-
-                            <div class="feed-element">
-                                <div>
-                                    <small class="pull-right">5m ago</small>
-                                    <strong>Jesica Ocean</strong>
-                                    <div>Contrary to popular belief, Lorem Ipsum</div>
-                                    <small class="text-muted">Today 1:00 pm - 08.06.2014</small>
+                                <div class="feed-element">
+                                    <div class="form-group">
+                                        <label><i class="fa fa-wechat"></i> 微信</label>
+                                        <input type="text" placeholder="请填入需要公开的微信账号" name="user_wechat" value="{{ $list->user_wechat }}"
+                                               class="form-control">
+                                    </div>
                                 </div>
-                            </div>
-
-                            <div class="feed-element">
-                                <div>
-                                    <small class="pull-right">5m ago</small>
-                                    <strong>Monica Jackson</strong>
-                                    <div>The generated Lorem Ipsum is therefore</div>
-                                    <small class="text-muted">Yesterday 8:48 pm - 10.06.2014</small>
+                                <div class="feed-element">
+                                    <div class="form-group">
+                                        <label><i class="fa fa-weibo"></i> 微博</label>
+                                        <input type="text" placeholder="请填入需要公开的微博账号" name="user_weibo" value="{{ $list->user_weibo }}"
+                                               class="form-control">
+                                    </div>
                                 </div>
-                            </div>
-
-
-                            <div class="feed-element">
-                                <div>
-                                    <small class="pull-right">5m ago</small>
-                                    <strong>Anna Legend</strong>
-                                    <div>All the Lorem Ipsum generators on the Internet tend to repeat</div>
-                                    <small class="text-muted">Yesterday 8:48 pm - 10.06.2014</small>
+                                <div class="feed-element">
+                                    <div class="form-group">
+                                        <label><i class="fa fa-github"></i> GitHub</label>
+                                        <input type="text" placeholder="请填入需要公开的GitHub账号" name="user_github"
+                                               value="{{ $list->user_github }}" class="form-control">
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="feed-element">
-                                <div>
-                                    <small class="pull-right">5m ago</small>
-                                    <strong>Damian Nowak</strong>
-                                    <div>The standard chunk of Lorem Ipsum used</div>
-                                    <small class="text-muted">Yesterday 8:48 pm - 10.06.2014</small>
+                                <div class="form-group" style="margin-top: 10px;">
+                                    <div class="col-lg-offset-6">
+                                        <div class="btn btn-sm btn-primary submit-info" data-block="3">确定</div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="feed-element">
-                                <div>
-                                    <small class="pull-right">5m ago</small>
-                                    <strong>Gary Smith</strong>
-                                    <div>200 Latin words, combined with a handful</div>
-                                    <small class="text-muted">Yesterday 8:48 pm - 10.06.2014</small>
-                                </div>
-                            </div>
-
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -347,4 +185,17 @@
     </div>
 @endsection
 @section('foot_files')
+    <script>
+        $(document).ready(function () {
+            $(".submit-info").click(function () {
+                    var block = $(this).data("block");
+                    var data = $("form.block" + block).serialize();
+                    var url = "{{ url('admin/blog/modify') }}";
+                    $.post(url, data, function (result) {
+                        console.log(result);
+                    });
+                }
+            );
+        });
+    </script>
 @endsection
