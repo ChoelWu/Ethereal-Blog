@@ -9,6 +9,8 @@
     <link href="{{ asset(config('view.admin_static_path') . '/js/plugins/gritter/jquery.gritter.css') }}"
           rel="stylesheet">
 @endsection
+@section('inputModal')
+@endsection
 @section('content')
     index
     <button id="text-btu">点我</button>

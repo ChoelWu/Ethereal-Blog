@@ -135,7 +135,7 @@ function ajaxFromServer(type, url, data, async, success, error) {
     $.ajax({
         url: url,
         type: type,
-        data: {_token: data._token},
+        data: data,
         async: async,
         dataType: "json",
         success: success,
@@ -186,3 +186,7 @@ function showAjaxMessage(type, confirmData, ajaxData, refresh) {
 }
 
 //----------------------------------- ajax and show END -----------------------------------
+//------------------------------------- ajax and show -------------------------------------
+function validation() {
+
+}

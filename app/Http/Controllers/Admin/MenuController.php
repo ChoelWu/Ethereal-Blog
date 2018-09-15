@@ -26,6 +26,12 @@ use Illuminate\Http\Request;
 
 class MenuController extends CommonController
 {
+    private $modelName;
+    public function __construct()
+    {
+        $this->modelName = 'Menu';
+    }
+
     /**
      * 菜单列表显示
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
@@ -94,21 +100,9 @@ class MenuController extends CommonController
             if ($is_post) {
                 $data = $request->all();
                 $id = $data['id'];
-                unset($data['_token']);
-                unset($data['id']);
-                try {
-                    Menu::where('id', $id)->update($data);
-                    $rel = [
-                        "status" => "200",
-                        "message" => "菜单修改成功！"
-                    ];
-                } catch (\Exception $e) {
-                    $rel = [
-                        "status" => "400",
-                        "message" => "菜单修改失败！" . $e->getMessage()
-                    ];
-                }
-                return $rel;
+                $menu = Menu::find($id);
+                $rel = $this->commonEdit($menu, $data,"菜单");
+                return json_encode($rel);
             }
         } else {
             $title = ['title' => '菜单管理', 'sub_title' => '修改菜单'];
@@ -122,15 +116,16 @@ class MenuController extends CommonController
     /**
      * 修改菜单状态
      * @param Request $request
+     * @return string
      */
     public function updateStatus(Request $request)
     {
         $is_ajax = $request->ajax();
         if ($is_ajax) {
-            $menu_id = $request->menu_id;
-            $menu = Menu::select('id', 'status')->find($menu_id);
-            $menu->status == '1' ? $menu->status = '0' : $menu->status = '1';
-            $menu->save();
+            $id = $request->id;
+            $menu = Menu::find($id);
+            $rel = $this->commonUpdateStatus($menu, "菜单");
+            return json_encode($rel);
         }
     }
 
@@ -142,25 +137,12 @@ class MenuController extends CommonController
     public function delete(Request $request)
     {
         $is_ajax = $request->ajax();
-        $rel = '';
         if ($is_ajax) {
-            $menu_id = $request->menu_id;
-            $rel = Menu::destroy($menu_id);
+            $id = $request->id;
+            $menu = Menu::find($id);
+            $rel = $this->commonDelete($menu, "菜单");
+            return json_encode($rel);
         }
-        $is_delete = empty($rel);
-        if (!$is_delete) {
-            $rel_arr = [
-                'status' => '200',
-                'message' => '菜单删除成功！'
-            ];
-        } else {
-            $rel_arr = [
-                'status' => '400',
-                'message' => '菜单删除失败！'
-            ];
-        }
-        $rel_arr['title'] = '删除菜单';
-        return $rel_arr;
     }
 
     /**

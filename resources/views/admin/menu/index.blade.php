@@ -159,10 +159,43 @@
                     });
                 }
             });
-            $(".edit-menu-status").click(function () {
-                $.get("{{ url('admin/menu/update_status') }}", {"menu_id": $(this).data("id")}, function () {
-                    location.reload();
-                });
+            $('.delete-menu').click(function () {
+                var id = $(this).data("id");
+                var token = "{{ csrf_token() }}";
+                var url = "{{ url('admin/menu/delete') }}";
+                var type = "2";
+                var refresh = {type: "1", timeout: 3000};
+                var confirmData = {
+                    type: "warning",
+                    title: "你确定要删除菜单吗？",
+                    message: ""
+                };
+                var ajaxData = {
+                    type: "post",
+                    url: url,
+                    data: { id: id, _token: token },
+                    async: false
+                };
+                showAjaxMessage(type, confirmData, ajaxData, refresh);
+            });
+            $('.edit-menu-status').click(function () {
+                var id = $(this).data("id");
+                var token = "{{ csrf_token() }}";
+                var url = "{{ url('admin/menu/update_status') }}";
+                var type = "2";
+                var refresh = {type: "1", timeout: 3000};
+                var confirmData = {
+                    type: "warning",
+                    title: "你确定要更改菜单状态吗？",
+                    message: ""
+                };
+                var ajaxData = {
+                    type: "post",
+                    url: url,
+                    data: { id: id, _token: token },
+                    async: false
+                };
+                showAjaxMessage(type, confirmData, ajaxData, refresh);
             });
         });
     </script>

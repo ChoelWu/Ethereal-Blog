@@ -19,8 +19,8 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
     Route::post('menu/add', 'MenuController@add');
     Route::get('menu/edit/{id?}', 'MenuController@edit');
     Route::post('menu/edit', 'MenuController@edit');
-    Route::get('menu/delete', 'MenuController@delete');
-    Route::get('menu/update_status', 'MenuController@updateStatus');
+    Route::post('menu/delete', 'MenuController@delete');
+    Route::post('menu/update_status', 'MenuController@updateStatus');
     Route::get('menu/get_menu_level', 'MenuController@getMenulevel');
     //用户管理
     Route::get('user/index', 'UserController@index');
