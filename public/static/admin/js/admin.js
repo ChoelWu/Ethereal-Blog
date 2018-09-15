@@ -1,7 +1,3 @@
-$(document).ready(function () {
-    showMessageAlert("error", "关闭成功！", "", "", 2000);
-});
-
 //--------------------------------------- 模态框 ----------------------------------------
 /**
  * 提示信息模态框
@@ -11,7 +7,7 @@ $(document).ready(function () {
  * @param level [danger/success/warning/info]
  * @param message
  */
-function showMessageModal(effect, size, level, message) {
+function showMessageModal(effect, size, level, message, timeout) {
     var title = '';
     $("#showMessageModal").find(".modal-content").addClass(effect);
     $("#showMessageModal").find(".modal-dialog").addClass("modal-" + size);
@@ -27,6 +23,9 @@ function showMessageModal(effect, size, level, message) {
     title += message;
     $("#showMessageModal").find(".modal-title").html(title);
     $("#showMessageModal").modal("show");
+    setTimeout(function () {
+        $("#showMessageModal").modal("hide");
+    }, timeout);
 }
 
 /**
@@ -36,6 +35,10 @@ function showMessageModal(effect, size, level, message) {
  * @param size [lg/sm]
  * @param action [submit/delete/question]
  * @param message
+ * @param type
+ * @param url
+ * @param data
+ * @param async
  */
 function confirmModal(effect, size, action, message) {
     var title = '';
@@ -73,7 +76,6 @@ function inputModal(effect, size, title, content) {
 //-------------------------------------- 模态框END --------------------------------------
 
 //------------------------------------ sweet alert --------------------------------------
-
 /**
  * 提示信息弹出框
  * showMessageAlert("error", "关闭成功！", "", "", 2000);
@@ -84,19 +86,25 @@ function inputModal(effect, size, title, content) {
  * @param img
  * @param timeout
  */
-function showMessageAlert(type, title, message, img, timeout) {
+function showMessageAlert(type, title, message, timeout) {
     swal({
         title: title, //标题
         text: message, //提示信息
         type: type, //弹出框类型 warning/error/success/info/input
         allowOutsideClick: true, //点击弹窗外关闭弹窗
         showConfirmButton: false, //确认按钮
-        imageUrl: img,
-        timer: timeout, //自动关闭
+        timer: timeout
     });
 }
 
-function confirmAlert(type, title, message, status, successText, errorText) {
+/**
+ * 确认弹出框
+ * @param type
+ * @param title
+ * @param message
+ * @param callBack
+ */
+function confirmAlert(type, title, message, callBack) {
     swal({
         title: title, //标题
         text: message, //提示信息
@@ -108,14 +116,73 @@ function confirmAlert(type, title, message, status, successText, errorText) {
         closeOnConfirm: false,
         showCancelButton: true, //取消按钮
         cancelButtonText: '取消',//按钮文本
-    }, function () {
-        if ('200' == status) {
-            swal(successText, "", "success");
-        } else {
-            swal(errorText, "", "error");
-        }
-    });
-
+    }, callBack);
 }
 
 //---------------------------------- sweet alert END -------------------------------------
+
+//------------------------------------ ajax and show -------------------------------------
+/**
+ * ajax请求
+ * @param type
+ * @param url
+ * @param data
+ * @param async
+ * @param success
+ * @param error
+ */
+function ajaxFromServer(type, url, data, async, success, error) {
+    $.ajax({
+        url: url,
+        type: type,
+        data: {_token: data._token},
+        async: async,
+        dataType: "json",
+        success: success,
+        error: error
+    });
+}
+
+/**
+ * 显示ajax请求的结果
+ * @param type 1/2
+ * @param confirmData[effect, size, action, message] / confirmData[type, title, message]
+ * @param ajaxData[type, url, data, async]
+ * @param refresh[type, timeout]
+ */
+function showAjaxMessage(type, confirmData, ajaxData, refresh) {
+    if ("1" == type) {
+        confirmModal(confirmData['effect'], confirmData['size'], confirmData['action'], confirmData['message']);
+        $("#confirmModalButton").click(function () {
+            $("#confirmModal").modal("hide");
+            ajaxFromServer(ajaxData['type'], ajaxData['url'], ajaxData['data'], ajaxData['async'], function (data) {
+                if ('200' == data['status']) {
+                    showMessageModal("animated bounceInRight", "sm", "success", data['message'], refresh['timeout']);
+                } else {
+                    showMessageModal("animated bounceInRight", "sm", "danger", data['message'], refresh['timeout']);
+                }
+            }, function () {
+                showMessageModal("animated bounceInRight", "sm", "warning", "系统异常！", refresh['timeout']);
+            });
+        });
+    } else if ("2" == type) {
+        confirmAlert(confirmData['type'], confirmData['title'], confirmData['message'], function () {
+            ajaxFromServer(ajaxData['type'], ajaxData['url'], ajaxData['data'], ajaxData['async'], function (data) {
+                if ('200' == data['status']) {
+                    showMessageAlert("success", data['message'], "", refresh['timeout'])
+                } else {
+                    showMessageAlert("error", data['message'], "", refresh['timeout'])
+                }
+            }, function () {
+                showMessageAlert("error", "系统异常！", "", refresh['timeout'])
+            });
+        });
+    }
+    if ("1" == refresh['type']) {
+        setTimeout(function () {
+            location.reload();
+        }, refresh['timeout']);
+    }
+}
+
+//----------------------------------- ajax and show END -----------------------------------

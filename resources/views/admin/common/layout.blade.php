@@ -29,7 +29,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
-                <button type="button" class="btn btn-primary">确定</button>
+                <button type="button" class="btn btn-primary" id="confirmModalButton">确定</button>
             </div>
         </div>
     </div>

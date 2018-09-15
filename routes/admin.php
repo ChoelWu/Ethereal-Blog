@@ -11,6 +11,8 @@
 Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
     //后台首页
     Route::get('index', 'IndexController@index');
+    Route::any('test', 'IndexController@test');
+
     //菜单管理
     Route::get('menu/index', 'MenuController@index');
     Route::get('menu/add', 'MenuController@add');

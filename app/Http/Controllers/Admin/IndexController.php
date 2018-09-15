@@ -27,4 +27,10 @@ class IndexController extends CommonController
     {
         return view('admin.index.index', ['menu_list' => session('menu')]);
     }
+
+    public function test() {
+        return json_encode(
+            ['message' => "成功", 'status' => '200']
+        );
+    }
 }
