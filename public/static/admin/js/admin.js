@@ -6,8 +6,10 @@
  * @param size [lg/sm]
  * @param level [danger/success/warning/info]
  * @param message
+ * @param timeout
+ * @param afterHide
  */
-function showMessageModal(effect, size, level, message, timeout) {
+function showMessageModal(effect, size, level, message, timeout, afterHide) {
     var title = '';
     $("#showMessageModal").find(".modal-content").addClass(effect);
     $("#showMessageModal").find(".modal-dialog").addClass("modal-" + size);
@@ -26,6 +28,7 @@ function showMessageModal(effect, size, level, message, timeout) {
     setTimeout(function () {
         $("#showMessageModal").modal("hide");
     }, timeout);
+    $('#showMessageModal').on('hidden.bs.modal', afterHide);
 }
 
 /**
@@ -35,10 +38,6 @@ function showMessageModal(effect, size, level, message, timeout) {
  * @param size [lg/sm]
  * @param action [submit/delete/question]
  * @param message
- * @param type
- * @param url
- * @param data
- * @param async
  */
 function confirmModal(effect, size, action, message) {
     var title = '';
@@ -74,7 +73,6 @@ function inputModal(effect, size, title, content) {
 }
 
 //-------------------------------------- 模态框END --------------------------------------
-
 //------------------------------------ sweet alert --------------------------------------
 /**
  * 提示信息弹出框
@@ -83,7 +81,6 @@ function inputModal(effect, size, title, content) {
  * @param type
  * @param title
  * @param message
- * @param img
  * @param timeout
  */
 function showMessageAlert(type, title, message, timeout) {
@@ -120,23 +117,21 @@ function confirmAlert(type, title, message, callBack) {
 }
 
 //---------------------------------- sweet alert END -------------------------------------
-
 //------------------------------------ ajax and show -------------------------------------
 /**
  * ajax请求
- * @param type
  * @param url
  * @param data
- * @param async
  * @param success
  * @param error
  */
-function ajaxFromServer(type, url, data, async, success, error) {
+function ajaxFromServer(url, data, success, error) {
     $.ajax({
         url: url,
-        type: type,
+        type: "post",
         data: data,
-        async: async,
+        async: false,
+        timeout: 15000,
         dataType: "json",
         success: success,
         error: error
@@ -151,38 +146,65 @@ function ajaxFromServer(type, url, data, async, success, error) {
  * @param refresh[type, timeout]
  */
 function showAjaxMessage(type, confirmData, ajaxData, refresh) {
+    var flag = "0";
     if ("1" == type) {
         confirmModal(confirmData['effect'], confirmData['size'], confirmData['action'], confirmData['message']);
         $("#confirmModalButton").click(function () {
             $("#confirmModal").modal("hide");
-            ajaxFromServer(ajaxData['type'], ajaxData['url'], ajaxData['data'], ajaxData['async'], function (data) {
+            ajaxFromServer(ajaxData['url'], ajaxData['data'], function (data) {
                 if ('200' == data['status']) {
-                    showMessageModal("animated bounceInRight", "sm", "success", data['message'], refresh['timeout']);
+                    showMessageModal("animated flipInX", "sm", "success", data['message'], refresh['timeout'], function () {
+                        if ("1" == refresh["type"]) {
+                            location.reload();
+                        }
+                    });
                 } else {
-                    showMessageModal("animated bounceInRight", "sm", "danger", data['message'], refresh['timeout']);
+                    showMessageModal("animated flipInX", "sm", "danger", data['message'], refresh['timeout'], function () {
+                        if ("1" == refresh["type"]) {
+                            location.reload();
+                        }
+                    });
                 }
             }, function () {
-                showMessageModal("animated bounceInRight", "sm", "warning", "系统异常！", refresh['timeout']);
+                showMessageModal("animated flipInX", "sm", "warning", "系统异常！", refresh['timeout'], function () {
+                    if ("1" == refresh["type"]) {
+                        location.reload();
+                    }
+                });
             });
         });
     } else if ("2" == type) {
         confirmAlert(confirmData['type'], confirmData['title'], confirmData['message'], function () {
-            ajaxFromServer(ajaxData['type'], ajaxData['url'], ajaxData['data'], ajaxData['async'], function (data) {
+            ajaxFromServer(ajaxData['url'], ajaxData['data'], function (data) {
                 if ('200' == data['status']) {
-                    showMessageAlert("success", data['message'], "", refresh['timeout'])
+                    showMessageAlert("success", data['message'], "", refresh['timeout']);
+                    if ("1" == refresh["type"]) {
+                        refreshPage(refresh['timeout']);
+                    }
                 } else {
-                    showMessageAlert("error", data['message'], "", refresh['timeout'])
+                    showMessageAlert("error", data['message'], "", refresh['timeout']);
+                    if ("1" == refresh["type"]) {
+                        refreshPage(refresh['timeout']);
+                    }
                 }
             }, function () {
-                showMessageAlert("error", "系统异常！", "", refresh['timeout'])
+                showMessageAlert("error", "系统异常！", "", refresh['timeout']);
+                if ("1" == refresh["type"]) {
+                    refreshPage(refresh['timeout']);
+                }
             });
         });
     }
-    if ("1" == refresh['type']) {
-        setTimeout(function () {
-            location.reload();
-        }, refresh['timeout']);
-    }
+}
+
+/**
+ * 延时刷新
+ * @param timeout
+ */
+function refreshPage(timeout) {
+    setTimeout(function () {
+        location.reload();
+    }, timeout);
 }
 
 //----------------------------------- ajax and show END -----------------------------------
@@ -190,3 +212,31 @@ function showAjaxMessage(type, confirmData, ajaxData, refresh) {
 function validation() {
 
 }
+
+
+//--------------------------------------- Switchery --------------------------------------
+/**
+ * 开关按钮赋值
+ * @param switchElement
+ * @param checkedBool
+ */
+function setSwitchery(switchElement, checkedBool) {
+    if ((checkedBool && !switchElement.isChecked()) || (!checkedBool && switchElement.isChecked())) {
+        switchElement.setPosition(true);
+        switchElement.handleOnchange(true);
+    }
+}
+
+/**
+ * 根据值控制开关按钮
+ * @param status
+ * @param switchery
+ */
+function setSwitch(status, switchery) {
+    if (status == "1") {
+        setSwitchery(switchery, true);
+    } else {
+        setSwitchery(switchery, false);
+    }
+}
+//------------------------------------- Switchery END ------------------------------------

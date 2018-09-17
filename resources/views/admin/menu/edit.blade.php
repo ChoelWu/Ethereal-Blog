@@ -107,7 +107,7 @@
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control" name="url" value="{{ $menu->url }}"
                                            placeholder="请输入菜单访问地址">
-                                    <span class="help-block m-b-none">菜单地址请参照路由【示例：Admin/Menu/index】</span>
+                                    <span class="help-block m-b-none">菜单地址请参照路由【示例：admin/menu/index】</span>
                                 </div>
                             </div>
                             <div class="hr-line-dashed"></div>
@@ -142,17 +142,7 @@
             var elem = document.querySelector('.js-switch');
             var switchery = new Switchery(elem, {color: '#1AB394'});
             var pre_status = "{{ $menu->status }}";
-            if (pre_status == "1") {
-                setSwitchery(switchery, true);
-            } else {
-                setSwitchery(switchery, false);
-            }
-            function setSwitchery(switchElement, checkedBool) {
-                if ((checkedBool && !switchElement.isChecked()) || (!checkedBool && switchElement.isChecked())) {
-                    switchElement.setPosition(true);
-                    switchElement.handleOnchange(true);
-                }
-            }
+            setSwitch(pre_status, switchery);
             $('#edit-menu-form').bootstrapValidator({
                 message: 'This value is not valid',
                 feedbackIcons: {
@@ -225,7 +215,6 @@
             });
             $("#add-menu-submit").click(function () {
                 $('#edit-menu-form').bootstrapValidator('validate');
-                var ajax_data;
                 var flag = $('#edit-menu-form').data('bootstrapValidator').isValid();
                 if (elem.checked) {
                     $('input[name="status"]').val('1');
@@ -233,38 +222,20 @@
                     $('input[name="status"]').val('0');
                 }
                 if (flag) {
-                    $.ajax({
-                        type: "post",
+                    var data = $("#edit-menu-form").serialize();
+                    var type = "1";
+                    var refresh = {type: "1", timeout: 3000};
+                    var confirmData = {
+                        effect: "animated bounceInDown",
+                        size: "sm",
+                        action: "submit",
+                        message: "你确定要提交修改吗？"
+                    };
+                    var ajaxData = {
                         url: "{{ url('admin/menu/edit') }}",
-                        data: $('#edit-menu-form').serialize(),
-                        async: false,
-                        dataType: "json",
-                        success: function (data) {
-                            ajax_data = data;
-                        }
-                    });
-                    $('#message-modal-label').html("添加菜单");
-                    if ('200' == ajax_data['status']) {
-                        $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-check-square text-info"></i> ' + ajax_data['message'] + '</h3>');
-                    } else {
-                        $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-exclamation-triangle text-danger"></i> ' + ajax_data['message'] + '</h3>');
-                    }
-                    setTimeout(function () {
-                        $("#message-modal").modal({
-                            keyboard: false,
-                            backdrop: false
-                        });
-                        $('#message-modal').modal('show');
-                    }, 600);
-                    if ('200' == ajax_data['status']) {
-                        setTimeout(function () {
-                            window.location.href = "{{ url('admin/menu/index') }}";
-                        }, 2500);
-                    } else {
-                        setTimeout(function () {
-                            $('#message-modal').modal('hide');
-                        }, 2500);
-                    }
+                        data: data
+                    };
+                    showAjaxMessage(type, confirmData, ajaxData, refresh);
                 }
             });
             $("#clear").click(function () {

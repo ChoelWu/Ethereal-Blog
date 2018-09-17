@@ -34,10 +34,8 @@
                     message: ""
                 };
                 var ajaxData = {
-                    type: "post",
                     url: "{{ url('admin/test') }}",
-                    data: {id: '1', _token: token},
-                    async: false
+                    data: {id: '1', _token: token}
                 };
                 showAjaxMessage(type, confirmData, ajaxData, refresh);
             });

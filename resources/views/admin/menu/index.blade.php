@@ -125,40 +125,6 @@
             $(".edit-menu").click(function () {
                 window.location.href = "{{ url('admin/menu/edit') }}/" + $(this).data("id");
             });
-            $(".delete-menu").click(function () {
-                var is_disabled = $(this).attr("disabled");
-                if (is_disabled != "disabled") {
-                    var menu_id = $(this).data("id");
-                    $('#action-modal-label').html('删除');
-                    $('#action-modal').find('.modal-body').html('<h3><i class="fa fa-exclamation-triangle text-warning"></i> 是否要删除菜单？</h3>');
-                    $('#action-modal').modal('show');
-                    $('#action-modal').find('.confirm').click(function () {
-                        $('#action-modal').modal('hide');
-                        $('#action-modal').on('hidden.bs.modal', function () {
-                            $.get("{{ url('admin/menu/delete') }}", {"menu_id": menu_id}, function (data, status) {
-                                $('#message-modal-label').html(data['title']);
-                                if ('success' == status) {
-                                    if ('200' == data['status']) {
-                                        $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-check-square text-info"></i> ' + data['message'] + '</h3>');
-                                    } else {
-                                        $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-exclamation-triangle text-danger"></i> ' + data['message'] + '</h3>');
-                                    }
-                                }
-                            });
-                        });
-                        setTimeout(function () {
-                            $("#message-modal").modal({
-                                keyboard: false,
-                                backdrop: false
-                            });
-                            $('#message-modal').modal('show');
-                        }, 600);
-                        setTimeout(function () {
-                            location.reload();
-                        }, 2500);
-                    });
-                }
-            });
             $('.delete-menu').click(function () {
                 var id = $(this).data("id");
                 var token = "{{ csrf_token() }}";
@@ -171,10 +137,8 @@
                     message: ""
                 };
                 var ajaxData = {
-                    type: "post",
                     url: url,
-                    data: { id: id, _token: token },
-                    async: false
+                    data: { id: id, _token: token }
                 };
                 showAjaxMessage(type, confirmData, ajaxData, refresh);
             });
@@ -190,10 +154,8 @@
                     message: ""
                 };
                 var ajaxData = {
-                    type: "post",
                     url: url,
-                    data: { id: id, _token: token },
-                    async: false
+                    data: { id: id, _token: token }
                 };
                 showAjaxMessage(type, confirmData, ajaxData, refresh);
             });

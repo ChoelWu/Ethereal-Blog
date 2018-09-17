@@ -31,6 +31,9 @@ class CommonController extends Controller
     {
     }
 
+    public function commonAdd($model, $data, $name) {
+        unset($data['_token']);
+    }
 
     public function commonEdit($model, $data, $name)
     {
