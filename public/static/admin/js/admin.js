@@ -146,7 +146,6 @@ function ajaxFromServer(url, data, success, error) {
  * @param refresh[type, timeout]
  */
 function showAjaxMessage(type, confirmData, ajaxData, refresh) {
-    var flag = "0";
     if ("1" == type) {
         confirmModal(confirmData['effect'], confirmData['size'], confirmData['action'], confirmData['message']);
         $("#confirmModalButton").click(function () {
@@ -155,20 +154,20 @@ function showAjaxMessage(type, confirmData, ajaxData, refresh) {
                 if ('200' == data['status']) {
                     showMessageModal("animated flipInX", "sm", "success", data['message'], refresh['timeout'], function () {
                         if ("1" == refresh["type"]) {
-                            location.reload();
+                            window.location.href = refresh['url'];
                         }
                     });
                 } else {
-                    showMessageModal("animated flipInX", "sm", "danger", data['message'], refresh['timeout'], function () {
+                    showMessageModal("animated flipInX", "sm", "error", data['message'], refresh['timeout'], function () {
                         if ("1" == refresh["type"]) {
-                            location.reload();
+                            window.location.href = refresh['url'];
                         }
                     });
                 }
             }, function () {
                 showMessageModal("animated flipInX", "sm", "warning", "系统异常！", refresh['timeout'], function () {
                     if ("1" == refresh["type"]) {
-                        location.reload();
+                        window.location.href = refresh['url'];
                     }
                 });
             });
@@ -179,18 +178,18 @@ function showAjaxMessage(type, confirmData, ajaxData, refresh) {
                 if ('200' == data['status']) {
                     showMessageAlert("success", data['message'], "", refresh['timeout']);
                     if ("1" == refresh["type"]) {
-                        refreshPage(refresh['timeout']);
+                        refreshPage(refresh['timeout'], refresh['url']);
                     }
                 } else {
                     showMessageAlert("error", data['message'], "", refresh['timeout']);
                     if ("1" == refresh["type"]) {
-                        refreshPage(refresh['timeout']);
+                        refreshPage(refresh['timeout'], refresh['url']);
                     }
                 }
             }, function () {
                 showMessageAlert("error", "系统异常！", "", refresh['timeout']);
                 if ("1" == refresh["type"]) {
-                    refreshPage(refresh['timeout']);
+                    refreshPage(refresh['timeout'], refresh['url']);
                 }
             });
         });
@@ -201,9 +200,9 @@ function showAjaxMessage(type, confirmData, ajaxData, refresh) {
  * 延时刷新
  * @param timeout
  */
-function refreshPage(timeout) {
+function refreshPage(timeout, url) {
     setTimeout(function () {
-        location.reload();
+        window.location.href = url;
     }, timeout);
 }
 
@@ -239,4 +238,18 @@ function setSwitch(status, switchery) {
         setSwitchery(switchery, false);
     }
 }
+
+/**
+ * 根据开关状态设置输入框的值
+ * @param elem
+ * @param name
+ */
+function setSwitchInInput(elem, name) {
+    if (elem.checked) {
+        $("input[name=" + name + "]").val('1');
+    } else {
+        $("input[name=" + name + "]").val('0');
+    }
+}
+
 //------------------------------------- Switchery END ------------------------------------

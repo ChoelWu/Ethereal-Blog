@@ -23,15 +23,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Menu;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class MenuController extends CommonController
 {
-    private $modelName;
-    public function __construct()
-    {
-        $this->modelName = 'Menu';
-    }
-
     /**
      * 菜单列表显示
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
@@ -52,8 +47,9 @@ class MenuController extends CommonController
     public function add(Request $request)
     {
         $is_ajax = $request->ajax();
-        $is_post = $request->isMethod("post");
         if ($is_ajax) {
+            $flag = false;
+            $is_post = $request->isMethod("post");
             if ($is_post) {
                 $data = $request->all();
                 if ('0' == $data['parent_id']) {
@@ -62,22 +58,29 @@ class MenuController extends CommonController
                     $parent_menu_level = Menu::where('id', $data['parent_id'])->value('level');
                     empty($parent_menu_level) ? $data['level'] = '1' : $data['level'] = $parent_menu_level + 1;
                 }
-                $data['id'] = setModelId("Menu");
-                unset($data['_token']);
-                try {
-                    Menu::create($data);
-                    $rel = [
-                        "status" => "200",
-                        "message" => "菜单添加成功！"
-                    ];
-                } catch (\Exception $e) {
-                    $rel = [
-                        "status" => "400",
-                        "message" => "菜单添加失败！" . $e->getMessage()
-                    ];
+                if ($data['level'] <= '2') {
+                    $data['id'] = setModelId("Menu");
+                    unset($data['_token']);
+                    try {
+                        $rel = Menu::create($data);
+                        !empty($rel) ? $flag = true : $flag = false;
+                    } catch (\Exception $e) {
+                        Log::info($e->getMessage());
+                    }
                 }
-                return $rel;
             }
+            if ($flag) {
+                $result = [
+                    "status" => "200",
+                    "message" => "菜单添加成功！"
+                ];
+            } else {
+                $result = [
+                    "status" => "400",
+                    "message" => "菜单添加失败！"
+                ];
+            }
+            return json_encode($result);
         } else {
             $title = ['title' => '菜单管理', 'sub_title' => '添加菜单'];
             $parent_menu_arr = Menu::select('id', 'name', 'level', 'parent_id', 'status', 'sort', 'url', 'icon')->get()->toArray();
@@ -95,37 +98,43 @@ class MenuController extends CommonController
     public function edit(Request $request, $id = '')
     {
         $is_ajax = $request->ajax();
-        $is_post = $request->isMethod("post");
         if ($is_ajax) {
+            $flag = false;
+            $is_post = $request->isMethod("post");
             if ($is_post) {
                 $data = $request->all();
                 $id = $data['id'];
                 $menu = Menu::find($id);
-                $rel = $this->commonEdit($menu, $data,"菜单");
-                return json_encode($rel);
+                $exist = Menu::where('parent_id', $id)->exists();
+                if (!$exist || $menu->status != $data['status']) {
+                    unset($data['_token']);
+                    unset($data['id']);
+                    try {
+                        $rel = $menu->update($data);
+                        $rel ? $flag = true : $flag = false;
+                    } catch (\Exception $e) {
+                        Log::info($e->getMessage());
+                    }
+                }
             }
+            if ($flag) {
+                $result = [
+                    "status" => "200",
+                    "message" => "菜单修改成功！"
+                ];
+            } else {
+                $result = [
+                    "status" => "400",
+                    "message" => "菜单修改失败！"
+                ];
+            }
+            return json_encode($result);
         } else {
             $title = ['title' => '菜单管理', 'sub_title' => '修改菜单'];
             $parent_menu_arr = Menu::select('id', 'name', 'level', 'parent_id', 'status', 'sort', 'url', 'icon')->get()->toArray();
             $parent_menu_list = getMenu($parent_menu_arr, 0, 1);
             $menu = Menu::select('id', 'name', 'parent_id', 'sort', 'url', 'sort', 'status', 'icon')->find($id);
             return view('admin.menu.edit', ['menu_list' => session('menu'), 'parent_menu_list' => $parent_menu_list, 'menu' => $menu, 'title' => $title]);
-        }
-    }
-
-    /**
-     * 修改菜单状态
-     * @param Request $request
-     * @return string
-     */
-    public function updateStatus(Request $request)
-    {
-        $is_ajax = $request->ajax();
-        if ($is_ajax) {
-            $id = $request->id;
-            $menu = Menu::find($id);
-            $rel = $this->commonUpdateStatus($menu, "菜单");
-            return json_encode($rel);
         }
     }
 
@@ -137,11 +146,68 @@ class MenuController extends CommonController
     public function delete(Request $request)
     {
         $is_ajax = $request->ajax();
+        $flag = false;
         if ($is_ajax) {
             $id = $request->id;
-            $menu = Menu::find($id);
-            $rel = $this->commonDelete($menu, "菜单");
-            return json_encode($rel);
+            $exist = Menu::where('parent_id', $id)->exists();
+            if (!$exist) {
+                $menu = Menu::find($id);
+                try {
+                    $rel = $menu->delete();
+                    $rel ? $flag = true : $flag = false;
+                } catch (\Exception $e) {
+                    Log::info($e->getMessage());
+                }
+            }
+        }
+        if ($flag) {
+            $result = [
+                "status" => "200",
+                "message" => "菜单删除成功！"
+            ];
+        } else {
+            $result = [
+                "status" => "400",
+                "message" => "菜单删除失败！"
+            ];
+        }
+        return json_encode($result);
+    }
+
+    /**
+     * 修改菜单状态
+     * @param Request $request
+     * @return string
+     */
+    public function updateStatus(Request $request)
+    {
+        $is_ajax = $request->ajax();
+        $flag = false;
+        if ($is_ajax) {
+            $id = $request->id;
+            $exist = Menu::where('parent_id', $id)->exists();
+            if (!$exist) {
+                $menu = Menu::find($id);
+                try {
+                    $menu->status == '1' ? $menu->status = '0' : $menu->status = '1';
+                    $rel = $menu->save();
+                    $rel ? $flag = true : $flag = false;
+                } catch (\Exception $e) {
+                    Log::info($e->getMessage());
+                }
+            }
+            if ($flag) {
+                $result = [
+                    "status" => "200",
+                    "message" => "菜单状态修改成功！"
+                ];
+            } else {
+                $result = [
+                    "status" => "400",
+                    "message" => "菜单状态修改失败！"
+                ];
+            }
+            return json_encode($result);
         }
     }
 
@@ -156,7 +222,7 @@ class MenuController extends CommonController
         if ($is_ajax) {
             $menu_id = $request->menu_id;
             $level = Menu::where('id', $menu_id)->value('level');
-            empty($level) ? $level = '0' : $level;
+            empty($level) ? $level = '0' : true;
             return $level;
         }
     }

@@ -34,14 +34,12 @@
             <div class="col-lg-12">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
-                        <h5>{{ $title['sub_title'] }}
-                            <small>With custom checbox and radion elements.</small>
-                        </h5>
+                        <h5>{{ $title['sub_title'] }}</h5>
                         <div class="ibox-tools">
-                        <span class="btn btn-xs btn-warning" id="clear">
-                            <i class="fa fa-eraser"></i>
-                            清空
-                        </span>
+                            <span class="btn btn-xs btn-warning" id="clear">
+                                <i class="fa fa-eraser"></i>
+                                清空
+                            </span>
                         </div>
                     </div>
                     <div class="ibox-content">
@@ -99,7 +97,7 @@
                                 <label class="col-sm-2 control-label">菜单地址：</label>
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control" name="url" placeholder="请输入菜单访问地址">
-                                    <span class="help-block m-b-none">菜单地址请参照路由【示例：Admin/Menu/index】</span>
+                                    <span class="help-block m-b-none">菜单地址请参照路由【示例：admin/menu/index】</span>
                                 </div>
                             </div>
                             <div class="hr-line-dashed"></div>
@@ -203,47 +201,28 @@
                 }
             });
             $("#add-menu-submit").click(function () {
-                var ajax_data;
                 $('#add-menu-form').bootstrapValidator('validate');
                 var flag = $('#add-menu-form').data('bootstrapValidator').isValid();
-                if (elem.checked) {
-                    $('input[name="status"]').val('1');
-                } else {
-                    $('input[name="status"]').val('0');
-                }
+                setSwitchInInput(elem, "status");
                 if (flag) {
-                    $.ajax({
-                        type: "post",
+                    var data = $("#add-menu-form").serialize();
+                    var type = "1";
+                    var refresh = {
+                        type: "1",
+                        timeout: 2000,
+                        url: "{{ url('admin/menu/index') }}",
+                    };
+                    var confirmData = {
+                        effect: "animated bounceInDown",
+                        size: "sm",
+                        action: "submit",
+                        message: "你确定要提交吗？"
+                    };
+                    var ajaxData = {
                         url: "{{ url('admin/menu/add') }}",
-                        data: $('#add-menu-form').serialize(),
-                        async: false,
-                        dataType: "json",
-                        success: function (data) {
-                            ajax_data = data;
-                        }
-                    });
-                    $('#message-modal-label').html("添加菜单");
-                    if ('200' == ajax_data['status']) {
-                        $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-check-square text-info"></i> ' + ajax_data['message'] + '</h3>');
-                    } else {
-                        $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-exclamation-triangle text-danger"></i> ' + ajax_data['message'] + '</h3>');
-                    }
-                    setTimeout(function () {
-                        $("#message-modal").modal({
-                            keyboard: false,
-                            backdrop: false
-                        });
-                        $('#message-modal').modal('show');
-                    }, 600);
-                    if ('200' == ajax_data['status']) {
-                        setTimeout(function () {
-                            window.location.href = "{{ url('admin/menu/index') }}";
-                        }, 2500);
-                    } else {
-                        setTimeout(function () {
-                            $('#message-modal').modal('hide');
-                        }, 2500);
-                    }
+                        data: data
+                    };
+                    showAjaxMessage(type, confirmData, ajaxData, refresh);
                 }
             });
             $("#clear").click(function () {

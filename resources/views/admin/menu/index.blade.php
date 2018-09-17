@@ -15,8 +15,7 @@
                 </li>
             </ol>
         </div>
-        <div class="col-lg-2">
-        </div>
+        <div class="col-lg-2"></div>
     </div>
     <div class="wrapper wrapper-content animated fadeInRight">
         <div class="row">
@@ -25,10 +24,10 @@
                     <div class="ibox-title">
                         <h5>{{ $title['sub_title'] }}</h5>
                         <div class="ibox-tools">
-                        <span class="btn btn-xs btn-primary" id="menu-add">
-                            <i class="fa fa-plus"></i>
-                            添加
-                        </span>
+                            <span class="btn btn-xs btn-primary" id="menu-add">
+                                <i class="fa fa-plus"></i>
+                                添加
+                            </span>
                         </div>
                     </div>
                     <div class="ibox-content">
@@ -45,58 +44,63 @@
                             <tbody>
                             @foreach($list as $menu)
                                 <tr class="active">
-                                    <td>{{ $menu['sort'] }}</td>
-                                    <td>{{ $menu['name'] }}</td>
-                                    <td><i class="fa fa-{{ $menu['icon'] }}"></i></td>
+                                    <td>{{ $menu->sort }}</td>
+                                    <td>{{ $menu->name }}</td>
+                                    <td><i class="fa fa-{{ $menu->icon }}"></i></td>
                                     <td>
-                                        @if($menu['status'] == '1')
+                                        @if($menu->status == '1')
                                             <button class="btn btn-xs btn-primary edit-menu-status"
-                                                    data-id="{{ $menu['id'] }}"
-                                                    @if(!empty($menu['children']))disabled="disabled" @endif title="启用">
-                                                <i class="fa fa-eye"></i></button>
+                                                    data-id="{{ $menu->id }}"
+                                                    @if(!empty($menu->children))disabled="disabled" @endif title="启用">
+                                                <i class="fa fa-eye"></i>
+                                            </button>
                                         @else
                                             <button class="btn btn-xs btn-default edit-menu-status"
-                                                    data-id="{{ $menu['id'] }}"
-                                                    @if(!empty($menu['children']))disabled="disabled" @endif title="禁用">
-                                                <i
-                                                        class="fa fa-eye-slash"></i></button>
+                                                    data-id="{{ $menu->id }}"
+                                                    @if(!empty($menu->children))disabled="disabled" @endif title="禁用">
+                                                <i class="fa fa-eye-slash"></i>
+                                            </button>
                                         @endif
                                     </td>
                                     <td>
-                                    <span class="btn btn-xs btn-primary edit-menu" data-id="{{ $menu['id'] }}"><i
-                                                class="fa fa-edit"></i> 修改</span>
-                                        <span class="btn btn-xs btn-danger delete-menu" data-id="{{ $menu['id'] }}"
-                                              @if(!empty($menu['children']))disabled="disabled"@endif><i
-                                                    class="fa fa-times"></i> 删除</span>
+                                        <button class="btn btn-xs btn-primary edit-menu" data-id="{{ $menu->id }}">
+                                            <i class="fa fa-edit"></i> 修改
+                                        </button>
+                                        <button class="btn btn-xs btn-danger delete-menu" data-id="{{ $menu->id }}"
+                                              @if(!empty($menu->children))disabled="disabled"@endif>
+                                            <i class="fa fa-times"></i> 删除
+                                        </button>
                                     </td>
                                 </tr>
-                                @if(!empty($menu['children']))
-                                    @foreach($menu['children'] as $m)
+                                @if(!empty($menu->children))
+                                    @foreach($menu->children as $m)
                                         <tr>
-                                            <td>{{ $m['sort'] }}</td>
-                                            <td>&nbsp;&nbsp;&nbsp;&nbsp;| - - {{ $m['name'] }}</td>
+                                            <td>{{ $m->sort }}</td>
+                                            <td>&nbsp;&nbsp;&nbsp;&nbsp;| - - {{ $m->name }}</td>
                                             <td>
-                                                <i class="fa fa-{{ $m['icon'] }}"></i>
+                                                <i class="fa fa-{{ $m->icon }}"></i>
                                             </td>
                                             <td>
                                                 @if($m['status'] == '1')
                                                     <button class="btn btn-xs btn-primary edit-menu-status"
-                                                            data-id="{{ $m['id'] }}" title="启用"><i
-                                                                class="fa fa-eye"></i>
+                                                            data-id="{{ $m->id }}" title="启用">
+                                                        <i class="fa fa-eye"></i>
                                                     </button>
                                                 @else
                                                     <button class="btn btn-xs btn-default edit-menu-status"
-                                                            data-id="{{ $m['id'] }}"><i class="fa fa-eye-slash"
-                                                                                        title="禁用"></i>
+                                                            data-id="{{ $m->id }}">
+                                                        <i class="fa fa-eye-slash" title="禁用"></i>
                                                     </button>
                                                 @endif
                                             </td>
                                             <td>
-                                            <span class="btn btn-xs btn-primary edit-menu" data-id="{{ $m['id'] }}"><i
-                                                        class="fa fa-edit"></i> 修改</span>
+                                                <span class="btn btn-xs btn-primary edit-menu" data-id="{{ $m->id }}">
+                                                    <i class="fa fa-edit"></i> 修改
+                                                </span>
                                                 <span class="btn btn-xs btn-danger delete-menu"
-                                                      data-id="{{ $m['id'] }}"><i
-                                                            class="fa fa-times"></i> 删除</span>
+                                                      data-id="{{ $m->id }}">
+                                                    <i class="fa fa-times"></i> 删除
+                                                </span>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -130,7 +134,11 @@
                 var token = "{{ csrf_token() }}";
                 var url = "{{ url('admin/menu/delete') }}";
                 var type = "2";
-                var refresh = {type: "1", timeout: 3000};
+                var refresh = {
+                    type: "1",
+                    timeout: 2000,
+                    url: "{{ url('admin/menu/index') }}",
+                };
                 var confirmData = {
                     type: "warning",
                     title: "你确定要删除菜单吗？",
@@ -138,7 +146,7 @@
                 };
                 var ajaxData = {
                     url: url,
-                    data: { id: id, _token: token }
+                    data: {id: id, _token: token}
                 };
                 showAjaxMessage(type, confirmData, ajaxData, refresh);
             });
@@ -147,7 +155,11 @@
                 var token = "{{ csrf_token() }}";
                 var url = "{{ url('admin/menu/update_status') }}";
                 var type = "2";
-                var refresh = {type: "1", timeout: 3000};
+                var refresh = {
+                    type: "1",
+                    timeout: 2000,
+                    url: "{{ url('admin/menu/index') }}",
+                };
                 var confirmData = {
                     type: "warning",
                     title: "你确定要更改菜单状态吗？",
@@ -155,7 +167,7 @@
                 };
                 var ajaxData = {
                     url: url,
-                    data: { id: id, _token: token }
+                    data: {id: id, _token: token}
                 };
                 showAjaxMessage(type, confirmData, ajaxData, refresh);
             });

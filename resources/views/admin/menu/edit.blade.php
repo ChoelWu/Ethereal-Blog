@@ -1,6 +1,6 @@
 @extends('admin.common.layout')
 @section('title')
-    index
+    {{ $title['title'] }}
 @endsection
 @section('head_files')
     <!-- Toastr style -->
@@ -26,17 +26,14 @@
                 </li>
             </ol>
         </div>
-        <div class="col-lg-2">
-        </div>
+        <div class="col-lg-2"></div>
     </div>
     <div class="wrapper wrapper-content animated fadeInRight">
         <div class="row">
             <div class="col-lg-12">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
-                        <h5>{{ $title['sub_title'] }}
-                            <small>With custom checbox and radion elements.</small>
-                        </h5>
+                        <h5>{{ $title['sub_title'] }}</h5>
                         <div class="ibox-tools">
                             <span class="btn btn-xs btn-warning" id="clear">
                                 <i class="fa fa-refresh"></i>
@@ -174,6 +171,7 @@
                                         url: "{{ url('admin/menu/get_menu_level') }}",
                                         data: {"menu_id": value},
                                         async: false,
+                                        timeout: 10000,
                                         dataType: "json",
                                         success: function (data) {
                                             ajax_data = data;
@@ -224,7 +222,11 @@
                 if (flag) {
                     var data = $("#edit-menu-form").serialize();
                     var type = "1";
-                    var refresh = {type: "1", timeout: 3000};
+                    var refresh = {
+                        type: "1",
+                        timeout: 2000,
+                        url: "{{ url('admin/menu/index') }}",
+                    };
                     var confirmData = {
                         effect: "animated bounceInDown",
                         size: "sm",
