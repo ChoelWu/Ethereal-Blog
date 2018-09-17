@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50721
 File Encoding         : 65001
 
-Date: 2018-09-12 18:22:22
+Date: 2018-09-17 14:53:36
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -79,16 +79,17 @@ CREATE TABLE `cms_blog` (
   `title` varchar(50) NOT NULL COMMENT '博客名',
   `footer` varchar(100) DEFAULT NULL COMMENT '博客页脚',
   `slogan` varchar(150) DEFAULT NULL COMMENT '标语',
-  `user_english_name` varchar(32) DEFAULT NULL COMMENT '用户英文名',
-  `user_chinese_name` varchar(32) NOT NULL COMMENT '用户中文名',
-  `user_open_img` varchar(200) NOT NULL COMMENT '公开头像',
-  `user_profession` varchar(100) NOT NULL COMMENT '职业',
+  `user_name` varchar(32) DEFAULT NULL COMMENT '用户中文名',
+  `user_open_img` varchar(200) DEFAULT NULL COMMENT '公开头像',
+  `user_profession` varchar(100) DEFAULT NULL COMMENT '职业',
   `user_announce` varchar(200) DEFAULT NULL COMMENT '声明',
   `user_bak` varchar(600) DEFAULT NULL COMMENT '用户备注信息',
   `user_wechat` varchar(50) DEFAULT NULL COMMENT '用户公开微信',
   `user_QQ` varchar(30) DEFAULT NULL COMMENT '用户公开QQ',
+  `user_weibo` varchar(30) DEFAULT NULL COMMENT '用户公开微博',
   `user_email` varchar(50) DEFAULT NULL COMMENT '用户公开邮箱',
   `user_github` varchar(50) DEFAULT NULL COMMENT '用户公开github',
+  `status` char(1) DEFAULT '1' COMMENT '博客使用状态  1-启用  0-禁用',
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -97,6 +98,7 @@ CREATE TABLE `cms_blog` (
 -- ----------------------------
 -- Records of cms_blog
 -- ----------------------------
+INSERT INTO `cms_blog` VALUES ('1', '和解', 'Copyright Example Company © 2014-2017', '和过去和解吧', 'Charlse', '1111', '码农', '和过去和解吧', '和过去和解吧', 'wuchao775669127', '775669127', 'echo_去踏马的梦', 'choel_wu@foxmail.com', 'https://github.com/ChoelWu', '1', null, '2018-09-14 07:31:47');
 
 -- ----------------------------
 -- Table structure for cms_comment
@@ -188,20 +190,17 @@ CREATE TABLE `cms_menu` (
 -- Records of cms_menu
 -- ----------------------------
 INSERT INTO `cms_menu` VALUES ('MENU_201808300232288030', '系统管理', '1', '0', 'gears', '0100', '#', '1', '2018-08-30 02:32:28', '2018-08-30 02:32:28');
-INSERT INTO `cms_menu` VALUES ('MENU_201808300237076705', '菜单管理', '2', 'MENU_201808300232288030', 'book', '0101', 'admin/menu/index', '1', '2018-08-30 02:37:07', '2018-08-30 02:37:07');
+INSERT INTO `cms_menu` VALUES ('MENU_201808300237076705', '菜单管理', '2', 'MENU_201808300232288030', 'book', '0101', 'admin/menu/index', '1', '2018-08-30 02:37:07', '2018-09-15 07:57:45');
 INSERT INTO `cms_menu` VALUES ('MENU_201808300240082440', '权限管理', '2', 'MENU_201808300232288030', 'toggle-on', '0102', 'admin/rule/index', '1', '2018-08-30 02:40:08', '2018-09-08 02:34:32');
 INSERT INTO `cms_menu` VALUES ('MENU_201808300241344594', '角色管理', '2', 'MENU_201808300232288030', 'user', '0103', 'admin/role/index', '1', '2018-08-30 02:41:34', '2018-08-30 02:41:34');
 INSERT INTO `cms_menu` VALUES ('MENU_201808300242103500', '用户管理', '2', 'MENU_201808300232288030', 'vcard-o', '0104', 'admin/user/index', '1', '2018-08-30 02:42:10', '2018-09-08 02:35:13');
-INSERT INTO `cms_menu` VALUES ('MENU_201809010226592963', '网站基本信息', '2', 'MENU_201808300232288030', 'gear', '0105', 'admin/system/index', '1', '2018-09-01 02:26:59', '2018-09-12 07:47:13');
 INSERT INTO `cms_menu` VALUES ('MENU_201809010246201199', '内容管理', '1', '0', 'files-o', '0200', '#', '1', '2018-09-01 02:46:20', '2018-09-01 02:46:20');
 INSERT INTO `cms_menu` VALUES ('MENU_201809010252314085', '导航管理', '2', 'MENU_201809110156247217', 'sitemap', '0401', 'admin/nav/index', '1', '2018-09-01 02:52:31', '2018-09-11 01:57:09');
 INSERT INTO `cms_menu` VALUES ('MENU_201809010315324304', '文章管理', '2', 'MENU_201809010246201199', 'file', '0203', 'admin/article/index', '1', '2018-09-01 03:15:32', '2018-09-05 09:43:25');
-INSERT INTO `cms_menu` VALUES ('MENU_201809050943051002', '标签管理', '2', 'MENU_201809010246201199', 'tag', '0202', 'admin/tag/index', '1', '2018-09-05 09:43:05', '2018-09-05 09:43:35');
+INSERT INTO `cms_menu` VALUES ('MENU_201809050943051002', '标签管理', '2', 'MENU_201809010246201199', 'tag', '0202', 'admin/tag/index', '1', '2018-09-05 09:43:05', '2018-09-17 02:49:48');
 INSERT INTO `cms_menu` VALUES ('MENU_201809070741541677', '模块管理', '2', 'MENU_201809110156247217', 'window-maximize', '0402', 'admin/module/index', '1', '2018-09-07 07:41:54', '2018-09-11 01:57:47');
 INSERT INTO `cms_menu` VALUES ('MENU_201809080228053901', '微信管理', '1', '0', 'wechat', '0300', 'admin/wechat/index', '1', '2018-09-08 02:28:05', '2018-09-08 02:28:05');
 INSERT INTO `cms_menu` VALUES ('MENU_201809080228528828', '评论管理', '2', 'MENU_201809010246201199', 'comment', '0205', 'admin/comment/index', '1', '2018-09-08 02:28:52', '2018-09-08 02:28:52');
-INSERT INTO `cms_menu` VALUES ('MENU_201809080230029492', '博客基本信息', '2', 'MENU_201809110156247217', 'info', '0405', 'admin/blog/index', '1', '2018-09-08 02:30:02', '2018-09-12 07:47:35');
-INSERT INTO `cms_menu` VALUES ('MENU_201809080240134377', '用户信息管理', '1', '0', 'vcard', '0400', 'admin/user_info/index', '1', '2018-09-08 02:40:13', '2018-09-08 02:40:13');
 INSERT INTO `cms_menu` VALUES ('MENU_201809080811077112', '海报管理', '2', 'MENU_201809110156247217', 'picture-o', '0403', 'admin/poster/index', '1', '2018-09-08 08:11:07', '2018-09-11 01:58:23');
 INSERT INTO `cms_menu` VALUES ('MENU_201809080813149756', '广告位管理', '2', 'MENU_201809110156247217', 'bullhorn', '0404', 'admin/slogan/index', '1', '2018-09-08 08:13:14', '2018-09-12 07:45:58');
 INSERT INTO `cms_menu` VALUES ('MENU_201809110156247217', '博客管理', '1', '0', 'sliders', '0500', '#', '1', '2018-09-11 01:56:24', '2018-09-11 01:56:24');
