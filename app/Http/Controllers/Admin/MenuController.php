@@ -52,12 +52,7 @@ class MenuController extends CommonController
             $is_post = $request->isMethod("post");
             if ($is_post) {
                 $data = $request->all();
-                if ('0' == $data['parent_id']) {
-                    $data['level'] = '1';
-                } else {
-                    $parent_menu_level = Menu::where('id', $data['parent_id'])->value('level');
-                    empty($parent_menu_level) ? $data['level'] = '1' : $data['level'] = $parent_menu_level + 1;
-                }
+                '0' == $data['parent_id'] ? $data['level'] = '1' : $data['level'] = '2';
                 if ($data['level'] <= '2') {
                     $data['id'] = setModelId("Menu");
                     unset($data['_token']);
@@ -103,10 +98,11 @@ class MenuController extends CommonController
             $is_post = $request->isMethod("post");
             if ($is_post) {
                 $data = $request->all();
+                '0' == $data['parent_id'] ? $data['level'] = '1' : $data['level'] = '2';
                 $id = $data['id'];
                 $menu = Menu::find($id);
                 $exist = Menu::where('parent_id', $id)->exists();
-                if (!$exist || $menu->status != $data['status']) {
+                if (!$exist || ($exist && $menu->status == $data['status'])) {
                     unset($data['_token']);
                     unset($data['id']);
                     try {

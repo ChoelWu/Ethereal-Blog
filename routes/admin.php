@@ -12,7 +12,6 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
     //后台首页
     Route::get('index', 'IndexController@index');
     Route::any('test', 'IndexController@test');
-
     //菜单管理
     Route::get('menu/index', 'MenuController@index');
     Route::get('menu/add', 'MenuController@add');
@@ -22,15 +21,15 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
     Route::post('menu/delete', 'MenuController@delete');
     Route::post('menu/update_status', 'MenuController@updateStatus');
     Route::get('menu/get_menu_level', 'MenuController@getMenulevel');
-    //用户管理
-    Route::get('user/index', 'UserController@index');
-    Route::get('user/add', 'UserController@add');
-    Route::post('user/add', 'UserController@add');
-    Route::get('user/edit/{id?}', 'UserController@edit');
-    Route::post('user/edit', 'UserController@edit');
-    Route::get('user/upload', 'UserController@upload');
-    Route::get('user/delete', 'UserController@delete');
-    Route::get('user/update_status', 'UserController@updateStatus');
+    //权限规则管理
+    Route::get('rule/index', 'RuleController@index');
+    Route::post('rule/index', 'RuleController@index');
+    Route::get('rule/add', 'RuleController@add');
+    Route::post('rule/add', 'RuleController@add');
+    Route::get('rule/edit/{id?}', 'RuleController@edit');
+    Route::post('rule/edit', 'RuleController@edit');
+    Route::get('rule/delete', 'RuleController@delete');
+    Route::get('rule/update_status', 'RuleController@updateStatus');
     //角色管理
     Route::get('role/index', 'RoleController@index');
     Route::get('role/add', 'RoleController@add');
@@ -41,26 +40,17 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
     Route::get('role/update_status', 'RoleController@updateStatus');
     Route::post('role/authorize', 'RoleController@authorizeRole');
     Route::get('role/get_authorize', 'RoleController@getAuthorize');
-    //权限规则管理
-    Route::get('rule/index', 'RuleController@index');
-    Route::post('rule/index', 'RuleController@index');
-    Route::get('rule/add', 'RuleController@add');
-    Route::post('rule/add', 'RuleController@add');
-    Route::get('rule/edit/{id?}', 'RuleController@edit');
-    Route::post('rule/edit', 'RuleController@edit');
-    Route::get('rule/delete', 'RuleController@delete');
-    Route::get('rule/update_status', 'RuleController@updateStatus');
-    //基本信息配置
-    Route::get('info/index', 'InfoController@index');
-    //导航管理
-    Route::get('nav/index', 'NavController@index');
-    Route::get('nav/add', 'NavController@add');
-    Route::post('nav/add', 'NavController@add');
-    Route::get('nav/edit/{id?}', 'NavController@edit');
-    Route::post('nav/edit', 'NavController@edit');
-    Route::get('nav/delete', 'NavController@delete');
-    Route::get('nav/update_status', 'NavController@updateStatus');
-    Route::get('nav/get_nav_level', 'NavController@getNavlevel');
+    //用户管理
+    Route::get('user/index', 'UserController@index');
+    Route::get('user/add', 'UserController@add');
+    Route::post('user/add', 'UserController@add');
+    Route::get('user/edit/{id?}', 'UserController@edit');
+    Route::post('user/edit', 'UserController@edit');
+    Route::get('user/upload', 'UserController@upload');
+    Route::get('user/delete', 'UserController@delete');
+    Route::get('user/update_status', 'UserController@updateStatus');
+    //系统配置
+    Route::get('system/index', 'SystemController@index');
     //标签管理
     Route::get('tag/index', 'TagController@index');
     Route::get('tag/add', 'TagController@add');
@@ -87,6 +77,15 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
     Route::get('comment/view', 'CommentController@view');
     Route::get('comment/delete', 'CommentController@delete');
     Route::get('comment/stick', 'CommentController@stick');
+    //导航管理
+    Route::get('nav/index', 'NavController@index');
+    Route::get('nav/add', 'NavController@add');
+    Route::post('nav/add', 'NavController@add');
+    Route::get('nav/edit/{id?}', 'NavController@edit');
+    Route::post('nav/edit', 'NavController@edit');
+    Route::get('nav/delete', 'NavController@delete');
+    Route::get('nav/update_status', 'NavController@updateStatus');
+    Route::get('nav/get_nav_level', 'NavController@getNavlevel');
     //海报管理
     Route::get('poster/index', 'PosterController@index');
     Route::post('poster/add', 'PosterController@add');
@@ -106,17 +105,9 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
     //博客基本信息
     Route::get('blog/index', 'BlogController@index');
     Route::post('blog/modify', 'BlogController@modify');
-
-
-
-
-
-
-
-
-
+    //用户个人基本信息配置
+    Route::get('info/index', 'InfoController@index');
 
 
     Route::get('send_email', 'MailtestController@sendEmail');
-
 });
