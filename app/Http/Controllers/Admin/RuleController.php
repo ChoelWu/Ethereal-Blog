@@ -25,6 +25,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Rule;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class RuleController extends CommonController
 {
@@ -146,39 +147,62 @@ class RuleController extends CommonController
     public function delete(Request $request)
     {
         $is_ajax = $request->ajax();
-        $rel = '';
+        $flag = false;
         if ($is_ajax) {
-            $rule_id = $request->rule_id;
-            $rel = Rule::destroy($rule_id);
+            $id = $request->id;
+            $rule = Rule::find($id);
+            try {
+                $rel = $rule->delete();
+                $rel ? $flag = true : $flag = false;
+            } catch (\Exception $e) {
+                Log::info($e->getMessage());
+            }
         }
-        $is_delete = empty($rel);
-        if (!$is_delete) {
-            $rel_arr = [
-                'status' => '200',
-                'message' => '规则删除成功！'
+        if ($flag) {
+            $result = [
+                "status" => "200",
+                "message" => "权限规则删除成功！"
             ];
         } else {
-            $rel_arr = [
-                'status' => '400',
-                'message' => '规则删除失败！'
+            $result = [
+                "status" => "400",
+                "message" => "权限规则删除失败！"
             ];
         }
-        $rel_arr['title'] = '删除规则';
-        return $rel_arr;
+        return json_encode($result);
     }
 
     /**
      * 更改状态
      * @param Request $request
+     * @return string
      */
     public function updateStatus(Request $request)
     {
         $is_ajax = $request->ajax();
+        $flag = false;
         if ($is_ajax) {
-            $rule_id = $request->rule_id;
-            $user = Rule::select('id', 'status')->find($rule_id);
-            $user->status == '1' ? $user->status = '0' : $user->status = '1';
-            $user->save();
+            $id = $request->id;
+            $rule = Rule::find($id);
+            try {
+                $rule->status == '1' ? $rule->status = '0' : $rule->status = '1';
+                $rel = $rule->save();
+                $rel ? $flag = true : $flag = false;
+            } catch (\Exception $e) {
+                Log::info($e->getMessage());
+            }
+            if ($flag) {
+                $result = [
+                    "status" => "200",
+                    "message" => "权限规则状态修改成功！"
+                ];
+            } else {
+                $result = [
+                    "status" => "400",
+                    "message" => "权限规则状态修改失败！"
+                ];
+            }
+            return json_encode($result);
         }
     }
 }

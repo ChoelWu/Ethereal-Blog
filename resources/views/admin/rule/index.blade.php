@@ -1,6 +1,6 @@
 @extends('admin.common.layout')
 @section('title')
-    index
+    {{ $title['title'] }}
 @endsection
 @section('content')
     <div class="row wrapper border-bottom white-bg page-heading">
@@ -142,42 +142,46 @@
                 window.location.href = "{{ url('admin/rule/edit') }}/" + $(this).data("id");
             });
             $(".delete-rule").click(function () {
-                var is_disabled = $(this).attr("disabled");
-                if (is_disabled != "disabled") {
-                    var rule_id = $(this).data("id");
-                    $('#action-modal').find('.modal-body').html('<h3><i class="fa fa-exclamation-triangle text-warning"></i> 是否要删除用户？</h3>');
-                    $('#action-modal').modal('show');
-                    $('#action-modal').find('.confirm').click(function () {
-                        $('#action-modal').modal('hide');
-                        $('#action-modal').on('hidden.bs.modal', function () {
-                            $.get("{{ url('admin/rule/delete') }}", {"rule_id": rule_id}, function (data, status) {
-                                $('#message-modal-label').html(data['title']);
-                                if ('success' == status) {
-                                    if ('200' == data['status']) {
-                                        $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-check-square text-info"></i> ' + data['message'] + '</h3>');
-                                    } else {
-                                        $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-exclamation-triangle text-danger"></i> ' + data['message'] + '</h3>');
-                                    }
-                                }
-                            });
-                        });
-                        setTimeout(function () {
-                            $("#message-modal").modal({
-                                keyboard: false,
-                                backdrop: false
-                            });
-                            $('#message-modal').modal('show');
-                        }, 600);
-                        setTimeout(function () {
-                            location.reload();
-                        }, 2500);
-                    });
-                }
+                var id = $(this).data("id");
+                var token = "{{ csrf_token() }}";
+                var url = "{{ url('admin/rule/delete') }}";
+                var type = "2";
+                var refresh = {
+                    type: "1",
+                    timeout: 2000,
+                    url: "{{ url('admin/rule/index') }}",
+                };
+                var confirmData = {
+                    type: "warning",
+                    title: "你确定要删除权限规则吗？",
+                    message: ""
+                };
+                var ajaxData = {
+                    url: url,
+                    data: {id: id, _token: token}
+                };
+                showAjaxMessage(type, confirmData, ajaxData, refresh);
             });
             $(".edit-rule-status").click(function () {
-                $.get("{{ url('admin/rule/update_status') }}", {"rule_id": $(this).data("id")}, function () {
-                    location.reload();
-                });
+                var id = $(this).data("id");
+                var token = "{{ csrf_token() }}";
+                var url = "{{ url('admin/rule/update_status') }}";
+                var type = "2";
+                var refresh = {
+                    type: "1",
+                    timeout: 2000,
+                    url: "{{ url('admin/rule/index') }}",
+                };
+                var confirmData = {
+                    type: "warning",
+                    title: "你确定要更改菜权限规则态吗？",
+                    message: ""
+                };
+                var ajaxData = {
+                    url: url,
+                    data: {id: id, _token: token}
+                };
+                showAjaxMessage(type, confirmData, ajaxData, refresh);
             });
             $('#menu-selection').change(function () {
                 $("#index-rule-form").attr("action", '').submit();

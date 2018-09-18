@@ -214,11 +214,7 @@
             $("#add-menu-submit").click(function () {
                 $('#edit-menu-form').bootstrapValidator('validate');
                 var flag = $('#edit-menu-form').data('bootstrapValidator').isValid();
-                if (elem.checked) {
-                    $('input[name="status"]').val('1');
-                } else {
-                    $('input[name="status"]').val('0');
-                }
+                setSwitchInInput(elem, "status");
                 if (flag) {
                     var data = $("#edit-menu-form").serialize();
                     var type = "1";

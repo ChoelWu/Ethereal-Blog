@@ -28,8 +28,8 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
     Route::post('rule/add', 'RuleController@add');
     Route::get('rule/edit/{id?}', 'RuleController@edit');
     Route::post('rule/edit', 'RuleController@edit');
-    Route::get('rule/delete', 'RuleController@delete');
-    Route::get('rule/update_status', 'RuleController@updateStatus');
+    Route::post('rule/delete', 'RuleController@delete');
+    Route::post('rule/update_status', 'RuleController@updateStatus');
     //角色管理
     Route::get('role/index', 'RoleController@index');
     Route::get('role/add', 'RoleController@add');
