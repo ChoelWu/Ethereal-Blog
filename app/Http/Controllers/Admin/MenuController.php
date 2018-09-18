@@ -22,6 +22,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Menu;
+use App\Models\Rule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -148,9 +149,14 @@ class MenuController extends CommonController
             $exist = Menu::where('parent_id', $id)->exists();
             if (!$exist) {
                 $menu = Menu::find($id);
+                $rule = Rule::where('menu_id', $id)->first();
+                $ext_rel = true;
                 try {
                     $rel = $menu->delete();
-                    $rel ? $flag = true : $flag = false;
+                    if(!empty($rule)) {
+                        $ext_rel = $rule->delete();
+                    }
+                    $rel && $ext_rel ? $flag = true : $flag = false;
                 } catch (\Exception $e) {
                     Log::info($e->getMessage());
                 }
