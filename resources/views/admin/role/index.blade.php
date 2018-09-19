@@ -5,87 +5,67 @@
 @section('head_files')
     <link href="{{ asset(config('view.admin_static_path') . '/css/plugins/iCheck/custom.css') }}" rel="stylesheet">
 @endsection
-@section('content')
-    <div class="modal inmodal fade" id="role-authorize-modal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal"><span
-                                aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                    <h4 class="modal-title">角色授权</h4>
-                </div>
-                <div class="modal-body">
+
+@section('inputModal')
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
                     <div class="row">
-                        <div class="col-lg-12">
-                            <div class="ibox float-e-margins">
-                                <div class="ibox-content">
-                                    <div class="row">
-                                        <div class="col-sm-2 col-sm-offset-10">
-                                            <button type="button" class="btn btn-sm btn-default"
-                                                    id="clear-all-rule"> 清空
-                                            </button>
-                                            <button type="button" class="btn btn-sm btn-info"
-                                                    id="choose-all-rule"> 全选
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered">
-                                            <thead>
-                                            <tr>
-                                                <th>权限名称</th>
-                                                <th>权限名称</th>
-                                                <th>权限名称</th>
-                                                <th>权限名称</th>
-                                                <th>权限名称</th>
-                                                <th>权限名称</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            @foreach($rule_list as $menu)
-                                                <tr>
-                                                    <th colspan="6">{{ $menu->name }}
-                                                        <span class="pull-right">
-                                                            <input type="checkbox"
-                                                                   class="i-checks {{ $menu->id }} check-menu-all"
-                                                                   data-menu-id="{{ $menu->id }}" name="input[]">
-                                                            全选
-                                                        </span>
-                                                    </th>
-                                                </tr>
-                                                <tr>
-                                                    @foreach($menu->rules as $key => $rule)
-                                                        <td>
-                                                            <input type="checkbox"
-                                                                   class="i-checks {{ $menu->id }} check-item"
-                                                                   data-menu-id="{{ $menu->id }}"
-                                                                   name="rule-item"
-                                                                   value="{{ $rule->route }}"> {{ $rule->name }}
-                                                        </td>
-                                                        @if(($key + 1) / 6 == 0)
-                                                </tr>
-                                                <tr>
-                                                    @endif
-                                                    @endforeach
-                                                </tr>
-                                            @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
-
-                                </div>
-                            </div>
+                        <div class="col-sm-2 col-sm-offset-10">
+                            <button type="button" class="btn btn-sm btn-default"
+                                    id="clear-all-rule"> 清空
+                            </button>
+                            <button type="button" class="btn btn-sm btn-info"
+                                    id="choose-all-rule"> 全选
+                            </button>
                         </div>
-
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
-                    <div class="btn btn-primary" data-item-id="" id="submit-rules">提交</div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>权限名称</th>
+                                <th>权限名称</th>
+                                <th>权限名称</th>
+                                <th>权限名称</th>
+                                <th>权限名称</th>
+                                <th>权限名称</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($rule_list as $menu)
+                                <tr>
+                                    <th colspan="6">{{ $menu->name }}
+                                        <span class="pull-right">
+                                            <input type="checkbox" class="i-checks {{ $menu->id }} check-menu-all"
+                                                   data-menu-id="{{ $menu->id }}" name="input[]"> 全选
+                                        </span>
+                                    </th>
+                                </tr>
+                                <tr>
+                                    @foreach($menu->rules as $key => $rule)
+                                        <td>
+                                            <input type="checkbox" class="i-checks {{ $menu->id }} check-item"
+                                                   data-menu-id="{{ $menu->id }}" name="rule-item"
+                                                   value="{{ $rule->route }}"> {{ $rule->name }}
+                                        </td>
+                                        @if(($key + 1) / 6 == 0)
+                                </tr>
+                                <tr>
+                                    @endif
+                                    @endforeach
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+@endsection
+@section('content')
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-lg-10">
             <h2>{{ $title['title'] }}</h2>
@@ -142,7 +122,7 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <button class="btn btn-xs btn-warning authorize" id="role-authorize"
+                                        <button class="btn btn-xs btn-warning role-authorize" id="role-authorize"
                                                 data-id="{{ $role['id'] }}" title="授权" data-toggle="modal">
                                             <i class="fa fa-check-square-o"></i>
                                         </button>
@@ -220,11 +200,11 @@
                 };
                 showAjaxMessage(type, confirmData, ajaxData, refresh);
             });
-            $("#role-authorize").click(function () {
-                $('#role-authorize-modal').modal('show');
-                $('#submit-rules').data('item-id', $(this).data('id'));
+            $(".role-authorize").click(function () {
+                inputModal("animated bounceInDown", "lg", "添加菜单");
+                $('#submit-btn').data('item-id', $(this).data('id'));
                 $.get("{{ url('admin/role/get_authorize') }}", {"role_id": $(this).data("id")}, function (data) {
-                    $('.i-checks').each(function (index, element) {
+                    $('.i-checks').each(function () {
                         var ele = $(this);
                         $.each(data, function (name, value) {
                             if (ele.val() == value) {
@@ -252,41 +232,28 @@
                 var menu_id = $(this).data('menu-id');
                 $('.check-menu-all.' + menu_id).iCheck('uncheck');
             });
-            $('#submit-rules').click(function () {
+            $('#submit-btn').click(function () {
+                $("#inputModal").modal("hide");
                 var checkBoxArr = [];
                 var token = "{{ csrf_token() }}";
                 var role_id = $(this).data('item-id');
                 $('input[name="rule-item"]:checked').each(function () {
                     checkBoxArr.push($(this).val());
                 });
-                $.ajax({
-                    type: "post",
-                    url: "{{ url('admin/role/authorize') }}",
-                    cache: false,
-                    data: {role_id: role_id, rules: checkBoxArr, _token: token},
-                    dataType: "json",
-                    success: function (data) {
-                        $('#role-authorize-modal').modal('hide');
-                        $('#role-authorize-modal').on('hidden.bs.modal', function () {
-                            $('#submit-rules').data('item-id', '');
-                            $('#message-modal-label').html(data['title']);
-                            if ('200' == data['status']) {
-                                $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-check-square text-info"></i> ' + data['message'] + '</h3>');
-                            } else {
-                                $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-exclamation-triangle text-danger"></i> ' + data['message'] + '</h3>');
-                            }
-                        });
-                        setTimeout(function () {
-                            $("#message-modal").modal({
-                                keyboard: false,
-                                backdrop: false
-                            });
-                            $('#message-modal').modal('show');
-                        }, 600);
-                        setTimeout(function () {
-                            window.location.href = '';
-                        }, 2500);
-                    }
+                $('#inputModal').on('hidden.bs.modal', function () {
+                    ajaxFromServer("{{ url('admin/role/authorize') }}", {
+                        role_id: role_id,
+                        rules: checkBoxArr,
+                        _token: token
+                    }, function (data) {
+                        if (data['status'] == '200') {
+                            showMessageModal("animated flipInX", "sm", "success", "授权成功！", 2000);
+                        } else if (data['status'] == '400') {
+                            showMessageModal("animated flipInX", "sm", "error", "授权失败！", 2000);
+                        }
+                    }, function () {
+                        showMessageModal("animated flipInX", "sm", "error", "系统异常！", 2000);
+                    });
                 });
             });
         });

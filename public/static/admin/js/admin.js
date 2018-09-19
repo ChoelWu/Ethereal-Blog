@@ -64,11 +64,10 @@ function confirmModal(effect, size, action, message) {
  * @param title
  * @param content
  */
-function inputModal(effect, size, title, content) {
+function inputModal(effect, size, title) {
     $("#inputModal").find(".modal-content").addClass(effect);
-    $("#confirmModal").find(".modal-dialog").addClass("modal-" + size);
+    $("#inputModal").find(".modal-dialog").addClass("modal-" + size);
     $("#inputModal").find(".modal-title").html(title);
-    $("#inputModal").find(".modal-body").html(content);
     $("#inputModal").modal("show");
 }
 
