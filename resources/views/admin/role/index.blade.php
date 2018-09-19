@@ -201,9 +201,10 @@
                 showAjaxMessage(type, confirmData, ajaxData, refresh);
             });
             $(".role-authorize").click(function () {
-                inputModal("animated bounceInDown", "lg", "添加菜单");
-                $('#submit-btn').data('item-id', $(this).data('id'));
+                $('#submit-btn').data('item', $(this).data('id'));
+                inputModal("animated bounceInDown", "lg", "角色授权");
                 $.get("{{ url('admin/role/get_authorize') }}", {"role_id": $(this).data("id")}, function (data) {
+                    $('.i-checks').iCheck('uncheck');
                     $('.i-checks').each(function () {
                         var ele = $(this);
                         $.each(data, function (name, value) {
@@ -212,6 +213,28 @@
                             }
                         });
                     });
+                });
+            });
+            $('#submit-btn').click(function () {
+                $("#inputModal").modal("hide");
+                var checkBoxArr = [];
+                var token = "{{ csrf_token() }}";
+                var role_id = $(this).data('item');
+                $('input[name="rule-item"]:checked').each(function () {
+                    checkBoxArr.push($(this).val());
+                });
+                ajaxFromServer("{{ url('admin/role/authorize') }}", {
+                    role_id: role_id,
+                    rules: checkBoxArr,
+                    _token: token
+                }, function (data) {
+                    if (data['status'] == '200') {
+                        showMessageModal("animated flipInX", "sm", "success", "授权成功！", 2000);
+                    } else if (data['status'] == '400') {
+                        showMessageModal("animated flipInX", "sm", "error", "授权失败！", 2000);
+                    }
+                }, function () {
+                    showMessageModal("animated flipInX", "sm", "error", "系统异常！", 2000);
                 });
             });
             $('.i-checks').iCheck({
@@ -231,30 +254,6 @@
             $('.check-item').on('ifUnchecked', function () {
                 var menu_id = $(this).data('menu-id');
                 $('.check-menu-all.' + menu_id).iCheck('uncheck');
-            });
-            $('#submit-btn').click(function () {
-                $("#inputModal").modal("hide");
-                var checkBoxArr = [];
-                var token = "{{ csrf_token() }}";
-                var role_id = $(this).data('item-id');
-                $('input[name="rule-item"]:checked').each(function () {
-                    checkBoxArr.push($(this).val());
-                });
-                $('#inputModal').on('hidden.bs.modal', function () {
-                    ajaxFromServer("{{ url('admin/role/authorize') }}", {
-                        role_id: role_id,
-                        rules: checkBoxArr,
-                        _token: token
-                    }, function (data) {
-                        if (data['status'] == '200') {
-                            showMessageModal("animated flipInX", "sm", "success", "授权成功！", 2000);
-                        } else if (data['status'] == '400') {
-                            showMessageModal("animated flipInX", "sm", "error", "授权失败！", 2000);
-                        }
-                    }, function () {
-                        showMessageModal("animated flipInX", "sm", "error", "系统异常！", 2000);
-                    });
-                });
             });
         });
     </script>
