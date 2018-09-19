@@ -62,33 +62,24 @@ class RuleController extends CommonController
     public function add(Request $request)
     {
         $is_ajax = $request->ajax();
-        $is_post = $request->isMethod("post");
         if ($is_ajax) {
+            $is_post = $request->isMethod("post");
             if ($is_post) {
                 $data = $request->all();
-                unset($data['_token']);
-                $data['id'] = setModelId("Rule");
                 if ('0' != $data['menu_id']) {
+                    $data['id'] = setModelId("Rule");
+                    unset($data['_token']);
                     try {
-                        Rule::create($data);
-                        $rel = [
-                            "status" => "200",
-                            "message" => "规则添加成功！"
-                        ];
+                        $rel = Rule::create($data);
+                        if (!empty($rel)) {
+                            return $this->returnMessage('success', '权限规则菜单添加成功！');
+                        }
                     } catch (\Exception $e) {
-                        $rel = [
-                            "status" => "400",
-                            "message" => "规则添加失败！" . $e->getMessage()
-                        ];
+                        Log::info($e->getMessage());
                     }
-                } else {
-                    $rel = [
-                        "status" => "400",
-                        "message" => "规则添加失败，请选择所属菜单！"
-                    ];
                 }
-                return $rel;
             }
+            return $this->returnMessage('error', '权限规则菜单添加失败！');
         } else {
             $title = ['title' => '规则管理', 'sub_title' => '添加规则'];
             return view('admin.rule.add', ['menu_list' => session('menu'), 'title' => $title]);
@@ -104,34 +95,26 @@ class RuleController extends CommonController
     public function edit(Request $request, $id = null)
     {
         $is_ajax = $request->ajax();
-        $is_post = $request->isMethod("post");
         if ($is_ajax) {
+            $is_post = $request->isMethod("post");
             if ($is_post) {
                 $data = $request->all();
                 $id = $data['id'];
+                $rule = Rule::find($id);
                 unset($data["_token"]);
                 unset($data["id"]);
                 if ('0' != $data['menu_id']) {
                     try {
-                        Rule::where('id', $id)->update($data);
-                        $rel = [
-                            'status' => '200',
-                            'message' => '规则修改成功！'
-                        ];
+                        $rel = $rule->update($data);
+                        if ($rel) {
+                            return $this->returnMessage('success', '权限规则修改成功！');
+                        }
                     } catch (\Exception $e) {
-                        $rel = [
-                            "status" => "400",
-                            "message" => "规则修改失败！" . $e->getMessage()
-                        ];
+                        Log::info($e->getMessage());
                     }
-                } else {
-                    $rel = [
-                        "status" => "400",
-                        "message" => "规则添加失败，请选择所属菜单！"
-                    ];
                 }
-                return $rel;
             }
+            return $this->returnMessage('error', '权限规则修改失败！');
         } else {
             $title = ['title' => '规则管理', 'sub_title' => '修改规则信息'];
             $rule = Rule::select('id', 'name', 'route', 'menu_id', 'status', 'sort')->find($id);
@@ -147,29 +130,19 @@ class RuleController extends CommonController
     public function delete(Request $request)
     {
         $is_ajax = $request->ajax();
-        $flag = false;
         if ($is_ajax) {
             $id = $request->id;
             $rule = Rule::find($id);
             try {
                 $rel = $rule->delete();
-                $rel ? $flag = true : $flag = false;
+                if ($rel) {
+                    return $this->returnMessage('success', '权限规则删除成功！');
+                }
             } catch (\Exception $e) {
                 Log::info($e->getMessage());
             }
         }
-        if ($flag) {
-            $result = [
-                "status" => "200",
-                "message" => "权限规则删除成功！"
-            ];
-        } else {
-            $result = [
-                "status" => "400",
-                "message" => "权限规则删除失败！"
-            ];
-        }
-        return json_encode($result);
+        return $this->returnMessage('error', '权限规则删除失败！');
     }
 
     /**
@@ -180,29 +153,19 @@ class RuleController extends CommonController
     public function updateStatus(Request $request)
     {
         $is_ajax = $request->ajax();
-        $flag = false;
         if ($is_ajax) {
             $id = $request->id;
             $rule = Rule::find($id);
             try {
                 $rule->status == '1' ? $rule->status = '0' : $rule->status = '1';
                 $rel = $rule->save();
-                $rel ? $flag = true : $flag = false;
+                if ($rel) {
+                    return $this->returnMessage('success', '权限规则状态修改成功！');
+                }
             } catch (\Exception $e) {
                 Log::info($e->getMessage());
             }
-            if ($flag) {
-                $result = [
-                    "status" => "200",
-                    "message" => "权限规则状态修改成功！"
-                ];
-            } else {
-                $result = [
-                    "status" => "400",
-                    "message" => "权限规则状态修改失败！"
-                ];
-            }
-            return json_encode($result);
+            return $this->returnMessage('error', '权限规则状态修改失败！');
         }
     }
 }

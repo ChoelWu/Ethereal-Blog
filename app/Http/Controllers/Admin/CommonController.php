@@ -27,9 +27,24 @@ class CommonController extends Controller
 {
     protected $menu_list;
 
-    public function commonUpdateStatus($itemModel, $name)
+    public function returnMessage($action, $message)
     {
-
-        return $result;
+        if ($action == 'success') {
+            $result = [
+                "status" => "1",
+                "message" => $message
+            ];
+        } else if ($action == 'error') {
+            $result = [
+                "status" => "0",
+                "message" => $message
+            ];
+        } else {
+            $result = [
+                "status" => "2",
+                "message" => $message
+            ];
+        }
+        return json_encode($result);
     }
 }

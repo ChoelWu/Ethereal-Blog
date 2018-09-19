@@ -173,14 +173,14 @@
                     },
                     sort: {
                         validators: {
+                            stringLength: {
+                                min: 4,
+                                max: 4,
+                                message: '菜单序号在4个数字以内！'
+                            },
                             regexp: {
                                 regexp: /^[0-9]+$/,
                                 message: '请输入数字作为菜单序号！'
-                            },
-                            stringLength: {
-                                min: 0,
-                                max: 10,
-                                message: '序号长度在10以内！'
                             }
                         }
                     },

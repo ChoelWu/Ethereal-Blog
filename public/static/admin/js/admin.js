@@ -151,13 +151,13 @@ function showAjaxMessage(type, confirmData, ajaxData, refresh) {
         $("#confirmModalButton").click(function () {
             $("#confirmModal").modal("hide");
             ajaxFromServer(ajaxData['url'], ajaxData['data'], function (data) {
-                if ('200' == data['status']) {
+                if ('1' == data['status']) {
                     showMessageModal("animated flipInX", "sm", "success", data['message'], refresh['timeout'], function () {
                         if ("1" == refresh["type"]) {
                             window.location.href = refresh['url'];
                         }
                     });
-                } else {
+                } else if ('0' == data['status']) {
                     showMessageModal("animated flipInX", "sm", "error", data['message'], refresh['timeout'], function () {
                         if ("1" == refresh["type"]) {
                             window.location.href = refresh['url'];
@@ -175,12 +175,12 @@ function showAjaxMessage(type, confirmData, ajaxData, refresh) {
     } else if ("2" == type) {
         confirmAlert(confirmData['type'], confirmData['title'], confirmData['message'], function () {
             ajaxFromServer(ajaxData['url'], ajaxData['data'], function (data) {
-                if ('200' == data['status']) {
+                if ('1' == data['status']) {
                     showMessageAlert("success", data['message'], "", refresh['timeout']);
                     if ("1" == refresh["type"]) {
                         refreshPage(refresh['timeout'], refresh['url']);
                     }
-                } else {
+                } else if ('0' == data['status']) {
                     showMessageAlert("error", data['message'], "", refresh['timeout']);
                     if ("1" == refresh["type"]) {
                         refreshPage(refresh['timeout'], refresh['url']);
