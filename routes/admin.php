@@ -36,8 +36,8 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
     Route::post('role/add', 'RoleController@add');
     Route::get('role/edit/{id?}', 'RoleController@edit');
     Route::post('role/edit', 'RoleController@edit');
-    Route::get('role/delete', 'RoleController@delete');
-    Route::get('role/update_status', 'RoleController@updateStatus');
+    Route::post('role/delete', 'RoleController@delete');
+    Route::post('role/update_status', 'RoleController@updateStatus');
     Route::post('role/authorize', 'RoleController@authorizeRole');
     Route::get('role/get_authorize', 'RoleController@getAuthorize');
     //用户管理

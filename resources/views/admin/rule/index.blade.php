@@ -174,7 +174,7 @@
                 };
                 var confirmData = {
                     type: "warning",
-                    title: "你确定要更改菜权限规则态吗？",
+                    title: "你确定要更改权限规则状态吗？",
                     message: ""
                 };
                 var ajaxData = {

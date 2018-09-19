@@ -1,6 +1,6 @@
 @extends('admin.common.layout')
 @section('title')
-    index
+    {{ $title['title'] }}
 @endsection
 @section('head_files')
     <link href="{{ asset(config('view.admin_static_path') . '/css/plugins/iCheck/custom.css') }}" rel="stylesheet">
@@ -98,8 +98,7 @@
                 </li>
             </ol>
         </div>
-        <div class="col-lg-2">
-        </div>
+        <div class="col-lg-2"></div>
     </div>
     <div class="wrapper wrapper-content animated fadeInRight">
         <div class="row">
@@ -180,42 +179,46 @@
                 window.location.href = "{{ url('admin/role/edit') }}/" + $(this).data("id");
             });
             $(".delete-role").click(function () {
-                var is_disabled = $(this).attr("disabled");
-                if (is_disabled != "disabled") {
-                    var role_id = $(this).data("id");
-                    $('#action-modal').find('.modal-body').html('<h3><i class="fa fa-exclamation-triangle text-warning"></i> 是否要删除用户？</h3>');
-                    $('#action-modal').modal('show');
-                    $('#action-modal').find('.confirm').click(function () {
-                        $('#action-modal').modal('hide');
-                        $('#action-modal').on('hidden.bs.modal', function () {
-                            $.get("{{ url('admin/role/delete') }}", {"role_id": role_id}, function (data, status) {
-                                $('#message-modal-label').html(data['title']);
-                                if ('success' == status) {
-                                    if ('200' == data['status']) {
-                                        $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-check-square text-info"></i> ' + data['message'] + '</h3>');
-                                    } else {
-                                        $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-exclamation-triangle text-danger"></i> ' + data['message'] + '</h3>');
-                                    }
-                                }
-                            });
-                        });
-                        setTimeout(function () {
-                            $("#message-modal").modal({
-                                keyboard: false,
-                                backdrop: false
-                            });
-                            $('#message-modal').modal('show');
-                        }, 600);
-                        setTimeout(function () {
-                            location.reload();
-                        }, 2500);
-                    });
-                }
+                var id = $(this).data("id");
+                var token = "{{ csrf_token() }}";
+                var url = "{{ url('admin/role/delete') }}";
+                var type = "2";
+                var refresh = {
+                    type: "1",
+                    timeout: 2000,
+                    url: "{{ url('admin/role/index') }}",
+                };
+                var confirmData = {
+                    type: "warning",
+                    title: "你确定要删除角色吗？",
+                    message: ""
+                };
+                var ajaxData = {
+                    url: url,
+                    data: {id: id, _token: token}
+                };
+                showAjaxMessage(type, confirmData, ajaxData, refresh);
             });
             $(".edit-role-status").click(function () {
-                $.get("{{ url('admin/role/update_status') }}", {"role_id": $(this).data("id")}, function () {
-                    location.reload();
-                });
+                var id = $(this).data("id");
+                var token = "{{ csrf_token() }}";
+                var url = "{{ url('admin/role/update_status') }}";
+                var type = "2";
+                var refresh = {
+                    type: "1",
+                    timeout: 2000,
+                    url: "{{ url('admin/role/index') }}",
+                };
+                var confirmData = {
+                    type: "warning",
+                    title: "你确定要更改角色状态吗？",
+                    message: ""
+                };
+                var ajaxData = {
+                    url: url,
+                    data: {id: id, _token: token}
+                };
+                showAjaxMessage(type, confirmData, ajaxData, refresh);
             });
             $("#role-authorize").click(function () {
                 $('#role-authorize-modal').modal('show');
@@ -289,6 +292,3 @@
         });
     </script>
 @endsection
-
-
-

@@ -1,6 +1,6 @@
 @extends('admin.common.layout')
 @section('title')
-    index
+    {{ $title['sub_title'] }}
 @endsection
 @section('head_files')
     <!-- Toastr style -->
@@ -26,22 +26,19 @@
                 </li>
             </ol>
         </div>
-        <div class="col-lg-2">
-        </div>
+        <div class="col-lg-2"></div>
     </div>
     <div class="wrapper wrapper-content animated fadeInRight">
         <div class="row">
             <div class="col-lg-12">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
-                        <h5>{{ $title['sub_title'] }}
-                            <small>With custom checbox and radion elements.</small>
-                        </h5>
+                        <h5>{{ $title['sub_title'] }}</h5>
                         <div class="ibox-tools">
-                        <span class="btn btn-xs btn-warning" id="clear">
-                            <i class="fa fa-eraser"></i>
-                            清空
-                        </span>
+                            <span class="btn btn-xs btn-warning" id="clear">
+                                <i class="fa fa-eraser"></i>
+                                清空
+                            </span>
                         </div>
                     </div>
                     <div class="ibox-content">
@@ -108,53 +105,29 @@
                 }
             });
             $("#add-role-submit").click(function () {
-                if (elem.checked) {
-                    $('input[name="status"]').val('1');
-                } else {
-                    $('input[name="status"]').val('0');
-                }
-                var ajax_data;
-                var form_data = new FormData($('#add-role-form')[0]);
                 $('#add-role-form').bootstrapValidator('validate');
                 var flag = $('#add-role-form').data('bootstrapValidator').isValid();
+                setSwitchInInput(elem, "status");
                 if (flag) {
-                    $.ajax({
-                        type: "post",
+                    var data = $("#add-role-form").serialize();
+                    var type = "1";
+                    var refresh = {
+                        type: "1",
+                        timeout: 2000,
+                        url: "{{ url('admin/role/index') }}",
+                    };
+                    var confirmData = {
+                        effect: "animated bounceInDown",
+                        size: "sm",
+                        action: "submit",
+                        message: "你确定要提交吗？"
+                    };
+                    var ajaxData = {
                         url: "{{ url('admin/role/add') }}",
-                        cache: false,
-                        processData: false,
-                        contentType: false,
-                        async: false,
-                        data: form_data,
-                        dataType: "json",
-                        success: function (data) {
-                            ajax_data = data;
-                        }
-                    });
-                    $('#message-modal-label').html("添加角色");
-                    if ('200' == ajax_data['status']) {
-                        $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-check-square text-info"></i> ' + ajax_data['message'] + '</h3>');
-                    } else {
-                        $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-exclamation-triangle text-danger"></i> ' + ajax_data['message'] + '</h3>');
-                    }
-                    setTimeout(function () {
-                        $("#message-modal").modal({
-                            keyboard: false,
-                            backdrop: false
-                        });
-                        $('#message-modal').modal('show');
-                    }, 600);
-                    if ('200' == ajax_data['status']) {
-                        setTimeout(function () {
-                            window.location.href = "{{ url('admin/role/index') }}";
-                        }, 2500);
-                    } else {
-                        setTimeout(function () {
-                            $('#message-modal').modal('hide');
-                        }, 2500);
-                    }
+                        data: data
+                    };
+                    showAjaxMessage(type, confirmData, ajaxData, refresh);
                 }
-
             });
             $("#clear").click(function () {
                 $('#add-role-form').find("input[type=text]").val("");

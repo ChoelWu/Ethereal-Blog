@@ -72,14 +72,14 @@ class RuleController extends CommonController
                     try {
                         $rel = Rule::create($data);
                         if (!empty($rel)) {
-                            return $this->returnMessage('success', '权限规则菜单添加成功！');
+                            return $this->returnMessage('success', '权限规则添加成功！');
                         }
                     } catch (\Exception $e) {
                         Log::info($e->getMessage());
                     }
                 }
             }
-            return $this->returnMessage('error', '权限规则菜单添加失败！');
+            return $this->returnMessage('error', '权限规则添加失败！');
         } else {
             $title = ['title' => '规则管理', 'sub_title' => '添加规则'];
             return view('admin.rule.add', ['menu_list' => session('menu'), 'title' => $title]);

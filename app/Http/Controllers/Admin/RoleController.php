@@ -41,7 +41,7 @@ class RoleController extends CommonController
         $list = Role::select('id', 'role_name', 'status')->where('id', '<>', '1')->get();
         $user_session = json_decode(base64_decode(session('user')));
         $rule_list = Menu::with(['rules' => function ($query) use ($user_session) {
-            if('1' == $user_session->user_id) {
+            if ('1' == $user_session->user_id) {
                 $query->select('id', 'menu_id', 'name', 'route')->orderBy('sort', 'asc')->get();
             } else {
                 $query->select('id', 'menu_id', 'name', 'route')->whereIn('route', $user_session->rules)->orderBy('sort', 'asc')->get();
@@ -61,26 +61,22 @@ class RoleController extends CommonController
     public function add(Request $request)
     {
         $is_ajax = $request->ajax();
-        $is_post = $request->isMethod("post");
         if ($is_ajax) {
+            $is_post = $request->isMethod("post");
             if ($is_post) {
                 $data = $request->all();
                 unset($data['_token']);
                 $data['id'] = setModelId("Role");
                 try {
-                    Role::create($data);
-                    $rel = [
-                        "status" => "200",
-                        "message" => "角色添加成功！"
-                    ];
+                    $rel = Role::create($data);
+                    if (!empty($rel)) {
+                        return $this->returnMessage('success', '角色添加成功！');
+                    }
                 } catch (\Exception $e) {
-                    $rel = [
-                        "status" => "400",
-                        "message" => "角色添加失败！" . $e->getMessage()
-                    ];
+                    Log::info($e->getMessage());
                 }
-                return $rel;
             }
+            return $this->returnMessage('error', '角色添加失败！');
         } else {
             $title = ['title' => '角色管理', 'sub_title' => '添加角色'];
             return view('admin.role.add', ['menu_list' => session('menu'), 'title' => $title]);
@@ -96,27 +92,24 @@ class RoleController extends CommonController
     public function edit(Request $request, $id = null)
     {
         $is_ajax = $request->ajax();
-        $is_post = $request->isMethod("post");
         if ($is_ajax) {
+            $is_post = $request->isMethod("post");
             if ($is_post) {
                 $data = $request->all();
                 $id = $data['id'];
+                $role = Role::find($id);
                 unset($data["_token"]);
                 unset($data["id"]);
                 try {
-                    Role::where('id', $id)->update($data);
-                    $rel = [
-                        'status' => '200',
-                        'message' => '角色修改成功！'
-                    ];
+                    $rel = $role->update($data);
+                    if ($rel) {
+                        return $this->returnMessage('success', '角色修改成功！');
+                    }
                 } catch (\Exception $e) {
-                    $rel = [
-                        "status" => "400",
-                        "message" => "角色修改失败！" . $e->getMessage()
-                    ];
+                    Log::info($e->getMessage());
                 }
-                return $rel;
             }
+            return $this->returnMessage('error', '角色修改失败！');
         } else {
             $title = ['title' => '角色管理', 'sub_title' => '修改角色信息'];
             $role = Role::select('id', 'role_name', 'status')->find($id);
@@ -132,40 +125,47 @@ class RoleController extends CommonController
     public function delete(Request $request)
     {
         $is_ajax = $request->ajax();
-        $rel = '';
-        $role_id = $request->role_id;
         if ($is_ajax) {
-            $rel = Role::destroy($role_id);
+            $id = $request->id;
+            $rule = Role::find($id);
+            $auth = Authorize::where('role_id', $id)->first();
+            try {
+                $rel = $rule->delete();
+                if(!empty($auth)) {
+                    $rel_ext = $auth->delete();
+                    $rel = $rel && $rel_ext;
+                }
+                if ($rel) {
+                    return $this->returnMessage('success', '角色删除成功！');
+                }
+            } catch (\Exception $e) {
+                Log::info($e->getMessage());
+            }
         }
-        $is_delete = empty($rel);
-        if (!$is_delete) {
-            Authorize::where('role_id', $role_id)->delete();
-            $rel_arr = [
-                'status' => '200',
-                'message' => '角色删除成功！'
-            ];
-        } else {
-            $rel_arr = [
-                'status' => '400',
-                'message' => '角色删除失败！'
-            ];
-        }
-        $rel_arr['title'] = '删除角色';
-        return $rel_arr;
+        return $this->returnMessage('error', '角色删除失败！');
     }
 
     /**
      * 更改状态
      * @param Request $request
+     * @return string
      */
     public function updateStatus(Request $request)
     {
         $is_ajax = $request->ajax();
         if ($is_ajax) {
-            $role_id = $request->role_id;
-            $user = Role::select('id', 'status')->find($role_id);
-            $user->status == '1' ? $user->status = '0' : $user->status = '1';
-            $user->save();
+            $id = $request->id;
+            $role = Role::find($id);
+            try {
+                $role->status == '1' ? $role->status = '0' : $role->status = '1';
+                $rel = $role->save();
+                if ($rel) {
+                    return $this->returnMessage('success', '角色状态修改成功！');
+                }
+            } catch (\Exception $e) {
+                Log::info($e->getMessage());
+            }
+            return $this->returnMessage('error', '角色状态修改失败！');
         }
     }
 
