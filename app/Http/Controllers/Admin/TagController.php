@@ -46,26 +46,22 @@ class TagController extends CommonController
     public function add(Request $request)
     {
         $is_ajax = $request->ajax();
-        $is_post = $request->isMethod("post");
         if ($is_ajax) {
+            $is_post = $request->isMethod("post");
             if ($is_post) {
                 $data = $request->all();
                 unset($data['_token']);
                 $data['id'] = setModelId('Tag');
                 try {
-                    Tag::create($data);
-                    $rel = [
-                        'status' => '200',
-                        'message' => '标签添加成功！'
-                    ];
+                    $rel = Tag::create($data);
+                    if (!empty($rel)) {
+                        return $this->returnMessage('success', '标签添加成功！');
+                    }
                 } catch (\Exception $e) {
-                    $rel = [
-                        "status" => "400",
-                        "message" => "标签添加失败！" . $e->getMessage()
-                    ];
+                    Log::info($e->getMessage());
                 }
-                return $rel;
             }
+            return $this->returnMessage('error', '标签添加失败！');
         } else {
             $title = ['title' => '标签管理', 'sub_title' => '添加标签'];
             return view('admin.tag.add', ['menu_list' => session('menu'), 'title' => $title]);
@@ -81,27 +77,24 @@ class TagController extends CommonController
     public function edit(Request $request, $id = null)
     {
         $is_ajax = $request->ajax();
-        $is_post = $request->isMethod("post");
         if ($is_ajax) {
+            $is_post = $request->isMethod("post");
             if ($is_post) {
                 $data = $request->all();
                 $id = $data['id'];
                 unset($data["_token"]);
                 unset($data["id"]);
+                $tag = Tag::find($id);
                 try {
-                    Tag::where('id', $id)->update($data);
-                    $rel= [
-                        'status' => '200',
-                        'message' => '标签修改成功！'
-                    ];
-                } catch(\Exception $e) {
-                    $rel = [
-                        "status" => "400",
-                        "message" => "标签修改失败！" . $e->getMessage()
-                    ];
+                    $rel = $tag->update($data);
+                    if ($rel) {
+                        return $this->returnMessage('success', '标签修改成功！');
+                    }
+                } catch (\Exception $e) {
+                    Log::info($e->getMessage());
                 }
-                return $rel;
             }
+            return $this->returnMessage('error', '标签修改失败！');
         } else {
             $title = ['title' => '标签管理', 'sub_title' => '修改标签信息'];
             $tag = Tag::select('id', 'name', 'status')->find($id);
@@ -117,39 +110,64 @@ class TagController extends CommonController
     public function delete(Request $request)
     {
         $is_ajax = $request->ajax();
-        $rel = '';
-        $tag_id = $request->tag_id;
         if ($is_ajax) {
-            $rel = Tag::destroy($tag_id);
+            $id = $request->id;
+            $tag = Tag::find($id);
+            try {
+                $rel = $tag->delete();
+                if ($rel) {
+                    return $this->returnMessage('success', '标签删除成功！');
+                }
+            } catch (\Exception $e) {
+                Log::info($e->getMessage());
+            }
         }
-        $is_delete = empty($rel);
-        if (!$is_delete) {
-            $rel_arr = [
-                'status' => '200',
-                'message' => '标签删除成功！'
-            ];
-        } else {
-            $rel_arr = [
-                'status' => '400',
-                'message' => '标签删除失败！'
-            ];
-        }
-        $rel_arr['title'] = '删除标签';
-        return $rel_arr;
+        return $this->returnMessage('error', '标签除失败！');
     }
 
     /**
      * 更新状态
      * @param Request $request
+     * @return string
      */
     public function updateStatus(Request $request)
     {
         $is_ajax = $request->ajax();
         if ($is_ajax) {
-            $tag_id = $request->tag_id;
-            $tag = Tag::select('id', 'status')->find($tag_id);
-            $tag->status == '1' ? $tag->status = '0' : $tag->status = '1';
-            $tag->save();
+            $id = $request->id;
+            $tag = Tag::find($id);
+            try {
+                $tag->status == '1' ? $tag->status = '0' : $tag->status = '1';
+                $rel = $tag->save();
+                if ($rel) {
+                    return $this->returnMessage('success', '标签状态修改成功！');
+                }
+            } catch (\Exception $e) {
+                Log::info($e->getMessage());
+            }
         }
+        return $this->returnMessage('error', '标签状态修改失败！');
+    }
+
+    /**
+     * 检查标签名是否存在
+     * @param Request $request
+     * @return string
+     */
+    public function checkTag(Request $request)
+    {
+        $is_ajax = $request->ajax();
+        $rel = true;
+        if($is_ajax) {
+            $action = $request->action;
+            $name = $request->name;
+            if("edit" == $action) {
+                $id = $request->id;
+                $rel = Tag::where('name', $name)->where('id', '<>', $id)->exists();
+            } else if("add" == $action) {
+                $rel = Tag::where('name', $name)->exists();
+            }
+        }
+        return json_encode(!$rel);
     }
 }

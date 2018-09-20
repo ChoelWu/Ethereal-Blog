@@ -169,7 +169,7 @@
                                     $.ajax({
                                         type: "get",
                                         url: "{{ url('admin/menu/get_menu_level') }}",
-                                        data: {"menu_id": value},
+                                        data: {menu_id: value},
                                         async: false,
                                         timeout: 10000,
                                         dataType: "json",

@@ -1,6 +1,6 @@
 @extends('admin.common.layout')
 @section('title')
-    index
+    {{ $title['title'] }}
 @endsection
 @section('head_files')
     <!-- Toastr style -->
@@ -19,7 +19,7 @@
             <h2>{{ $title['title'] }}</h2>
             <ol class="breadcrumb">
                 <li>
-                    <a href="index.html">{{ $title['title'] }}</a>
+                    <a href="{{ url('admin/tag/index') }}">{{ $title['title'] }}</a>
                 </li>
                 <li class="active">
                     <strong>{{ $title['sub_title'] }}</strong>
@@ -34,14 +34,12 @@
             <div class="col-lg-12">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
-                        <h5>{{ $title['sub_title'] }}
-                            <small>With custom checbox and radion elements.</small>
-                        </h5>
+                        <h5>{{ $title['sub_title'] }}</h5>
                         <div class="ibox-tools">
-                        <span class="btn btn-xs btn-warning" id="clear">
-                            <i class="fa fa-eraser"></i>
-                            清空
-                        </span>
+                            <span class="btn btn-xs btn-warning" id="clear">
+                                <i class="fa fa-eraser"></i>
+                                清空
+                            </span>
                         </div>
                     </div>
                     <div class="ibox-content">
@@ -86,6 +84,7 @@
             var elem = document.querySelector('.js-switch');
             var switchery = new Switchery(elem, {color: '#1AB394'});
             $('#add-tag-form').bootstrapValidator({
+                live: "submitted",
                 message: 'This value is not valid',
                 feedbackIcons: {
                     valid: 'glyphicon glyphicon-ok',
@@ -102,60 +101,54 @@
                                 min: 1,
                                 max: 20,
                                 message: '标签名称在20个字符以内！'
+                            },
+                            callback: {
+                                message: '已存在相同标签名的标签！',
+                                callback: function (value) {
+                                    var ajax_data;
+                                    var token = "{{ csrf_token() }}";
+                                    $.ajax({
+                                        type: "post",
+                                        url: "{{ url('admin/tag/check_tag') }}",
+                                        data: {_token: token, name: value, action: "add"},
+                                        async: false,
+                                        timeout: 1000,
+                                        dataType: "json",
+                                        success: function (data) {
+                                            ajax_data = data;
+                                        }
+                                    });
+                                    return ajax_data;
+                                }
                             }
                         }
                     }
                 }
             });
             $("#add-tag-submit").click(function () {
-                if (elem.checked) {
-                    $('input[name="status"]').val('1');
-                } else {
-                    $('input[name="status"]').val('0');
-                }
-                var ajax_data;
-                var form_data = new FormData($('#add-tag-form')[0]);
                 $('#add-tag-form').bootstrapValidator('validate');
                 var flag = $('#add-tag-form').data('bootstrapValidator').isValid();
-                console.log(flag);
+                setSwitchInInput(elem, "status");
                 if (flag) {
-                    $.ajax({
-                        type: "post",
+                    var data = $("#add-tag-form").serialize();
+                    var type = "1";
+                    var refresh = {
+                        type: "1",
+                        timeout: 2000,
+                        url: "{{ url('admin/tag/index') }}",
+                    };
+                    var confirmData = {
+                        effect: "animated bounceInDown",
+                        size: "sm",
+                        action: "submit",
+                        message: "你确定要提交吗？"
+                    };
+                    var ajaxData = {
                         url: "{{ url('admin/tag/add') }}",
-                        cache: false,
-                        processData: false,
-                        contentType: false,
-                        async: false,
-                        data: form_data,
-                        dataType: "json",
-                        success: function (data) {
-                            ajax_data = data;
-                        }
-                    });
-                    $('#message-modal-label').html("添加标签");
-                    if ('200' == ajax_data['status']) {
-                        $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-check-square text-info"></i> ' + ajax_data['message'] + '</h3>');
-                    } else {
-                        $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-exclamation-triangle text-danger"></i> ' + ajax_data['message'] + '</h3>');
-                    }
-                    setTimeout(function () {
-                        $("#message-modal").modal({
-                            keyboard: false,
-                            backdrop: false
-                        });
-                        $('#message-modal').modal('show');
-                    }, 600);
-                    if ('200' == ajax_data['status']) {
-                        setTimeout(function () {
-                            window.location.href = "{{ url('admin/tag/index') }}";
-                        }, 2500);
-                    } else {
-                        setTimeout(function () {
-                            $('#message-modal').modal('hide');
-                        }, 2500);
-                    }
+                        data: data
+                    };
+                    showAjaxMessage(type, confirmData, ajaxData, refresh);
                 }
-
             });
             $("#clear").click(function () {
                 $('#add-tag-form').find("input[type=text]").val("");

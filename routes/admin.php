@@ -57,9 +57,9 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
     Route::post('tag/add', 'TagController@add');
     Route::get('tag/edit/{id?}', 'TagController@edit');
     Route::post('tag/edit', 'TagController@edit');
-    Route::get('tag/delete', 'TagController@delete');
-    Route::get('tag/update_status', 'TagController@updateStatus');
-    Route::get('tag/get_nav_level', 'TagController@getNavlevel');
+    Route::post('tag/delete', 'TagController@delete');
+    Route::post('tag/update_status', 'TagController@updateStatus');
+    Route::post('tag/check_tag', 'TagController@checkTag');
     //文章管理
     Route::get('article/index', 'ArticleController@index');
     Route::get('article/add', 'ArticleController@add');

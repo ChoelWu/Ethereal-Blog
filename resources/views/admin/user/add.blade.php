@@ -183,18 +183,19 @@
                             callback: {
                                 message: '该账号已被使用',
                                 callback: function (value) {
-                                    var ajax_data;
+                                    var ajax_data = '';
+                                    var token = "{{ csrf_token() }}";
                                     $.ajax({
-                                        type: "get",
-                                        url: "{{ url('admin/auth/check_account') }}",
-                                        data: {"account": value},
+                                        type: "post",
+                                        url: "{{ url('admin/user/check_account') }}",
+                                        data: {"account": value, action: "add", _token: token},
                                         async: false,
                                         dataType: "json",
                                         success: function (data) {
                                             ajax_data = data;
                                         }
                                     });
-                                    return !ajax_data;
+                                    return ajax_data;
                                 }
                             }
                         }

@@ -1,6 +1,6 @@
 @extends('admin.common.layout')
 @section('title')
-    index
+    {{ $title['title'] }}
 @endsection
 @section('content')
     <div class="row wrapper border-bottom white-bg page-heading">
@@ -46,7 +46,7 @@
                                 @foreach($list as $key => $tag)
                                     <tr>
                                         <td>{{ $key + 1 }}</td>
-                                        <td>{{ $tag->name }}</td>
+                                        <td><i class="fa fa-tag"></i> {{ $tag->name }}</td>
                                         <td>
                                             @if($tag['status'] == '1')
                                                 <button class="btn btn-xs btn-primary edit-tag-status"
@@ -92,45 +92,46 @@
                 window.location.href = "{{ url('admin/tag/edit') }}/" + $(this).data("id");
             });
             $(".delete-tag").click(function () {
-                var is_disabled = $(this).attr("disabled");
-                if (is_disabled != "disabled") {
-                    var tag_id = $(this).data("id");
-                    $('#action-modal').find('.modal-body').html('<h3><i class="fa fa-exclamation-triangle text-warning"></i> 是否要删除用户？</h3>');
-                    $('#action-modal').modal('show');
-                    $('#action-modal').find('.confirm').click(function () {
-                        $('#action-modal').modal('hide');
-                        $('#action-modal').on('hidden.bs.modal', function () {
-                            $.get("{{ url('admin/tag/delete') }}", {"tag_id": tag_id}, function (data, status) {
-                                $('#message-modal-label').html(data['title']);
-                                if ('success' == status) {
-                                    if ('200' == data['status']) {
-                                        $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-check-square text-info"></i> ' + data['message'] + '</h3>');
-                                    } else {
-                                        $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-exclamation-triangle text-danger"></i> ' + data['message'] + '</h3>');
-                                    }
-                                }
-                            });
-                        });
-                        setTimeout(function () {
-                            $("#message-modal").modal({
-                                keyboard: false,
-                                backdrop: false
-                            });
-                            $('#message-modal').modal('show');
-                        }, 600);
-                        setTimeout(function () {
-                            location.reload();
-                        }, 2500);
-                    });
-                }
+                var id = $(this).data("id");
+                var token = "{{ csrf_token() }}";
+                var url = "{{ url('admin/tag/delete') }}";
+                var type = "2";
+                var refresh = {
+                    type: "1",
+                    timeout: 2000,
+                    url: "{{ url('admin/tag/index') }}",
+                };
+                var confirmData = {
+                    type: "warning",
+                    title: "你确定要删除标签吗？",
+                    message: ""
+                };
+                var ajaxData = {
+                    url: url,
+                    data: {id: id, _token: token}
+                };
+                showAjaxMessage(type, confirmData, ajaxData, refresh);
             });
             $(".edit-tag-status").click(function () {
-                $.get("{{ url('admin/tag/update_status') }}", {"tag_id": $(this).data("id")}, function () {
-                    location.reload();
-                });
-            });
-            $('#menu-selection').change(function () {
-                $("#index-tag-form").attr("action", '').submit();
+                var id = $(this).data("id");
+                var token = "{{ csrf_token() }}";
+                var url = "{{ url('admin/tag/update_status') }}";
+                var type = "2";
+                var refresh = {
+                    type: "1",
+                    timeout: 2000,
+                    url: "{{ url('admin/tag/index') }}",
+                };
+                var confirmData = {
+                    type: "warning",
+                    title: "你确定要更标签状态吗？",
+                    message: ""
+                };
+                var ajaxData = {
+                    url: url,
+                    data: {id: id, _token: token}
+                };
+                showAjaxMessage(type, confirmData, ajaxData, refresh);
             });
             $('#search-reset').click(function () {
                 $('#index-tag-form div').find('input').val('');
