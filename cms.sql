@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50721
 File Encoding         : 65001
 
-Date: 2018-09-19 18:10:18
+Date: 2018-09-20 16:12:56
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -68,9 +68,7 @@ CREATE TABLE `cms_authorize` (
 -- ----------------------------
 -- Records of cms_authorize
 -- ----------------------------
-INSERT INTO `cms_authorize` VALUES ('AUTHORIZE_201808300334128529', 'ROLE_201808300246497861', 'admin/menu/index,admin/menu/edit,admin/menu/delete,admin/menu/update_status,admin/menu/get_menu_level', '2018-08-30 03:34:12', '2018-08-30 03:34:12');
-INSERT INTO `cms_authorize` VALUES ('AUTHORIZE_201809191005447298', 'ROLE_201809190801309871', 'admin/menu/index', '2018-09-19 10:05:44', '2018-09-19 10:05:44');
-INSERT INTO `cms_authorize` VALUES ('AUTHORIZE_201809191009186353', 'ROLE_201809190806272507', 'admin/menu/index', '2018-09-19 10:09:18', '2018-09-19 10:09:18');
+INSERT INTO `cms_authorize` VALUES ('AUTHORIZE_201809200214488089', 'ROLE_201809200214399049', 'admin/menu/index,admin/menu/add', '2018-09-20 02:14:48', '2018-09-20 02:14:48');
 
 -- ----------------------------
 -- Table structure for cms_blog
@@ -195,7 +193,7 @@ INSERT INTO `cms_menu` VALUES ('MENU_201809170945076852', '系统管理', '1', '
 INSERT INTO `cms_menu` VALUES ('MENU_201809170949541218', '菜单管理', '2', 'MENU_201809170945076852', 'book', '0101', 'admin/menu/index', '1', '2018-09-17 09:49:54', '2018-09-17 09:49:54');
 INSERT INTO `cms_menu` VALUES ('MENU_201809171004587602', '权限管理', '2', 'MENU_201809170945076852', 'toggle-on', '0102', 'admin/rule/index', '1', '2018-09-17 10:04:58', '2018-09-17 10:04:58');
 INSERT INTO `cms_menu` VALUES ('MENU_201809171006384106', '角色管理', '2', 'MENU_201809170945076852', 'user', '0103', 'admin/role/index', '1', '2018-09-17 10:06:38', '2018-09-17 10:14:54');
-INSERT INTO `cms_menu` VALUES ('MENU_201809171011194587', '用户管理', '2', 'MENU_201809170945076852', 'vcard', '0104', 'admin/user/index', '1', '2018-09-17 10:11:19', '2018-09-18 01:30:01');
+INSERT INTO `cms_menu` VALUES ('MENU_201809171011194587', '用户管理', '2', 'MENU_201809170945076852', 'vcard', '0104', 'admin/user/index', '1', '2018-09-17 10:11:19', '2018-09-20 06:54:45');
 INSERT INTO `cms_menu` VALUES ('MENU_201809171014254189', '网站配置', '2', 'MENU_201809170945076852', 'cog', '0105', 'admin/system/index', '1', '2018-09-17 10:14:25', '2018-09-18 01:57:24');
 INSERT INTO `cms_menu` VALUES ('MENU_201809171015532971', '内容管理', '1', '0', 'list-alt', '0200', '#', '1', '2018-09-17 10:15:53', '2018-09-18 01:44:36');
 INSERT INTO `cms_menu` VALUES ('MENU_201809171017179259', '标签管理', '2', 'MENU_201809171015532971', 'tag', '0201', 'admin/tag/index', '1', '2018-09-17 10:17:17', '2018-09-17 10:17:17');
@@ -281,9 +279,8 @@ CREATE TABLE `cms_role` (
 -- ----------------------------
 -- Records of cms_role
 -- ----------------------------
-INSERT INTO `cms_role` VALUES ('ROLE_201809190806272507', '123', '1', '2018-09-19 08:06:27', '2018-09-19 10:09:32');
 INSERT INTO `cms_role` VALUES ('1', '管理员', '1', '2018-08-15 06:29:28', '2018-08-15 06:46:00');
-INSERT INTO `cms_role` VALUES ('ROLE_201809190801309871', 'qweq', '0', '2018-09-19 08:01:30', '2018-09-19 10:09:37');
+INSERT INTO `cms_role` VALUES ('ROLE_201809200214399049', '角色一', '1', '2018-09-20 02:14:39', '2018-09-20 02:14:39');
 
 -- ----------------------------
 -- Table structure for cms_rule
@@ -347,9 +344,10 @@ CREATE TABLE `cms_tag` (
 -- ----------------------------
 -- Records of cms_tag
 -- ----------------------------
-INSERT INTO `cms_tag` VALUES ('1', '标签1', '1', null, '2018-09-05 10:06:26');
+INSERT INTO `cms_tag` VALUES ('1', '标签1', '1', null, '2018-09-20 07:30:21');
 INSERT INTO `cms_tag` VALUES ('TAG_201809051007124367', '标签2', '1', '2018-09-05 10:07:12', '2018-09-05 10:07:12');
-INSERT INTO `cms_tag` VALUES ('TAG_201809051008111335', '标签3', '1', '2018-09-05 10:08:11', '2018-09-05 10:08:11');
+INSERT INTO `cms_tag` VALUES ('TAG_201809200736563658', '标签', '1', '2018-09-20 07:36:56', '2018-09-20 07:36:56');
+INSERT INTO `cms_tag` VALUES ('TAG_201809200803574928', '标签12', '1', '2018-09-20 08:03:57', '2018-09-20 08:04:07');
 
 -- ----------------------------
 -- Table structure for cms_user
@@ -376,7 +374,10 @@ CREATE TABLE `cms_user` (
 -- Records of cms_user
 -- ----------------------------
 INSERT INTO `cms_user` VALUES ('1', 'admin', 'superadmin', '35e078bcb1e78a69c9a88acbe79cefc2', 'YjE2OTQ4MWFiNWViM2MzMzE1MzBmZTVlYjZhOTgzNzY=', 'bc7235a51e34c1d3ebfddeb538c20c71', '2018-09-15 00:51:45', '775669127@qq.com', '18894330931', '1', 'static/admin/img/admin.png', '2018-07-19 02:29:24', '2018-09-08 00:51:45');
-INSERT INTO `cms_user` VALUES ('USER_201808300301297631', 'choel', 'choel', 'c712d1741bc27b73cb27eb9d0149165e', 'MmEyYTEyNjFjNmUzNjI0MGQ1MWYyZDUzMmZlNzE4NzQ=', 'bd4da34a1b327d0d35bad998ef535b02', '2018-09-07 03:53:33', 'choel_wu@foxmail.com', '18894330931', '1', 'uploads/user/header_img/201808300307175b875f654f594.jpg', '2018-08-30 03:01:29', '2018-08-31 03:53:33');
+INSERT INTO `cms_user` VALUES ('USER_201808300301297631', 'choel', 'choel', 'c712d1741bc27b73cb27eb9d0149165e', 'MmEyYTEyNjFjNmUzNjI0MGQ1MWYyZDUzMmZlNzE4NzQ=', 'bd4da34a1b327d0d35bad998ef535b02', '2018-09-07 03:53:33', 'choel_wu@foxmail.com', '18894330931', '1', 'uploads/user/header_img/201808300307175b875f654f594.jpg', '2018-08-30 03:01:29', '2018-09-20 07:03:04');
+INSERT INTO `cms_user` VALUES ('USER_201809200304303012', '775669127', '吴超', '85e3d6db536aa151732b356349b6a09f', null, null, null, '775669127@qq.com', '18894330931', '1', 'uploads/user/header_img/201809200611185ba33a0649de0.jpg', '2018-09-20 03:04:30', '2018-09-20 06:11:18');
+INSERT INTO `cms_user` VALUES ('USER_201809200304308286', '7756691272', '吴超', '34d097964f8c2784a0f0543d26c00471', null, null, null, '775669127@qq.com', '18894330931', '1', 'uploads/user/header_img/201809200612355ba33a535a123.jpg', '2018-09-20 03:04:30', '2018-09-20 06:25:18');
+INSERT INTO `cms_user` VALUES ('USER_201809200617453504', 'laowu', '123123', 'b88b88ac72cd19189aa3b45e72a7970f', null, null, null, '775669127@qq.com', '18894330931', '1', 'uploads/user/header_img/201809200617455ba33b895b645.jpg', '2018-09-20 06:17:45', '2018-09-20 06:17:45');
 
 -- ----------------------------
 -- Table structure for cms_user_role
@@ -398,3 +399,6 @@ CREATE TABLE `cms_user_role` (
 -- ----------------------------
 INSERT INTO `cms_user_role` VALUES ('1', '1', '1', null, null);
 INSERT INTO `cms_user_role` VALUES ('USERROLE_201808300301296704', 'USER_201808300301297631', 'ROLE_201808300246497861', '2018-08-30 03:01:29', '2018-08-30 03:10:21');
+INSERT INTO `cms_user_role` VALUES ('USERROLE_201809200304306466', 'USER_201809200304303012', '选择角色', '2018-09-20 03:04:30', '2018-09-20 03:07:57');
+INSERT INTO `cms_user_role` VALUES ('USERROLE_201809200304308312', 'USER_201809200304308286', 'ROLE_201809200214399049', '2018-09-20 03:04:30', '2018-09-20 06:50:32');
+INSERT INTO `cms_user_role` VALUES ('USERROLE_201809200617452926', 'USER_201809200617453504', '选择角色', '2018-09-20 06:17:45', '2018-09-20 06:17:45');
