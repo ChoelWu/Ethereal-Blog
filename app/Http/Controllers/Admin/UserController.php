@@ -37,7 +37,7 @@ class UserController extends CommonController
     public function index()
     {
         $title = ['title' => '用户管理', 'sub_title' => '用户列表'];
-        $list = User::select('id', 'nickname', 'status', 'e_mail', 'status', 'phone', 'header_img')->where('id', '<>', '1')->get();
+        $list = User::select('id', 'account', 'nickname', 'status', 'e_mail', 'status', 'phone', 'header_img')->where('id', '<>', '1')->paginate(10);
         return view('admin.user.index', ['menu_list' => session('menu'), 'list' => $list, 'title' => $title]);
     }
 
@@ -195,5 +195,23 @@ class UserController extends CommonController
             }
         }
         return $this->returnMessage('error', '用户状态修改失败！');
+    }
+
+    public function checkAccount(Request $request)
+    {
+        $is_ajax = $request->ajax();
+        if ($is_ajax) {
+            $action = $request->action;
+            $rel = false;
+            if ("edit" == $action) {
+                $id = $request->id;
+                $account = $request->account;
+                $rel = User::where('account', $account)->where('id', '<>', $id)->exists();
+            } else if ("add" == $action) {
+                $account = $request->account;
+                $rel = User::where('account', $account)->exists();
+            }
+            return json_encode(!$rel);
+        }
     }
 }

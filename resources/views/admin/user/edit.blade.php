@@ -73,7 +73,7 @@
                                 <label class="col-sm-2 control-label">用户角色：</label>
                                 <div class="col-sm-5">
                                     <select class="form-control m-b" name="role_id">
-                                        <option selectd="selected">选择角色</option>
+                                        <option value="" selectd="selected">选择角色</option>
                                         @foreach($role_list as $role)
                                             <option value="{{ $role['id'] }}">{{ $role['role_name'] }}</option>
                                         @endforeach
@@ -191,29 +191,31 @@
                                 min: 0,
                                 max: 20,
                                 message: '用户账号长度在20个字符以内！'
+                            },
+                            regexp: {
+                                regexp: /^[a-zA-Z0-9_]+$/,
+                                message: '用户名只能包含大写、小写、数字和下划线'
+                            },
+                            callback: {
+                                message: '该账号已被使用',
+                                callback: function (value) {
+                                    var id = "{{ $user->id }}";
+                                    var ajax_data = '';
+                                    var token = "{{ csrf_token() }}";
+                                    $.ajax({
+                                        type: "post",
+                                        url: "{{ url('admin/user/check_account') }}",
+                                        data: {"account": value, action: "edit", id: id, _token: token},
+                                        async: false,
+                                        dataType: "json",
+                                        success: function (data) {
+                                            ajax_data = data;
+                                        }
+                                    });
+                                    return ajax_data;
+                                }
                             }
                         },
-                        regexp: {
-                            regexp: /^[a-zA-Z0-9_]+$/,
-                            message: '用户名只能包含大写、小写、数字和下划线'
-                        },
-                        callback: {
-                            message: '该账号已被使用',
-                            callback: function (value) {
-                                var ajax_data;
-                                $.ajax({
-                                    type: "get",
-                                    url: "{{ url('admin/auth/check_account') }}",
-                                    data: {"account": value},
-                                    async: false,
-                                    dataType: "json",
-                                    success: function (data) {
-                                        ajax_data = data;
-                                    }
-                                });
-                                return !ajax_data;
-                            }
-                        }
                     },
                     nickname: {
                         validators: {
@@ -225,6 +227,13 @@
                                 max: 10,
                                 message: '用户账号长度在10个字符以内！'
                             }
+                        }
+                    },
+                    role_id: {
+                        validators: {
+                            notEmpty: {
+                                message: '用户名不能为空！'
+                            },
                         }
                     },
                     password: {
@@ -282,7 +291,7 @@
                 $('#edit-user-form').bootstrapValidator('validate');
                 var flag = $('#edit-user-form').data('bootstrapValidator').isValid();
                 if (flag) {
-                    var data = $("#edit-user-form").serialize();
+                    var data = new FormData($('#edit-user-form')[0]);
                     var type = "1";
                     var refresh = {
                         type: "1",
@@ -299,6 +308,11 @@
                         url: "{{ url('admin/user/edit') }}",
                         data: data
                     };
+                    $.ajaxSetup({
+                        cache: false,
+                        processData: false,
+                        contentType: false,
+                    });
                     showAjaxMessage(type, confirmData, ajaxData, refresh);
                 }
             });

@@ -48,6 +48,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
     Route::post('user/edit', 'UserController@edit');
     Route::post('user/delete', 'UserController@delete');
     Route::post('user/update_status', 'UserController@updateStatus');
+    Route::post('user/check_account', 'UserController@checkAccount');
     //系统配置
     Route::get('system/index', 'SystemController@index');
     //标签管理

@@ -260,7 +260,7 @@
                 var flag = $('#add-user-form').data('bootstrapValidator').isValid();
                 setSwitchInInput(elem, "status");
                 if (flag) {
-                    var data = $("#add-user-form").serialize();
+                    var data = new FormData($('#add-user-form')[0]);
                     var type = "1";
                     var refresh = {
                         type: "1",
@@ -277,6 +277,11 @@
                         url: "{{ url('admin/user/add') }}",
                         data: data
                     };
+                    $.ajaxSetup({
+                        cache: false,
+                        processData: false,
+                        contentType: false,
+                    });
                     showAjaxMessage(type, confirmData, ajaxData, refresh);
                 }
             });

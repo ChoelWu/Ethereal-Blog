@@ -36,7 +36,9 @@
                             <tr>
                                 <th>#</th>
                                 <th>头像</th>
+                                <th>登录账号</th>
                                 <th>昵称</th>
+                                <th>角色</th>
                                 <th>e-mail</th>
                                 <th>电话</th>
                                 <th>状态</th>
@@ -49,29 +51,31 @@
                                     <td>{{ $key + 1 }}</td>
                                     <td>
                                         <img alt="image" class="img-circle img-sm"
-                                             src="@if('' != $user['header_img']){{ asset($user['header_img']) }}@else{{ asset(config('view.admin_static_path') . '/img/default_user.png') }}@endif">
+                                             src="@if('' != $user->header_img){{ asset($user->header_img) }}@else{{ asset(config('view.admin_static_path') . '/img/default_user.png') }}@endif">
                                     </td>
-                                    <td>{{ $user['nickname'] }}</td>
-                                    <td>{{ $user['e_mail'] }}</td>
-                                    <td>{{ $user['phone'] }}</td>
+                                    <td>{{ $user->account }}</td>
+                                    <td>{{ $user->nickname }}</td>
+                                    <td>{{ $user->nickname }}</td>
+                                    <td>{{ $user->e_mail }}</td>
+                                    <td>{{ $user->phone }}</td>
                                     <td>
-                                        @if($user['status'] == '1')
+                                        @if($user->status == '1')
                                             <button class="btn btn-xs btn-primary edit-user-status"
-                                                    data-id="{{ $user['id'] }}" title="启用">
+                                                    data-id="{{ $user->id }}" title="启用">
                                                 <i class="fa fa-eye"></i>
                                             </button>
                                         @else
                                             <button class="btn btn-xs btn-default edit-user-status"
-                                                    data-id="{{ $user['id'] }}" title="禁用">
+                                                    data-id="{{ $user->id }}" title="禁用">
                                                 <i class="fa fa-eye-slash"></i>
                                             </button>
                                         @endif
                                     </td>
                                     <td>
-                                        <span class="btn btn-xs btn-primary edit-user" data-id="{{ $user['id'] }}">
+                                        <span class="btn btn-xs btn-primary edit-user" data-id="{{ $user->id }}">
                                             <i class="fa fa-edit"></i> 修改
                                         </span>
-                                        <span class="btn btn-xs btn-danger delete-user" data-id="{{ $user['id'] }}">
+                                        <span class="btn btn-xs btn-danger delete-user" data-id="{{ $user->id }}">
                                             <i class="fa fa-times"></i> 删除
                                         </span>
                                     </td>
