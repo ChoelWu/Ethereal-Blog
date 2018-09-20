@@ -1,6 +1,6 @@
 @extends('admin.common.layout')
 @section('title')
-    index
+    {{ $title['title'] }}
 @endsection
 @section('content')
     <div class="row wrapper border-bottom white-bg page-heading">
@@ -15,8 +15,7 @@
                 </li>
             </ol>
         </div>
-        <div class="col-lg-2">
-        </div>
+        <div class="col-lg-2"></div>
     </div>
     <div class="wrapper wrapper-content animated fadeInRight">
         <div class="row">
@@ -25,10 +24,10 @@
                     <div class="ibox-title">
                         <h5>{{ $title['sub_title'] }}</h5>
                         <div class="ibox-tools">
-                        <span class="btn btn-xs btn-primary" id="user-add">
-                            <i class="fa fa-plus"></i>
-                            添加
-                        </span>
+                            <span class="btn btn-xs btn-primary" id="user-add">
+                                <i class="fa fa-plus"></i>
+                                添加
+                            </span>
                         </div>
                     </div>
                     <div class="ibox-content">
@@ -48,7 +47,8 @@
                             @foreach($list as $key => $user)
                                 <tr>
                                     <td>{{ $key + 1 }}</td>
-                                    <td><img alt="image" class="img-circle img-sm"
+                                    <td>
+                                        <img alt="image" class="img-circle img-sm"
                                              src="@if('' != $user['header_img']){{ asset($user['header_img']) }}@else{{ asset(config('view.admin_static_path') . '/img/default_user.png') }}@endif">
                                     </td>
                                     <td>{{ $user['nickname'] }}</td>
@@ -57,20 +57,23 @@
                                     <td>
                                         @if($user['status'] == '1')
                                             <button class="btn btn-xs btn-primary edit-user-status"
-                                                    data-id="{{ $user['id'] }}" title="启用"><i class="fa fa-eye"></i>
+                                                    data-id="{{ $user['id'] }}" title="启用">
+                                                <i class="fa fa-eye"></i>
                                             </button>
                                         @else
                                             <button class="btn btn-xs btn-default edit-user-status"
-                                                    data-id="{{ $user['id'] }}" title="禁用"><i
-                                                        class="fa fa-eye-slash"></i>
+                                                    data-id="{{ $user['id'] }}" title="禁用">
+                                                <i class="fa fa-eye-slash"></i>
                                             </button>
                                         @endif
                                     </td>
                                     <td>
-                                        <span class="btn btn-xs btn-primary edit-user" data-id="{{ $user['id'] }}"><i
-                                                    class="fa fa-edit"></i> 修改</span>
-                                        <span class="btn btn-xs btn-danger delete-user" data-id="{{ $user['id'] }}"><i
-                                                    class="fa fa-times"></i> 删除</span>
+                                        <span class="btn btn-xs btn-primary edit-user" data-id="{{ $user['id'] }}">
+                                            <i class="fa fa-edit"></i> 修改
+                                        </span>
+                                        <span class="btn btn-xs btn-danger delete-user" data-id="{{ $user['id'] }}">
+                                            <i class="fa fa-times"></i> 删除
+                                        </span>
                                     </td>
                                 </tr>
                             @endforeach
@@ -98,42 +101,46 @@
                 window.location.href = "{{ url('admin/user/edit') }}/" + $(this).data("id");
             });
             $(".delete-user").click(function () {
-                var is_disabled = $(this).attr("disabled");
-                if (is_disabled != "disabled") {
-                    var user_id = $(this).data("id");
-                    $('#action-modal').find('.modal-body').html('<h3><i class="fa fa-exclamation-triangle text-warning"></i> 是否要删除用户？</h3>');
-                    $('#action-modal').modal('show');
-                    $('#action-modal').find('.confirm').click(function () {
-                        $('#action-modal').modal('hide');
-                        $('#action-modal').on('hidden.bs.modal', function () {
-                            $.get("{{ url('admin/user/delete') }}", {"user_id": user_id}, function (data, status) {
-                                $('#message-modal-label').html(data['title']);
-                                if ('success' == status) {
-                                    if ('200' == data['status']) {
-                                        $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-check-square text-info"></i> ' + data['message'] + '</h3>');
-                                    } else {
-                                        $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-exclamation-triangle text-danger"></i> ' + data['message'] + '</h3>');
-                                    }
-                                }
-                            });
-                        });
-                        setTimeout(function () {
-                            $("#message-modal").modal({
-                                keyboard: false,
-                                backdrop: false
-                            });
-                            $('#message-modal').modal('show');
-                        }, 600);
-                        setTimeout(function () {
-                            location.reload();
-                        }, 2500);
-                    });
-                }
+                var id = $(this).data("id");
+                var token = "{{ csrf_token() }}";
+                var url = "{{ url('admin/user/delete') }}";
+                var type = "2";
+                var refresh = {
+                    type: "1",
+                    timeout: 2000,
+                    url: "{{ url('admin/user/index') }}",
+                };
+                var confirmData = {
+                    type: "warning",
+                    title: "你确定要删除用户吗？",
+                    message: ""
+                };
+                var ajaxData = {
+                    url: url,
+                    data: {id: id, _token: token}
+                };
+                showAjaxMessage(type, confirmData, ajaxData, refresh);
             });
             $(".edit-user-status").click(function () {
-                $.get("{{ url('admin/user/update_status') }}", {"user_id": $(this).data("id")}, function () {
-                    location.reload();
-                });
+                var id = $(this).data("id");
+                var token = "{{ csrf_token() }}";
+                var url = "{{ url('admin/user/update_status') }}";
+                var type = "2";
+                var refresh = {
+                    type: "1",
+                    timeout: 2000,
+                    url: "{{ url('admin/user/index') }}",
+                };
+                var confirmData = {
+                    type: "warning",
+                    title: "你确定要更改用户状态吗？",
+                    message: ""
+                };
+                var ajaxData = {
+                    url: url,
+                    data: {id: id, _token: token}
+                };
+                showAjaxMessage(type, confirmData, ajaxData, refresh);
             });
         });
     </script>

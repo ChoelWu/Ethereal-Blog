@@ -25,6 +25,7 @@ use App\Models\User;
 use App\Models\Role;
 use App\Models\UserRole;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends CommonController
 {
@@ -48,8 +49,8 @@ class UserController extends CommonController
     public function add(Request $request)
     {
         $is_ajax = $request->ajax();
-        $is_post = $request->isMethod("post");
         if ($is_ajax) {
+            $is_post = $request->isMethod("post");
             if ($is_post) {
                 $data = $request->all();
                 if ($request->has('header_img')) {
@@ -72,20 +73,16 @@ class UserController extends CommonController
                     'role_id' => $role_id
                 ];
                 try {
-                    User::create($data);
-                    UserRole::create($user_role_data);
-                    $rel = [
-                        'status' => '200',
-                        'message' => '用户添加成功！'
-                    ];
+                    $rel = User::create($data);
+                    $rel_ext = UserRole::create($user_role_data);
+                    if (!empty($rel) && !empty($rel_ext)) {
+                        return $this->returnMessage('success', '用户添加成功！');
+                    }
                 } catch (\Exception $e) {
-                    $rel = [
-                        "status" => "400",
-                        "message" => "用户添加失败！" . $e->getMessage()
-                    ];
+                    Log::info($e->getMessage());
                 }
-                return $rel;
             }
+            return $this->returnMessage('error', '用户添加失败！');
         } else {
             $title = ['title' => '用户管理', 'sub_title' => '添加用户'];
             $role_list = Role::select('id', 'role_name')->where('status', '1')->where('id', '<>', '1')->get();
@@ -102,8 +99,8 @@ class UserController extends CommonController
     public function edit(Request $request, $id = null)
     {
         $is_ajax = $request->ajax();
-        $is_post = $request->isMethod("post");
         if ($is_ajax) {
+            $is_post = $request->isMethod("post");
             if ($is_post) {
                 $data = $request->all();
                 $id = $data['id'];
@@ -111,7 +108,7 @@ class UserController extends CommonController
                 unset($data["role_id"]);
                 unset($data["_token"]);
                 unset($data["id"]);
-                if(empty($data["password"])) {
+                if (empty($data["password"])) {
                     unset($data["password"]);
                 } else {
                     $data['password'] = password_encrypt($data["password"], $id);
@@ -127,21 +124,19 @@ class UserController extends CommonController
                 $user_role_data = [
                     'role_id' => $role_id
                 ];
+                $user = User::find($id);
+                $user_role = UserRole::where('user_id', $id)->first();
                 try {
-                    UserRole::where('user_id', $id)->update($user_role_data);
-                    User::where('id', $id)->update($data);
-                    $rel= [
-                        'status' => '200',
-                        'message' => '用户修改成功！'
-                    ];
-                } catch(\Exception $e) {
-                    $rel = [
-                        "status" => "400",
-                        "message" => "用户修改失败！" . $e->getMessage()
-                    ];
+                    $rel_ext = $user_role->update($user_role_data);
+                    $rel = $user->update($data);
+                    if ($rel && $rel_ext) {
+                        return $this->returnMessage('success', '用户修改成功！');
+                    }
+                } catch (\Exception $e) {
+                    Log::info($e->getMessage());
                 }
-                return $rel;
             }
+            return $this->returnMessage('error', '用户修改失败！');
         } else {
             $title = ['title' => '用户管理', 'sub_title' => '修改用户信息'];
             $user = User::select('id', 'account', 'nickname', 'phone', 'e_mail', 'header_img', 'status')->find($id);
@@ -158,40 +153,47 @@ class UserController extends CommonController
     public function delete(Request $request)
     {
         $is_ajax = $request->ajax();
-        $rel = '';
-        $user_id = $request->user_id;
         if ($is_ajax) {
-            $rel = User::destroy($user_id);
+            $id = $request->id;
+            $user = User::find($id);
+            $user_role = UserRole::where('user_id', $id)->first();
+            try {
+                $rel = $user->delete();
+                if (!empty($user_role)) {
+                    $rel_ext = $user_role->delete();
+                    $rel = $rel && $rel_ext;
+                }
+                if ($rel) {
+                    return $this->returnMessage('success', '用户删除成功！');
+                }
+            } catch (\Exception $e) {
+                Log::info($e->getMessage());
+            }
         }
-        $is_delete = empty($rel);
-        if (!$is_delete) {
-            UserRole::where('user_id', $user_id)->delete();
-            $rel_arr = [
-                'status' => '200',
-                'message' => '用户删除成功！'
-            ];
-        } else {
-            $rel_arr = [
-                'status' => '400',
-                'message' => '用户删除失败！'
-            ];
-        }
-        $rel_arr['title'] = '删除用户';
-        return $rel_arr;
+        return $this->returnMessage('error', '用户删除失败！');
     }
 
     /**
      * 更新状态
      * @param Request $request
+     * @return string
      */
     public function updateStatus(Request $request)
     {
         $is_ajax = $request->ajax();
         if ($is_ajax) {
-            $user_id = $request->user_id;
-            $user = User::select('id', 'status')->find($user_id);
-            $user->status == '1' ? $user->status = '0' : $user->status = '1';
-            $user->save();
+            $id = $request->id;
+            $user = User::find($id);
+            try {
+                $user->status == '1' ? $user->status = '0' : $user->status = '1';
+                $rel = $user->save();
+                if ($rel) {
+                    return $this->returnMessage('success', '用户状态修改成功！');
+                }
+            } catch (\Exception $e) {
+                Log::info($e->getMessage());
+            }
         }
+        return $this->returnMessage('error', '用户状态修改失败！');
     }
 }

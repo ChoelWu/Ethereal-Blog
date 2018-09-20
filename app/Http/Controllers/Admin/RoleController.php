@@ -27,7 +27,7 @@ use App\Models\Role;
 use App\Models\Menu;
 use Illuminate\Http\Request;
 use App\Models\Authorize;
-use Log;
+use Illuminate\Support\Facades\Log;
 
 class RoleController extends CommonController
 {
@@ -131,7 +131,7 @@ class RoleController extends CommonController
             $auth = Authorize::where('role_id', $id)->first();
             try {
                 $rel = $rule->delete();
-                if(!empty($auth)) {
+                if (!empty($auth)) {
                     $rel_ext = $auth->delete();
                     $rel = $rel && $rel_ext;
                 }
@@ -165,8 +165,8 @@ class RoleController extends CommonController
             } catch (\Exception $e) {
                 Log::info($e->getMessage());
             }
-            return $this->returnMessage('error', '角色状态修改失败！');
         }
+        return $this->returnMessage('error', '角色状态修改失败！');
     }
 
     /**
@@ -179,30 +179,35 @@ class RoleController extends CommonController
         $is_ajax = $request->ajax();
         if ($is_ajax) {
             $role_id = $request->role_id;
-            $rules = $request->rules;
+            $request->has('rules') ? $rules = $request->rules : $rules = [];
             $data = [
                 'id' => setModelId("Authorize"),
                 'role_id' => $role_id,
                 'rules' => implode(',', $rules)
             ];
+            $auth = Authorize::where('role_id', $role_id)->first();
             try {
-                Authorize::where('role_id', $role_id)->delete();
-                Authorize::create($data);
-                $rel_arr = [
-                    'status' => '200',
-                    'message' => '授权成功！'
-                ];
+                $rel = true;
+                if (!empty($auth)) {
+                    $rel_ext = $auth->delete();
+                    $rel = $rel_ext && $rel;
+                }
+                $rel_ext = Authorize::create($data);
+                if ($rel && !empty($rel_ext)) {
+                    return $this->returnMessage('success', '授权成功！');
+                }
             } catch (\Exception $e) {
-                $rel_arr = [
-                    'status' => '400',
-                    'message' => '授权失败！'
-                ];
+                Log::info($e->getMessage());
             }
-            $rel_arr['title'] = '用户授权';
-            return $rel_arr;
         }
+        return $this->returnMessage('error', '授权失败！');
     }
 
+    /**
+     * 获取授权
+     * @param Request $request
+     * @return array
+     */
     public function getAuthorize(Request $request)
     {
         $is_ajax = $request->ajax();

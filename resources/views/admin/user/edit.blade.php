@@ -1,6 +1,6 @@
 @extends('admin.common.layout')
 @section('title')
-    index
+    {{ $title['title'] }}
 @endsection
 @section('head_files')
     <!-- Toastr style -->
@@ -25,29 +25,26 @@
             <h2>{{ $title['title'] }}</h2>
             <ol class="breadcrumb">
                 <li>
-                    <a href="index.html">{{ $title['title'] }}</a>
+                    <a href="{{ url('admin/user/index') }}">{{ $title['title'] }}</a>
                 </li>
                 <li class="active">
                     <strong>{{ $title['sub_title'] }}</strong>
                 </li>
             </ol>
         </div>
-        <div class="col-lg-2">
-        </div>
+        <div class="col-lg-2"></div>
     </div>
     <div class="wrapper wrapper-content animated fadeInRight">
         <div class="row">
             <div class="col-lg-12">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
-                        <h5>{{ $title['sub_title'] }}
-                            <small>With custom checbox and radion elements.</small>
-                        </h5>
+                        <h5>{{ $title['sub_title'] }}</h5>
                         <div class="ibox-tools">
-                        <span class="btn btn-xs btn-warning" id="clear">
-                            <i class="fa fa-eraser"></i>
-                            清空
-                        </span>
+                            <span class="btn btn-xs btn-warning" id="clear">
+                                <i class="fa fa-eraser"></i>
+                                清空
+                            </span>
                         </div>
                     </div>
                     <div class="ibox-content">
@@ -176,19 +173,7 @@
             var elem = document.querySelector('.js-switch');
             var switchery = new Switchery(elem, {color: '#1AB394'});
             var pre_status = "{{ $user->status }}";
-            if (pre_status == "1") {
-                setSwitchery(switchery, true);
-            } else {
-                setSwitchery(switchery, false);
-            }
-
-            function setSwitchery(switchElement, checkedBool) {
-                if ((checkedBool && !switchElement.isChecked()) || (!checkedBool && switchElement.isChecked())) {
-                    switchElement.setPosition(true);
-                    switchElement.handleOnchange(true);
-                }
-            }
-
+            setSwitch(pre_status, switchery);
             $('#edit-user-form').bootstrapValidator({
                 message: 'This value is not valid',
                 feedbackIcons: {
@@ -293,53 +278,29 @@
                 $(".user-password input").removeClass("hide");
             });
             $("#edit-user-submit").click(function () {
-                if (elem.checked) {
-                    $('input[name="status"]').val('1');
-                } else {
-                    $('input[name="status"]').val('0');
-                }
-                var ajax_data;
-                var form_data = new FormData($('#edit-user-form')[0]);
+                setSwitchInInput(elem, "status");
                 $('#edit-user-form').bootstrapValidator('validate');
                 var flag = $('#edit-user-form').data('bootstrapValidator').isValid();
                 if (flag) {
-                    $.ajax({
-                        type: "post",
+                    var data = $("#edit-user-form").serialize();
+                    var type = "1";
+                    var refresh = {
+                        type: "1",
+                        timeout: 2000,
+                        url: "{{ url('admin/user/index') }}",
+                    };
+                    var confirmData = {
+                        effect: "animated bounceInDown",
+                        size: "sm",
+                        action: "submit",
+                        message: "你确定要提交修改吗？"
+                    };
+                    var ajaxData = {
                         url: "{{ url('admin/user/edit') }}",
-                        cache: false,
-                        processData: false,
-                        contentType: false,
-                        async: false,
-                        data: form_data,
-                        dataType: "json",
-                        success: function (data) {
-                            ajax_data = data;
-                        }
-                    });
-                    $('#message-modal-label').html("修改用户");
-                    if ('200' == ajax_data['status']) {
-                        $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-check-square text-info"></i> ' + ajax_data['message'] + '</h3>');
-                    } else {
-                        $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-exclamation-triangle text-danger"></i> ' + ajax_data['message'] + '</h3>');
-                    }
-                    setTimeout(function () {
-                        $("#message-modal").modal({
-                            keyboard: false,
-                            backdrop: false
-                        });
-                        $('#message-modal').modal('show');
-                    }, 600);
-                    if ('200' == ajax_data['status']) {
-                        setTimeout(function () {
-                            window.location.href = "{{ url('admin/user/index') }}";
-                        }, 2500);
-                    } else {
-                        setTimeout(function () {
-                            $('#message-modal').modal('hide');
-                        }, 2500);
-                    }
+                        data: data
+                    };
+                    showAjaxMessage(type, confirmData, ajaxData, refresh);
                 }
-
             });
             $("#clear").click(function () {
                 $('#edit-user-form').find("input[type=text]").val("");

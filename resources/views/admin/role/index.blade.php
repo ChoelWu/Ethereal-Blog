@@ -5,7 +5,6 @@
 @section('head_files')
     <link href="{{ asset(config('view.admin_static_path') . '/css/plugins/iCheck/custom.css') }}" rel="stylesheet">
 @endsection
-
 @section('inputModal')
     <div class="row">
         <div class="col-lg-12">
@@ -228,9 +227,9 @@
                     rules: checkBoxArr,
                     _token: token
                 }, function (data) {
-                    if (data['status'] == '200') {
+                    if (data['status'] == '1') {
                         showMessageModal("animated flipInX", "sm", "success", "授权成功！", 2000);
-                    } else if (data['status'] == '400') {
+                    } else if (data['status'] == '0') {
                         showMessageModal("animated flipInX", "sm", "error", "授权失败！", 2000);
                     }
                 }, function () {

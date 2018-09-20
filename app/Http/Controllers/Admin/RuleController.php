@@ -165,7 +165,7 @@ class RuleController extends CommonController
             } catch (\Exception $e) {
                 Log::info($e->getMessage());
             }
-            return $this->returnMessage('error', '权限规则状态修改失败！');
         }
+        return $this->returnMessage('error', '权限规则状态修改失败！');
     }
 }
