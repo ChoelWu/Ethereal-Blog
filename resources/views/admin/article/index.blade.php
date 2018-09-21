@@ -292,14 +292,6 @@
                     $('#cp2 input').attr('disabled', 'disabled');
                 }
             };
-
-            function setSwitchery(switchElement, checkedBool) {
-                if ((checkedBool && !switchElement.isChecked()) || (!checkedBool && switchElement.isChecked())) {
-                    switchElement.setPosition(true);
-                    switchElement.handleOnchange(true);
-                }
-            }
-
             $(function () {
                 $('#cp2').colorpicker();
             });
@@ -320,37 +312,25 @@
                 window.location.href = "{{ url('admin/article/edit') }}/" + $(this).data("id");
             });
             $(".delete-article").click(function () {
-                var is_disabled = $(this).attr("disabled");
-                if (is_disabled != "disabled") {
-                    var article_id = $(this).data("id");
-                    $('#action-modal').find('.modal-body').html('<h3><i class="fa fa-exclamation-triangle text-warning"></i> 是否要删除文章？</h3>');
-                    $('#action-modal').modal('show');
-                    $('#action-modal').find('.confirm').click(function () {
-                        $('#action-modal').modal('hide');
-                        $('#action-modal').on('hidden.bs.modal', function () {
-                            $.get("{{ url('admin/article/delete') }}", {"article_id": article_id}, function (data, status) {
-                                $('#message-modal-label').html(data['title']);
-                                if ('success' == status) {
-                                    if ('200' == data['status']) {
-                                        $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-check-square text-info"></i> ' + data['message'] + '</h3>');
-                                    } else {
-                                        $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-exclamation-triangle text-danger"></i> ' + data['message'] + '</h3>');
-                                    }
-                                }
-                            });
-                        });
-                        setTimeout(function () {
-                            $("#message-modal").modal({
-                                keyboard: false,
-                                backdrop: false
-                            });
-                            $('#message-modal').modal('show');
-                        }, 600);
-                        setTimeout(function () {
-                            location.reload();
-                        }, 2500);
-                    });
-                }
+                var id = $(this).data("id");
+                var token = "{{ csrf_token() }}";
+                var url = "{{ url('admin/article/delete') }}";
+                var type = "2";
+                var refresh = {
+                    type: "1",
+                    timeout: 2000,
+                    url: "{{ url('admin/article/index') }}",
+                };
+                var confirmData = {
+                    type: "warning",
+                    title: "你确定要删除文章吗？",
+                    message: ""
+                };
+                var ajaxData = {
+                    url: url,
+                    data: {id: id, _token: token}
+                };
+                showAjaxMessage(type, confirmData, ajaxData, refresh);
             });
             $(".publish-article").click(function () {
                 $('#article-publish-id').val('');
@@ -383,62 +363,89 @@
                 $('#publish-article-modal').modal('show');
             });
             $(".update-attribute").click(function () {
-                $.get("{{ url('admin/article/update_attribute') }}", {
-                    "article_id": $(this).data("id"),
-                    "action": $(this).data("action")
-                }, function () {
-                    location.reload();
-                });
+                var id = $(this).data("id");
+                var action = $(this).data("action");
+                var token = "{{ csrf_token() }}";
+                var url = "{{ url('admin/article/update_attribute') }}";
+                var type = "2";
+                var refresh = {
+                    type: "1",
+                    timeout: 2000,
+                    url: "{{ url('admin/article/index') }}",
+                };
+                var confirmData = {
+                    type: "warning",
+                    title: "你确定要更改文章属性吗？",
+                    message: ""
+                };
+                var ajaxData = {
+                    url: url,
+                    data: {id: id, _token: token, action: action}
+                };
+                showAjaxMessage(type, confirmData, ajaxData, refresh);
             });
             $(".cancel-stick").click(function () {
-                $.get("{{ url('admin/article/stick') }}", {
-                    "article_id": $(this).data("id"),
-                    "value": $(this).data("val")
-                }, function () {
-                    location.reload();
-                });
+                var id = $(this).data("id");
+                var value = $(this).data("val");
+                var token = "{{ csrf_token() }}";
+                var url = "{{ url('admin/article/stick') }}";
+                var type = "2";
+                var refresh = {
+                    type: "1",
+                    timeout: 2000,
+                    url: "{{ url('admin/article/index') }}",
+                };
+                var confirmData = {
+                    type: "warning",
+                    title: "你确定要更改置顶状态吗？",
+                    message: ""
+                };
+                var ajaxData = {
+                    url: url,
+                    data: {id: id, _token: token, value: value}
+                };
+                showAjaxMessage(type, confirmData, ajaxData, refresh);
             });
             $('#submit-to-publish').click(function () {
-                var form_data = $('#publish-article-form').serialize();
-                console.log(form_data);
-                $.ajax({
-                    type: "post",
-                    url: "{{ url('admin/article/publish') }}",
-                    cache: false,
-                    data: form_data,
-                    dataType: "json",
-                    success: function (data) {
-                        $('#publish-article-modal').modal('hide');
-                        $('#publish-article-modal').on('hidden.bs.modal', function () {
-                            $('#message-modal-label').html(data['title']);
-                            if ('200' == data['status']) {
-                                $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-check-square text-info"></i> ' + data['message'] + '</h3>');
-                            } else {
-                                $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-exclamation-triangle text-danger"></i> ' + data['message'] + '</h3>');
-                            }
-                        });
-                        setTimeout(function () {
-                            $("#message-modal").modal({
-                                keyboard: false,
-                                backdrop: false
-                            });
-                            $('#message-modal').modal('show');
-                        }, 600);
-                        setTimeout(function () {
-                            window.location.href = '';
-                        }, 2500);
-                        $('#publish-article-modal').on('hidden.bs.modal', function () {
-
-                        });
-                    }
-                });
+                var data = $('#publish-article-form').serialize();
+                var url = "{{ url('admin/article/publish') }}";
+                var type = "2";
+                var refresh = {
+                    type: "1",
+                    timeout: 2000,
+                    url: "{{ url('admin/article/index') }}",
+                };
+                var confirmData = {
+                    type: "warning",
+                    title: "你确定要发布吗？",
+                    message: ""
+                };
+                var ajaxData = {
+                    url: url,
+                    data: data
+                };
+                showAjaxMessage(type, confirmData, ajaxData, refresh);
             });
             $('.cancel-publish-article').click(function () {
-                $.get("{{ url('admin/article/cancel_publish') }}", {
-                    "article_id": $(this).data("id")
-                }, function () {
-                    location.reload();
-                });
+                var id = $(this).data("id");
+                var token = "{{ csrf_token() }}";
+                var url = "{{ url('admin/article/cancel_publish') }}";
+                var type = "2";
+                var refresh = {
+                    type: "1",
+                    timeout: 2000,
+                    url: "{{ url('admin/article/index') }}",
+                };
+                var confirmData = {
+                    type: "warning",
+                    title: "你确定要取消发布吗？",
+                    message: ""
+                };
+                var ajaxData = {
+                    url: url,
+                    data: {id: id, _token: token}
+                };
+                showAjaxMessage(type, confirmData, ajaxData, refresh);
             });
             $('#nav-selection').change(function () {
                 $("#index-article-form").attr("action", "{{ url('admin/article/index') }}").submit();

@@ -66,12 +66,12 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
     Route::post('article/add', 'ArticleController@add');
     Route::get('article/edit/{id?}', 'ArticleController@edit');
     Route::post('article/edit', 'ArticleController@edit');
-    Route::get('article/delete', 'ArticleController@delete');
-    Route::get('article/update_attribute', 'ArticleController@updateAttribute');
-    Route::get('article/stick', 'ArticleController@stick');
+    Route::post('article/delete', 'ArticleController@delete');
+    Route::post('article/update_attribute', 'ArticleController@updateAttribute');
+    Route::post('article/stick', 'ArticleController@stick');
     Route::post('article/publish', 'ArticleController@publish');
-    Route::get('article/publish', 'ArticleController@publish');
-    Route::get('article/cancel_publish', 'ArticleController@cancelPublish');
+    Route::post('article/publish', 'ArticleController@publish');
+    Route::post('article/cancel_publish', 'ArticleController@cancelPublish');
     //评论管理
     Route::get('comment/index', 'CommentController@index');
     Route::get('comment/view', 'CommentController@view');

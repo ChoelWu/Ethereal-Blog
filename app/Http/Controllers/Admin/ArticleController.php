@@ -25,6 +25,7 @@ use App\Models\Article;
 use Illuminate\Http\Request;
 use App\Models\Tag;
 use App\Models\Nav;
+use Illuminate\Support\Facades\Log;
 
 class ArticleController extends CommonController
 {
@@ -74,28 +75,27 @@ class ArticleController extends CommonController
     /**
      * 添加文章
      * @param Request $request
-     * @return array|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View|string
      */
     public function add(Request $request)
     {
-        $is_post = $request->isMethod('post');
-        if ($is_post) {
-            $data = $request->all();
-            unset($data['_token']);
-            $data['id'] = setModelId("Article");
-            try {
-                Article::create($data);
-                $rel = [
-                    "status" => "200",
-                    "message" => "文章添加成功！"
-                ];
-            } catch (\Exception $e) {
-                $rel = [
-                    "status" => "400",
-                    "message" => "文章添加失败！"
-                ];
+        $is_ajax = $request->ajax();
+        if ($is_ajax) {
+            $is_post = $request->isMethod('post');
+            if ($is_post) {
+                $data = $request->all();
+                unset($data['_token']);
+                $data['id'] = setModelId("Article");
+                try {
+                    $rel = Article::create($data);
+                    if (!empty($rel)) {
+                        return $this->returnMessage('success', '文章添加成功！');
+                    }
+                } catch (\Exception $e) {
+                    Log::info($e->getMessage());
+                }
             }
-            return $rel;
+            return $this->returnMessage('success', '文章添加失败！');
         } else {
             $title = ['title' => '文章管理', 'sub_title' => '新增文章'];
             return view('admin.article.add', ['menu_list' => session('menu'), 'title' => $title]);
@@ -106,33 +106,33 @@ class ArticleController extends CommonController
      * 修改文章
      * @param Request $request
      * @param string $id
-     * @return array|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View|string
      */
     public function edit(Request $request, $id = '')
     {
-        $is_post = $request->isMethod('post');
-        if ($is_post) {
-            $id = $request->id;
-            $data = $request->all();
-            $data['status'] = '1';
-            unset($data['_token']);
-            unset($data['id']);
-            try {
-                Article::where('id', $id)->update($data);
-                $rel = [
-                    "status" => "200",
-                    "message" => "文章修改成功！"
-                ];
-            } catch (\Exception $e) {
-                $rel = [
-                    "status" => "400",
-                    "message" => "文章修改失败！"
-                ];
+        $is_ajax = $request->ajax();
+        if ($is_ajax) {
+            $is_post = $request->isMethod('post');
+            if ($is_post) {
+                $id = $request->id;
+                $data = $request->all();
+                $data['status'] = '1';
+                unset($data['_token']);
+                unset($data['id']);
+                $article = Article::find($id);
+                try {
+                    $rel = $article->update($data);
+                    if ($rel) {
+                        return $this->returnMessage('success', '文章修改成功！');
+                    }
+                } catch (\Exception $e) {
+                    Log::info($e->getMessage());
+                }
             }
-            return $rel;
+            return $this->returnMessage('error', '文章修改失败！');
         } else {
             $article = Article::find($id);
-            $title = ['title' => '文章管理', 'sub_title' => '新增文章'];
+            $title = ['title' => '文章管理', 'sub_title' => '修改文章'];
             return view('admin.article.edit', ['menu_list' => session('menu'), 'article' => $article, 'title' => $title]);
         }
     }
@@ -140,28 +140,31 @@ class ArticleController extends CommonController
     /**
      * 删除文章
      * @param Request $request
-     * @return array
+     * @return string
      */
     public function delete(Request $request)
     {
         $is_ajax = $request->ajax();
         if ($is_ajax) {
-            $id = $request->article_id;
+            $id = $request->id;
             $article = Article::find($id);
             $article->status = '0';
-            $article->save();
-            $rel_arr = [
-                'status' => '200',
-                'message' => '文章删除成功！'
-            ];
-            return $rel_arr;
+            try {
+                $rel = $article->save();;
+                if ($rel) {
+                    return $this->returnMessage('success', '文章删除成功！');
+                }
+            } catch (\Exception $e) {
+                Log::info($e->getMessage());
+            }
         }
+        return $this->returnMessage('error', '文章删除失败！');
     }
 
     /**
      * 发布文章
      * @param Request $request
-     * @return array
+     * @return string
      */
     public function publish(Request $request)
     {
@@ -173,21 +176,17 @@ class ArticleController extends CommonController
                 $id = $data['id'];
                 unset($data['_token']);
                 unset($data['id']);
+                $article = where('id', $id)->first();
+                $data['status'] = '2';
                 try {
-                    $data['status'] = '2';
-                    Article::where('id', $id)->update($data);
-                    $rel = [
-                        "status" => "200",
-                        "message" => "文章发布成功！"
-                    ];
+                    $rel = $article->update($data);
+                    if ($rel) {
+                        return $this->returnMessage('success', '文章发布成功！');
+                    }
                 } catch (\Exception $e) {
-                    $rel = [
-                        "status" => "400",
-                        "message" => "文章发布失败！"
-                    ];
+                    Log::info($e->getMessage());
                 }
-                $rel['title'] = '文章发布';
-                return $rel;
+                return $this->returnMessage('error', '文章发布失败！');
             } else {
                 $id = $request->id;
                 $publish_article_list = Article::find($id);
@@ -199,55 +198,82 @@ class ArticleController extends CommonController
     /**
      * 取消发布文章
      * @param Request $request
+     * @return string
      */
     public function cancelPublish(Request $request)
     {
         $is_ajax = $request->ajax();
         if ($is_ajax) {
-            $id = $request->article_id;
+            $id = $request->id;
             $article = Article::find($id);
             $article->status = '1';
-            $article->save();
+            try {
+                $rel = $article->save();
+                if ($rel) {
+                    return $this->returnMessage('success', '文章取消发布操作成功！');
+                }
+            } catch (\Exception $e) {
+                Log::info($e->getMessage());
+            }
         }
+        return $this->returnMessage('error', '文章取消发布操作失败！');
     }
 
     /**
      * 置顶/取消置顶
      * @param Request $request
+     * @return string
      */
     public function stick(Request $request)
     {
         $is_ajax = $request->ajax();
         if ($is_ajax) {
-            $id = $request->article_id;
+            $id = $request->id;
             $value = $request->value;
-            $value == '1' ? $value = '0' : $value = '1';
             $article = Article::find($id);
-            $article->is_top = $value;
-            $article->save();
+            if ($article->is_top == $value) {
+                $value == '1' ? $value = '0' : $value = '1';
+                $article->is_top = $value;
+                try {
+                    $rel = $article->save();
+                    if ($rel) {
+                        return $this->returnMessage('success', '文章置顶成功！');
+                    }
+                } catch (\Exception $e) {
+                    Log::info($e->getMessage());
+                }
+            }
         }
+        return $this->returnMessage('error', '文章置顶失败！');
     }
 
     /**
      * 修改文章标题属性（加粗、倾斜）
      * @param Request $request
+     * @return string
      */
     public function updateAttribute(Request $request)
     {
         $is_ajax = $request->ajax();
         if ($is_ajax) {
-            $id = $request->article_id;
+            $id = $request->id;
             $action = $request->action;
+            $article = Article::find($id);
             if ('bold' == $action) {
-                $article = Article::find($id);
                 $article->is_title_bold == '1' ? $article->is_title_bold = '0' : $article->is_title_bold = '1';
-                $article->save();
             }
             if ('italic' == $action) {
-                $article = Article::find($id);
                 $article->is_title_italic == '1' ? $article->is_title_italic = '0' : $article->is_title_italic = '1';
-                $article->save();
+            }
+            try {
+                $rel = $article->save();
+                if ($rel) {
+                    return $this->returnMessage('success', '文章修改成功！');
+                }
+            } catch (\Exception $e) {
+                Log::info($e->getMessage());
             }
         }
+        return $this->returnMessage('error', '文章修改失败！');
     }
 }
