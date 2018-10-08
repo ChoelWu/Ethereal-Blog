@@ -5,8 +5,6 @@
 @section('head_files')
     <link href="{{ asset(config('view.admin_static_path') . '/css/plugins/summernote/summernote.css') }}"
           rel="stylesheet">
-    <link href="{{ asset(config('view.admin_static_path') . '/css/plugins/summernote/summernote-bs3.css') }}"
-          rel="stylesheet">
     <link href="{{ asset(config('view.admin_static_path') . '/css/plugins/bootstrap-markdown/bootstrap-markdown.min.css') }}"
           rel="stylesheet">
     <!-- Validator -->
@@ -171,30 +169,30 @@
                     }
                 }
             });
-            {{--$('#add-article-submit').click(function () {--}}
-                {{--$('#add-article-form').bootstrapValidator('validate');--}}
-                {{--var flag = $('#add-article-form').data('bootstrapValidator').isValid();--}}
-                {{--if (flag) {--}}
-                    {{--var data = $("#add-article-form").serialize();--}}
-                    {{--var type = "1";--}}
-                    {{--var refresh = {--}}
-                        {{--type: "1",--}}
-                        {{--timeout: 2000,--}}
-                        {{--url: "{{ url('admin/article/index') }}",--}}
-                    {{--};--}}
-                    {{--var confirmData = {--}}
-                        {{--effect: "animated bounceInDown",--}}
-                        {{--size: "sm",--}}
-                        {{--action: "submit",--}}
-                        {{--message: "你确定要提交吗？"--}}
-                    {{--};--}}
-                    {{--var ajaxData = {--}}
-                        {{--url: "{{ url('admin/article/add') }}",--}}
-                        {{--data: data--}}
-                    {{--};--}}
-                    {{--showAjaxMessage(type, confirmData, ajaxData, refresh);--}}
-                {{--}--}}
-            {{--});--}}
+            $('#add-article-submit').click(function () {
+                $('#add-article-form').bootstrapValidator('validate');
+                var flag = $('#add-article-form').data('bootstrapValidator').isValid();
+                if (flag) {
+                    var data = $("#add-article-form").serialize();
+                    var type = "1";
+                    var refresh = {
+                        type: "1",
+                        timeout: 2000,
+                        url: "{{ url('admin/article/index') }}",
+                    };
+                    var confirmData = {
+                        effect: "animated bounceInDown",
+                        size: "sm",
+                        action: "submit",
+                        message: "你确定要提交吗？"
+                    };
+                    var ajaxData = {
+                        url: "{{ url('admin/article/add') }}",
+                        data: data
+                    };
+                    showAjaxMessage(type, confirmData, ajaxData, refresh);
+                }
+            });
         });
     </script>
 @endsection
