@@ -1,6 +1,6 @@
 @extends('admin.common.layout')
 @section('title')
-    index
+    {{ $title['title'] }}
 @endsection
 @section('head_files')
     <link href="{{ asset(config('view.admin_static_path') . '/css/plugins/summernote/summernote.css') }}"
@@ -20,7 +20,7 @@
             <h2>{{ $title['title'] }}</h2>
             <ol class="breadcrumb">
                 <li>
-                    <a href="index.html">{{ $title['title'] }}</a>
+                    <a href="{{ url('admin/article/index') }}">{{ $title['title'] }}</a>
                 </li>
                 <li class="active">
                     <strong>{{ $title['sub_title'] }}</strong>
