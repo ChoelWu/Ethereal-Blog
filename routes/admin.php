@@ -83,8 +83,8 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
     Route::post('nav/add', 'NavController@add');
     Route::get('nav/edit/{id?}', 'NavController@edit');
     Route::post('nav/edit', 'NavController@edit');
-    Route::get('nav/delete', 'NavController@delete');
-    Route::get('nav/update_status', 'NavController@updateStatus');
+    Route::post('nav/delete', 'NavController@delete');
+    Route::post('nav/update_status', 'NavController@updateStatus');
     Route::get('nav/get_nav_level', 'NavController@getNavlevel');
     //海报管理
     Route::get('poster/index', 'PosterController@index');

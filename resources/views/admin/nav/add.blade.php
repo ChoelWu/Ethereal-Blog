@@ -1,6 +1,6 @@
 @extends('admin.common.layout')
 @section('title')
-    index
+    {{ $title['title'] }}
 @endsection
 @section('head_files')
     <!-- Toastr style -->
@@ -26,8 +26,7 @@
                 </li>
             </ol>
         </div>
-        <div class="col-lg-2">
-        </div>
+        <div class="col-lg-2"></div>
     </div>
     <div class="wrapper wrapper-content animated fadeInRight">
         <div class="row">
@@ -203,47 +202,33 @@
                 }
             });
             $("#add-nav-submit").click(function () {
-                var ajax_data;
-                $('#add-nav-form').bootstrapValidator('validate');
-                var flag = $('#add-nav-form').data('bootstrapValidator').isValid();
-                if (elem.checked) {
-                    $('input[name="status"]').val('1');
-                } else {
-                    $('input[name="status"]').val('0');
-                }
+                $('#add-user-form').bootstrapValidator('validate');
+                var flag = $('#add-user-form').data('bootstrapValidator').isValid();
+                setSwitchInInput(elem, "status");
                 if (flag) {
-                    $.ajax({
-                        type: "post",
+                    var data = new FormData($('#add-user-form')[0]);
+                    var type = "1";
+                    var refresh = {
+                        type: "1",
+                        timeout: 2000,
+                        url: "{{ url('admin/nav/index') }}",
+                    };
+                    var confirmData = {
+                        effect: "animated bounceInDown",
+                        size: "sm",
+                        action: "submit",
+                        message: "你确定要提交吗？"
+                    };
+                    var ajaxData = {
                         url: "{{ url('admin/nav/add') }}",
-                        data: $('#add-nav-form').serialize(),
-                        async: false,
-                        dataType: "json",
-                        success: function (data) {
-                            ajax_data = data;
-                        }
+                        data: data
+                    };
+                    $.ajaxSetup({
+                        cache: false,
+                        processData: false,
+                        contentType: false,
                     });
-                    $('#message-modal-label').html("添加导航");
-                    if ('200' == ajax_data['status']) {
-                        $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-check-square text-info"></i> ' + ajax_data['message'] + '</h3>');
-                    } else {
-                        $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-exclamation-triangle text-danger"></i> ' + ajax_data['message'] + '</h3>');
-                    }
-                    setTimeout(function () {
-                        $("#message-modal").modal({
-                            keyboard: false,
-                            backdrop: false
-                        });
-                        $('#message-modal').modal('show');
-                    }, 600);
-                    if ('200' == ajax_data['status']) {
-                        setTimeout(function () {
-                            window.location.href = "{{ url('admin/nav/index') }}";
-                        }, 2500);
-                    } else {
-                        setTimeout(function () {
-                            $('#message-modal').modal('hide');
-                        }, 2500);
-                    }
+                    showAjaxMessage(type, confirmData, ajaxData, refresh);
                 }
             });
             $("#clear").click(function () {

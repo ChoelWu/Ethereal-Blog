@@ -1,6 +1,6 @@
 @extends('admin.common.layout')
 @section('title')
-    index
+    {{ $title['title'] }}
 @endsection
 @section('head_files')
     <!-- Toastr style -->
@@ -26,8 +26,7 @@
                 </li>
             </ol>
         </div>
-        <div class="col-lg-2">
-        </div>
+        <div class="col-lg-2"></div>
     </div>
     <div class="wrapper wrapper-content animated fadeInRight">
         <div class="row">
@@ -121,8 +120,8 @@
                             <div class="hr-line-dashed"></div>
                             <div class="form-group">
                                 <div class="col-sm-4 col-sm-offset-2">
-                                    <div class="btn btn-white" id="add-nav-cancel">取消</div>
-                                    <div class="btn btn-primary" id="add-nav-submit">保存</div>
+                                    <div class="btn btn-white" id="edit-nav-cancel">取消</div>
+                                    <div class="btn btn-primary" id="edit-nav-submit">保存</div>
                                 </div>
                             </div>
                             <input type="hidden" name="id" value="{{ $nav->id }}">
@@ -142,17 +141,7 @@
             var elem = document.querySelector('.js-switch');
             var switchery = new Switchery(elem, {color: '#1AB394'});
             var pre_status = "{{ $nav->status }}";
-            if (pre_status == "1") {
-                setSwitchery(switchery, true);
-            } else {
-                setSwitchery(switchery, false);
-            }
-            function setSwitchery(switchElement, checkedBool) {
-                if ((checkedBool && !switchElement.isChecked()) || (!checkedBool && switchElement.isChecked())) {
-                    switchElement.setPosition(true);
-                    switchElement.handleOnchange(true);
-                }
-            }
+            setSwitch(pre_status, switchery);
             $('#edit-nav-form').bootstrapValidator({
                 message: 'This value is not valid',
                 feedbackIcons: {
@@ -223,48 +212,34 @@
                     }
                 }
             });
-            $("#add-nav-submit").click(function () {
+            $("#edit-nav-submit").click(function () {
+                setSwitchInInput(elem, "status");
                 $('#edit-nav-form').bootstrapValidator('validate');
-                var ajax_data;
                 var flag = $('#edit-nav-form').data('bootstrapValidator').isValid();
-                if (elem.checked) {
-                    $('input[name="status"]').val('1');
-                } else {
-                    $('input[name="status"]').val('0');
-                }
                 if (flag) {
-                    $.ajax({
-                        type: "post",
+                    var data = new FormData($('#edit-nav-form')[0]);
+                    var type = "1";
+                    var refresh = {
+                        type: "1",
+                        timeout: 2000,
+                        url: "{{ url('admin/nav/index') }}",
+                    };
+                    var confirmData = {
+                        effect: "animated bounceInDown",
+                        size: "sm",
+                        action: "submit",
+                        message: "你确定要提交修改吗？"
+                    };
+                    var ajaxData = {
                         url: "{{ url('admin/nav/edit') }}",
-                        data: $('#edit-nav-form').serialize(),
-                        async: false,
-                        dataType: "json",
-                        success: function (data) {
-                            ajax_data = data;
-                        }
+                        data: data
+                    };
+                    $.ajaxSetup({
+                        cache: false,
+                        processData: false,
+                        contentType: false,
                     });
-                    $('#message-modal-label').html("添加导航");
-                    if ('200' == ajax_data['status']) {
-                        $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-check-square text-info"></i> ' + ajax_data['message'] + '</h3>');
-                    } else {
-                        $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-exclamation-triangle text-danger"></i> ' + ajax_data['message'] + '</h3>');
-                    }
-                    setTimeout(function () {
-                        $("#message-modal").modal({
-                            keyboard: false,
-                            backdrop: false
-                        });
-                        $('#message-modal').modal('show');
-                    }, 600);
-                    if ('200' == ajax_data['status']) {
-                        setTimeout(function () {
-                            window.location.href = "{{ url('admin/nav/index') }}";
-                        }, 2500);
-                    } else {
-                        setTimeout(function () {
-                            $('#message-modal').modal('hide');
-                        }, 2500);
-                    }
+                    showAjaxMessage(type, confirmData, ajaxData, refresh);
                 }
             });
             $("#clear").click(function () {
