@@ -5,8 +5,6 @@
 @section('head_files')
     <link href="{{ asset(config('view.admin_static_path') . '/css/plugins/summernote/summernote.css') }}"
           rel="stylesheet">
-    <link href="{{ asset(config('view.admin_static_path') . '/css/plugins/summernote/summernote-bs3.css') }}"
-          rel="stylesheet">
     <link href="{{ asset(config('view.admin_static_path') . '/css/plugins/bootstrap-markdown/bootstrap-markdown.min.css') }}"
           rel="stylesheet">
     <!-- Validator -->
@@ -27,8 +25,7 @@
                 </li>
             </ol>
         </div>
-        <div class="col-lg-2">
-        </div>
+        <div class="col-lg-2"></div>
     </div>
     <div class="wrapper wrapper-content animated fadeInRight">
         <div class="row">
@@ -36,7 +33,6 @@
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
                         <h5>{{ $title['sub_title'] }}
-                            <small>With custom checbox and radion elements.</small>
                         </h5>
                         <div class="ibox-tools">
                         <span class="btn btn-xs btn-warning" id="clear">
@@ -159,42 +155,31 @@
                 }
             });
             $('#edit-article-submit').click(function () {
-                var ajax_data;
                 $('#edit-article-form').bootstrapValidator('validate');
                 var flag = $('#edit-article-form').data('bootstrapValidator').isValid();
                 if (flag) {
-                    $.ajax({
-                        type: "post",
-                        url: "{{ url('admin/article/edit') }}",
-                        data: $('#edit-article-form').serialize(),
-                        async: false,
-                        dataType: "json",
-                        success: function (data) {
-                            ajax_data = data;
-                        }
-                    });
-                    $('#message-modal-label').html("修改文章");
-                    if ('200' == ajax_data['status']) {
-                        $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-check-square text-info"></i> ' + ajax_data['message'] + '</h3>');
-                    } else {
-                        $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-exclamation-triangle text-danger"></i> ' + ajax_data['message'] + '</h3>');
+                    $('#edit-article-form').bootstrapValidator('validate');
+                    var flag = $('#edit-article-form').data('bootstrapValidator').isValid();
+                    if (flag) {
+                        var data = $("#edit-article-form").serialize();
+                        var type = "1";
+                        var refresh = {
+                            type: "1",
+                            timeout: 2000,
+                            url: "{{ url('admin/article/index') }}",
+                        };
+                        var confirmData = {
+                            effect: "animated bounceInDown",
+                            size: "sm",
+                            action: "submit",
+                            message: "你确定要提交吗？"
+                        };
+                        var ajaxData = {
+                            url: "{{ url('admin/article/edit') }}",
+                            data: data
+                        };
+                        showAjaxMessage(type, confirmData, ajaxData, refresh);
                     }
-                    setTimeout(function () {
-                        $("#message-modal").modal({
-                            keyboard: false,
-                            backdrop: false
-                        });
-                        $('#message-modal').modal('show');
-                    }, 600);
-                    {{--if ('200' == ajax_data['status']) {--}}
-                    {{--setTimeout(function () {--}}
-                    {{--window.location.href = "{{ url('admin/article/index') }}";--}}
-                    {{--}, 2500);--}}
-                    {{--} else {--}}
-                    {{--setTimeout(function () {--}}
-                    {{--$('#message-modal').modal('hide');--}}
-                    {{--}, 2500);--}}
-                    {{--}--}}
                 }
             });
         });

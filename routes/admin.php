@@ -70,7 +70,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
     Route::post('article/update_attribute', 'ArticleController@updateAttribute');
     Route::post('article/stick', 'ArticleController@stick');
     Route::post('article/publish', 'ArticleController@publish');
-    Route::post('article/publish', 'ArticleController@publish');
+    Route::get('article/publish', 'ArticleController@publish');
     Route::post('article/cancel_publish', 'ArticleController@cancelPublish');
     //评论管理
     Route::get('comment/index', 'CommentController@index');

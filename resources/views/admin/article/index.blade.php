@@ -350,7 +350,7 @@
                         $('#publish-article-form').find('input[name="title_color"]').removeAttr('disabled');
                         $('#publish-article-form').find('input[name="title_color"]').val(data['title_color']);
                     }
-                    // alert(data['publish_date']);
+                    console.log(data.id);
                     if (data['publish_date'] == null) {
                         $('#publish-article-form').find('input[name="publish_date"]').val("{{ date('Y-m-d', time()) }}");
                     } else {
@@ -359,7 +359,7 @@
                     $('#publish-article-form').find("select[name='nav_id']").find("option[value=" + data['nav_id'] + "]").attr("selected", "selected");
                     $('#publish-article-form').find("select[name='tag_id']").find("option[value=" + data['tag_id'] + "]").attr("selected", "selected");
                     $('#article-publish-id').val(id);
-                });
+                }, "json");
                 $('#publish-article-modal').modal('show');
             });
             $(".update-attribute").click(function () {

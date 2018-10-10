@@ -176,7 +176,7 @@ class ArticleController extends CommonController
                 $id = $data['id'];
                 unset($data['_token']);
                 unset($data['id']);
-                $article = where('id', $id)->first();
+                $article = Article::where('id', $id)->first();
                 $data['status'] = '2';
                 try {
                     $rel = $article->update($data);
@@ -190,7 +190,7 @@ class ArticleController extends CommonController
             } else {
                 $id = $request->id;
                 $publish_article_list = Article::find($id);
-                return $publish_article_list;
+                return json_encode($publish_article_list);
             }
         }
     }
