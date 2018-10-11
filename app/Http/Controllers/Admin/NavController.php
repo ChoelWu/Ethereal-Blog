@@ -47,32 +47,25 @@ class NavController extends CommonController
     public function add(Request $request)
     {
         $is_ajax = $request->ajax();
-        $is_post = $request->isMethod("post");
         if ($is_ajax) {
+            $is_post = $request->isMethod("post");
             if ($is_post) {
                 $data = $request->all();
-                if ('0' == $data['parent_id']) {
-                    $data['level'] = '1';
-                } else {
-                    $parent_nav_level = Nav::where('id', $data['parent_id'])->value('level');
-                    empty($parent_nav_level) ? $data['level'] = '1' : $data['level'] = $parent_nav_level + 1;
+                '0' == $data['parent_id'] ? $data['level'] = '1' : $data['level'] = '2';
+                if ($data['level'] <= '2') {
+                    $data['id'] = setModelId("Nav");
+                    unset($data['_token']);
+                    try {
+                        $rel = Nav::create($data);
+                        if (!empty($rel)) {
+                            return $this->returnMessage('success', '导航添加成功！');
+                        }
+                    } catch (\Exception $e) {
+                        Log::info($e->getMessage());
+                    }
                 }
-                $data['id'] = setModelId("Nav");
-                unset($data['_token']);
-                try {
-                    Nav::create($data);
-                    $rel = [
-                        "status" => "200",
-                        "message" => "导航添加成功！"
-                    ];
-                } catch (\Exception $e) {
-                    $rel = [
-                        "status" => "400",
-                        "message" => "导航添加失败！" . $e->getMessage()
-                    ];
-                }
-                return $rel;
             }
+            return $this->returnMessage('error', '导航添加失败！');
         } else {
             $title = ['title' => '导航管理', 'sub_title' => '添加导航'];
             $parent_nav_arr = Nav::select('id', 'name', 'level', 'parent_id', 'status', 'sort', 'url', 'icon')->get()->toArray();

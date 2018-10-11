@@ -33,14 +33,12 @@
             <div class="col-lg-12">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
-                        <h5>{{ $title['sub_title'] }}
-                            <small>With custom checbox and radion elements.</small>
-                        </h5>
+                        <h5>{{ $title['sub_title'] }}</h5>
                         <div class="ibox-tools">
-                        <span class="btn btn-xs btn-warning" id="clear">
-                            <i class="fa fa-eraser"></i>
-                            清空
-                        </span>
+                            <span class="btn btn-xs btn-warning" id="clear">
+                                <i class="fa fa-eraser"></i>
+                                清空
+                            </span>
                         </div>
                     </div>
                     <div class="ibox-content">
@@ -202,11 +200,11 @@
                 }
             });
             $("#add-nav-submit").click(function () {
-                $('#add-user-form').bootstrapValidator('validate');
-                var flag = $('#add-user-form').data('bootstrapValidator').isValid();
+                $('#add-nav-form').bootstrapValidator('validate');
+                var flag = $('#add-nav-form').data('bootstrapValidator').isValid();
                 setSwitchInInput(elem, "status");
                 if (flag) {
-                    var data = new FormData($('#add-user-form')[0]);
+                    var data = new FormData($('#add-nav-form')[0]);
                     var type = "1";
                     var refresh = {
                         type: "1",
