@@ -23,6 +23,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Poster;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class PosterController extends CommonController
 {
@@ -36,8 +37,8 @@ class PosterController extends CommonController
     public function add(Request $request)
     {
         $is_ajax = $request->ajax();
-        $is_post = $request->isMethod("post");
         if ($is_ajax) {
+            $is_post = $request->isMethod("post");
             if ($is_post) {
                 $data = $request->all();
                 if ($request->has('img')) {
@@ -46,25 +47,25 @@ class PosterController extends CommonController
                         $ext = $file->getClientOriginalExtension();
                         $filename = date('YmdHis', time()) . uniqid() . '.' . $ext;
                         $data['img'] = $file->storeAs('uploads/poster/img', $filename);
+                    } else {
+                        return $this->returnMessage('error', '海报添加失败1！');
                     }
+                } else {
+                    return $this->returnMessage('error', '海报添加失败2！');
                 }
                 unset($data['_token']);
                 $data['id'] = setModelId("Poster");
                 try {
-                    Poster::create($data);
-                    $rel = [
-                        'status' => '200',
-                        'message' => '海报添加成功！'
-                    ];
+                    $rel = Poster::create($data);
+                    if (!empty($rel)) {
+                        return $this->returnMessage('success', '海报添加成功！');
+                    }
                 } catch (\Exception $e) {
-                    $rel = [
-                        "status" => "400",
-                        "message" => "海报添加失败！" . $e->getMessage()
-                    ];
+                    Log::info($e->getMessage());
                 }
-                return $rel;
             }
         }
+        return $this->returnMessage('error', '海报添加失败3！');
     }
 
     /**
@@ -76,31 +77,27 @@ class PosterController extends CommonController
     {
         $is_ajax = $request->ajax();
         if ($is_ajax) {
-            $is_get = $request->isMethod("get");
-            if ($is_get) {
+            $is_post = $request->isMethod("post");
+            if ($is_post) {
                 $id = $request->id;
-                $rel = Poster::destroy($id);
-                $is_delete = empty($rel);
-                if (!$is_delete) {
-                    $rel_arr = [
-                        'status' => '200',
-                        'message' => '海报删除成功！'
-                    ];
-                } else {
-                    $rel_arr = [
-                        'status' => '400',
-                        'message' => '海报删除失败！'
-                    ];
+                $poster = Poster::find($id);
+                try {
+                    $rel = $poster->delete();
+                    if ($rel) {
+                        return $this->returnMessage('success', '海报删除成功！');
+                    }
+                } catch (\Exception $e) {
+                    Log::info($e->getMessage());
                 }
-                $rel_arr['title'] = '删除海报';
-                return $rel_arr;
             }
         }
+        return $this->returnMessage('error', '海报删除失败！');
     }
 
     /**
      * 置顶/取消置顶
      * @param Request $request
+     * @return string
      */
     public function stick(Request $request)
     {
@@ -108,23 +105,40 @@ class PosterController extends CommonController
         if ($is_ajax) {
             $id = $request->id;
             $poster = Poster::find($id);
-            $poster->is_top == '1' ? $poster->is_top = '0' : $poster->is_top = '1';
-            $poster->save();
+            try {
+                $poster->is_top == '1' ? $poster->is_top = '0' : $poster->is_top = '1';
+                $rel = $poster->save();
+                if ($rel) {
+                    return $this->returnMessage('success', '海报置顶状态修改成功！');
+                }
+            } catch (\Exception $e) {
+                Log::info($e->getMessage());
+            }
         }
+        return $this->returnMessage('error', '海报置顶状态修改失败！');
     }
 
     /**
      * 更改状态
      * @param Request $request
+     * @return string
      */
     public function updateStatus(Request $request)
     {
         $is_ajax = $request->ajax();
         if ($is_ajax) {
             $id = $request->id;
-            $poster = Poster::select('id', 'status')->find($id);
-            $poster->status == '1' ? $poster->status = '0' : $poster->status = '1';
-            $poster->save();
+            $poster = Poster::find($id);
+            try {
+                $poster->status == '1' ? $poster->status = '0' : $poster->status = '1';
+                $rel = $poster->save();
+                if ($rel) {
+                    return $this->returnMessage('success', '海报状态修改成功！');
+                }
+            } catch (\Exception $e) {
+                Log::info($e->getMessage());
+            }
         }
+        return $this->returnMessage('error', '海报状态修改失败！');
     }
 }

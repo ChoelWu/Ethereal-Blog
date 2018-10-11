@@ -89,9 +89,9 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
     //海报管理
     Route::get('poster/index', 'PosterController@index');
     Route::post('poster/add', 'PosterController@add');
-    Route::get('poster/delete', 'PosterController@delete');
-    Route::get('poster/stick', 'PosterController@stick');
-    Route::get('poster/updateStatus', 'PosterController@updateStatus');
+    Route::post('poster/delete', 'PosterController@delete');
+    Route::post('poster/stick', 'PosterController@stick');
+    Route::post('poster/updateStatus', 'PosterController@updateStatus');
     //广告位管理
     Route::get('slogan/index', 'SloganController@index');
     Route::post('slogan/add', 'SloganController@add');
