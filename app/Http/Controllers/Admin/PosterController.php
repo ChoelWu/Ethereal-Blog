@@ -48,10 +48,10 @@ class PosterController extends CommonController
                         $filename = date('YmdHis', time()) . uniqid() . '.' . $ext;
                         $data['img'] = $file->storeAs('uploads/poster/img', $filename);
                     } else {
-                        return $this->returnMessage('error', '海报添加失败1！');
+                        return $this->returnMessage('error', '海报添加失败！');
                     }
                 } else {
-                    return $this->returnMessage('error', '海报添加失败2！');
+                    return $this->returnMessage('error', '海报添加失败！');
                 }
                 unset($data['_token']);
                 $data['id'] = setModelId("Poster");
@@ -65,7 +65,7 @@ class PosterController extends CommonController
                 }
             }
         }
-        return $this->returnMessage('error', '海报添加失败3！');
+        return $this->returnMessage('error', '海报添加失败！');
     }
 
     /**

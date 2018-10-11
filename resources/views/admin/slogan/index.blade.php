@@ -1,6 +1,6 @@
 @extends('admin.common.layout')
 @section('title')
-    index
+    {{ $title['title'] }}
 @endsection
 @section('head_files')
     <!-- Toastr style -->
@@ -13,73 +13,56 @@
     <link href="{{ asset(config('view.admin_static_path') . '/css/plugins/jasny/jasny-bootstrap.min.css') }}"
           rel="stylesheet">
 @endsection
-@section('content')
-    <div class="modal inmodal" id="add-modal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content animated fadeIn">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">
-                        <span aria-hidden="true">&times;</span>
-                        <span class="sr-only">Close</span>
-                    </button>
-                    <h4 class="modal-title">添加广告位</h4>
-                </div>
-                <div class="modal-body">
-                    <form class="form-horizontal" id="add-slogan-form">
-                        @csrf
-                        <div class="hr-line-dashed"></div>
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label">广告位标题：</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control" name="title" placeholder="请输入广告位标题">
-                            </div>
-                            <span class="text-danger">*</span>
-                        </div>
-                        <div class="hr-line-dashed"></div>
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label">链接地址：</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control" name="url" placeholder="请输入链接地址">
-                            </div>
-                            <span class="text-danger">*</span>
-                        </div>
-                        <div class="hr-line-dashed"></div>
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label">内容简要：</label>
-                            <div class="col-sm-8">
+@section('inputModal')
+    <form class="form-horizontal" id="add-slogan-form">
+        @csrf
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">广告位标题：</label>
+            <div class="col-sm-8">
+                <input type="text" class="form-control" name="title" placeholder="请输入广告位标题">
+            </div>
+            <span class="text-danger">*</span>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">链接地址：</label>
+            <div class="col-sm-8">
+                <input type="text" class="form-control" name="url" placeholder="请输入链接地址">
+            </div>
+            <span class="text-danger">*</span>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">内容简要：</label>
+            <div class="col-sm-8">
                                 <textarea class="form-control" name="summary" rows="5"
                                           style="resize: vertical;"></textarea>
-                            </div>
-                            <span class="text-danger">*</span>
-                        </div>
-                        <div class="hr-line-dashed"></div>
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label">广告位图片：</label>
-                            <div class="col-sm-8">
-                                <div class="fileinput fileinput-new input-group" data-provides="fileinput">
-                                    <div class="form-control" data-trigger="fileinput"><i
-                                                class="glyphicon glyphicon-file fileinput-exists"></i> <span
-                                                class="fileinput-filename"></span>
-                                    </div>
-                                    <span class="input-group-addon btn btn-default btn-file">
+            </div>
+            <span class="text-danger">*</span>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">广告位图片：</label>
+            <div class="col-sm-8">
+                <div class="fileinput fileinput-new input-group" data-provides="fileinput">
+                    <div class="form-control" data-trigger="fileinput"><i
+                                class="glyphicon glyphicon-file fileinput-exists"></i> <span
+                                class="fileinput-filename"></span>
+                    </div>
+                    <span class="input-group-addon btn btn-default btn-file">
                                         <span class="fileinput-new">选择文件</span>
                                         <span class="fileinput-exists">更改</span>
                                         <input type="file" name="img">
                                     </span>
-                                    <a href="#" class="input-group-addon btn btn-default fileinput-exists"
-                                       data-dismiss="fileinput">删除</a>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <div class="btn btn-default" data-dismiss="modal">关闭</div>
-                    <div class="btn btn-primary" id="submit-slogan">提交</div>
+                    <a href="#" class="input-group-addon btn btn-default fileinput-exists"
+                       data-dismiss="fileinput">删除</a>
                 </div>
             </div>
         </div>
-    </div>
+    </form>
+@endsection
+@section('content')
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-lg-10">
             <h2>{{ $title['title'] }}</h2>
@@ -173,67 +156,96 @@
     <script>
         $(document).ready(function () {
             $("#slogan-add").click(function () {
-                $('#add-modal').modal('show');
+                inputModal("animated bounceInDown", "default", "添加广告");
             });
-            $("#submit-slogan").click(function () {
-                var url = "{{ url('admin/slogan/add') }}";
+            $('#submit-btn').click(function () {
                 var form_data = new FormData($("#add-slogan-form")[0]);
-                $.ajax({
-                    url: url,
-                    type: "post",
+                $("#inputModal").modal("hide");
+                $.ajaxSetup({
                     cache: false,
                     processData: false,
                     contentType: false,
-                    async: false,
-                    data: form_data,
-                    dataType: "json",
-                    success: function (data) {
-                        $('#add-modal').modal('hide');
-                        $('#message-modal-label').html("添加用户");
-                        if ('200' == data['status']) {
-                            $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-check-square text-info"></i> ' + data['message'] + '</h3>');
-                        } else {
-                            $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-exclamation-triangle text-danger"></i> ' + data['message'] + '</h3>');
-                        }
-                        setTimeout(function () {
-                            $("#message-modal").modal({
-                                keyboard: false,
-                                backdrop: false
-                            });
-                            $('#message-modal').modal('show');
-                        }, 600);
-                        if ('200' == data['status']) {
-                            setTimeout(function () {
-                                window.location.href = "{{ url('admin/slogan/index') }}";
-                            }, 2500);
-                        } else {
-                            setTimeout(function () {
-                                $('#message-modal').modal('hide');
-                            }, 2500);
-                        }
+                });
+                ajaxFromServer("{{ url('admin/slogan/add') }}", form_data, function (data) {
+                    if (data['status'] == '1') {
+                        showMessageModal("animated flipInX", "sm", "success", "广告添加成功！", 2000, function() {
+                            setTimeout(function() {
+                                location.reload();
+                            }, 100);
+                        });
+                    } else if (data['status'] == '0') {
+                        showMessageModal("animated flipInX", "sm", "error", "广告添加失败！", 2000, function() {
+                            setTimeout(function() {
+                                location.reload();
+                            }, 100);
+                        });
                     }
+                }, function () {
+                    showMessageModal("animated flipInX", "sm", "error", "系统异常！", 2000);
                 });
             });
             $(".delete-slogan").click(function () {
+                var id = $(this).data("id");
+                var token = "{{ csrf_token() }}";
                 var url = "{{ url('admin/slogan/delete') }}";
-                var id = $(this).data('id');
-                $.get(url, {id: id}, function (data) {
-                    console.log(data);
-                });
+                var type = "2";
+                var refresh = {
+                    type: "1",
+                    timeout: 2000,
+                    url: "{{ url('admin/slogan/index') }}",
+                };
+                var confirmData = {
+                    type: "warning",
+                    title: "你确定要删除广告吗？",
+                    message: ""
+                };
+                var ajaxData = {
+                    url: url,
+                    data: {id: id, _token: token}
+                };
+                showAjaxMessage(type, confirmData, ajaxData, refresh);
             });
             $(".stick-slogan").click(function () {
+                var id = $(this).data("id");
+                var token = "{{ csrf_token() }}";
                 var url = "{{ url('admin/slogan/stick') }}";
-                var id = $(this).data('id');
-                $.get(url, {id: id}, function (data) {
-                    console.log(data);
-                });
+                var type = "2";
+                var refresh = {
+                    type: "1",
+                    timeout: 2000,
+                    url: "{{ url('admin/slogan/index') }}",
+                };
+                var confirmData = {
+                    type: "warning",
+                    title: "你确定要置顶广告吗？",
+                    message: ""
+                };
+                var ajaxData = {
+                    url: url,
+                    data: {id: id, _token: token}
+                };
+                showAjaxMessage(type, confirmData, ajaxData, refresh);
             });
             $(".update-status-slogan").click(function () {
+                var id = $(this).data("id");
+                var token = "{{ csrf_token() }}";
                 var url = "{{ url('admin/slogan/updateStatus') }}";
-                var id = $(this).data('id');
-                $.get(url, {id: id}, function (data) {
-                    console.log(data);
-                });
+                var type = "2";
+                var refresh = {
+                    type: "1",
+                    timeout: 2000,
+                    url: "{{ url('admin/slogan/index') }}",
+                };
+                var confirmData = {
+                    type: "warning",
+                    title: "你确定要更改广告状态吗？",
+                    message: ""
+                };
+                var ajaxData = {
+                    url: url,
+                    data: {id: id, _token: token}
+                };
+                showAjaxMessage(type, confirmData, ajaxData, refresh);
             });
         });
     </script>
