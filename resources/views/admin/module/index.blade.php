@@ -1,6 +1,6 @@
 @extends('admin.common.layout')
 @section('title')
-    index
+    {{ $title['title'] }}
 @endsection
 @section('head_files')
     <link rel="stylesheet" href="{{ asset(config('view.admin_static_path') . '/css/bootstrapValidator.css') }}"/>
@@ -26,9 +26,7 @@
             <div class="col-lg-12">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
-                        <h5>{{ $title['sub_title'] }}
-                            <small>With custom checbox and radion elements.</small>
-                        </h5>
+                        <h5>{{ $title['sub_title'] }}</h5>
                         <div class="ibox-tools">
                              <span class="btn btn-xs btn-primary" id="module-add">
                                 <i class="fa fa-plus"></i> 新增
@@ -129,6 +127,7 @@
                     '</i> 撤销</div> <div class="btn btn-primary module-submit"><i class="fa fa-check"></i> 提交</div></div></div>' +
                     '<div class="hr-line-dashed"></div>';
                 $('div.hr-line-dashed:last').after(add_element);
+                console.log($('div.hr-line-dashed:last'));
             });
             $('.ibox-content').on("click", '.module-submit', function (e) {
                 var element = $(e.target);
@@ -137,12 +136,21 @@
                 var single_length = element.parent().siblings().find('input[name="single_length"]').val();
                 var attach = element.parent().siblings().find('select[name="attach"]').val();
                 var id = element.data('id');
-                var url = "{{ url('admin/module/modify') }}";
                 var token = "{{ csrf_token() }}";
-                $.ajax({
+                var url = "{{ url('admin/module/modify') }}";
+                var type = "2";
+                var refresh = {
+                    type: "1",
+                    timeout: 2000,
+                    url: "{{ url('admin/module/index') }}",
+                };
+                var confirmData = {
+                    type: "warning",
+                    title: "你确定要添加模块吗？",
+                    message: ""
+                };
+                var ajaxData = {
                     url: url,
-                    type: 'post',
-                    async: true,
                     data: {
                         _token: token,
                         id: id,
@@ -150,48 +158,30 @@
                         number: number,
                         single_length: single_length,
                         attach: attach
-                    },
-                    success: function ($data) {
-                        $('#message-modal-label').html($data['title']);
-                        if ('200' == $data['status']) {
-                            $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-check-square text-info"></i> ' + $data['message'] + '</h3>');
-                        } else {
-                            $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-exclamation-triangle text-danger"></i> ' + $data['message'] + '</h3>');
-                        }
-                        $("#message-modal").modal({
-                            keyboard: false,
-                            backdrop: false
-                        });
-                        $('#message-modal').modal('show');
-                        setTimeout(function () {
-                            location.reload();
-                        }, 2000);
                     }
-                });
+                };
+                showAjaxMessage(type, confirmData, ajaxData, refresh);
             });
             $(".module-delete").click(function () {
-                var id = $(this).data('id');
+                var id = $(this).data("id");
+                var token = "{{ csrf_token() }}";
                 var url = "{{ url('admin/module/delete') }}";
-                $.get(url, {id: id}, function (data, status) {
-                    $('#message-modal-label').html(data['title']);
-                    if ('success' == status) {
-                        if ('200' == data['status']) {
-                            $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-check-square text-info"></i> ' + data['message'] + '</h3>');
-                        } else {
-                            $('#message-modal').find('.modal-body').html('<h3><i class="fa fa-exclamation-triangle text-danger"></i> ' + data['message'] + '</h3>');
-                        }
-                    }
-                });
-                setTimeout(function () {
-                    $("#message-modal").modal({
-                        keyboard: false,
-                        backdrop: false
-                    });
-                    $('#message-modal').modal('show');
-                }, 600);
-                setTimeout(function () {
-                    location.reload();
-                }, 2500);
+                var type = "2";
+                var refresh = {
+                    type: "1",
+                    timeout: 2000,
+                    url: "{{ url('admin/module/index') }}",
+                };
+                var confirmData = {
+                    type: "warning",
+                    title: "你确定要删除模块吗？",
+                    message: ""
+                };
+                var ajaxData = {
+                    url: url,
+                    data: {id: id, _token: token}
+                };
+                showAjaxMessage(type, confirmData, ajaxData, refresh);
             });
             $('.ibox-content').on("click", '.module-cancel', function (e) {
                 var element = $(e.target);

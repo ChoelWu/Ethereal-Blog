@@ -21,9 +21,10 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\ContentModule;
 use App\Models\Nav;
+use App\Models\ContentModule;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ContentModuleController extends CommonController
 {
@@ -53,29 +54,27 @@ class ContentModuleController extends CommonController
             $has_id = $request->has('id');
             $data = $request->all();
             unset($data['_token']);
-            $rel = [];
             try {
                 if ($has_id) {
                     $id = $request->id;
                     unset($data['id']);
-                    ContentModule::where('id', $id)->update($data);
-                    $rel["message"] = "模块修改成功！";
+                    $module = ContentModule::find($id);
+                    $rel = $module->update($data);
+                    if ($rel) {
+                        return $this->returnMessage('success', '模块修改成功！');
+                    }
                 } else {
                     $data['id'] = setModelId('ContentModule');
-                    ContentModule::create($data);
-                    $rel["message"] = "模块添加成功！";
+                    $rel = ContentModule::create($data);
+                    if (!empty($rel)) {
+                        return $this->returnMessage('success', '模块添加成功！');
+                    }
                 }
-                $rel["status"] = "200";
             } catch (\Exception $e) {
-                dd($e->getMessage());
-                $rel = [
-                    "status" => "400",
-                    "message" => "模块操作失败！"
-                ];
+                Log::info($e->getMessage());
             }
-            $rel['title'] = "模块管理";
-            return $rel;
         }
+        return $this->returnMessage('error', '模块修改失败！');
     }
 
     /**
@@ -87,22 +86,20 @@ class ContentModuleController extends CommonController
     {
         $is_ajax = $request->ajax();
         if ($is_ajax) {
-            $id = $request->id;
-            $rel = ContentModule::destroy($id);
+            $is_post = $request->isMethod("post");
+            if ($is_post) {
+                $id = $request->id;
+                $module = ContentModule::find($id);
+                try {
+                    $rel = $module->delete();
+                    if ($rel) {
+                        return $this->returnMessage('success', '模块删除成功！');
+                    }
+                } catch (\Exception $e) {
+                    Log::info($e->getMessage());
+                }
+            }
         }
-        $is_delete = empty($rel);
-        if (!$is_delete) {
-            $rel_arr = [
-                'status' => '200',
-                'message' => '模块删除成功！'
-            ];
-        } else {
-            $rel_arr = [
-                'status' => '400',
-                'message' => '模块删除失败！'
-            ];
-        }
-        $rel_arr['title'] = '删除模块';
-        return $rel_arr;
+        return $this->returnMessage('error', '模块删除失败！');
     }
 }

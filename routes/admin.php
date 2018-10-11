@@ -101,7 +101,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
     //前台模块管理
     Route::get('module/index', 'ContentModuleController@index');
     Route::post('module/modify', 'ContentModuleController@modify');
-    Route::get('module/delete', 'ContentModuleController@delete');
+    Route::post('module/delete', 'ContentModuleController@delete');
     //博客基本信息
     Route::get('blog/index', 'BlogController@index');
     Route::post('blog/modify', 'BlogController@modify');
