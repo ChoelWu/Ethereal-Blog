@@ -42,13 +42,6 @@ class Kernel extends HttpKernel
             'bindings',
         ],
 
-        'wechat' => [
-            'throttle:60,1',
-            'bindings',
-            \Illuminate\Session\Middleware\StartSession::class,
-            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-        ],
-
         'admin' => [
             \App\Http\Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
