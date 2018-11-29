@@ -32,11 +32,11 @@ class TagController extends CommonController
      * 标签列表显示
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
         $title = ['title' => '标签管理', 'sub_title' => '标签列表'];
         $list = Tag::select('id', 'name', 'status')->get();
-        return view('admin.tag.index', ['menu_list' => session('menu'), 'list' => $list, 'title' => $title]);
+        return view('admin.tag.index', ['menu_list' => $this->setMenu($request), 'list' => $list, 'title' => $title]);
     }
 
     /**
@@ -65,7 +65,7 @@ class TagController extends CommonController
             return $this->returnMessage('error', '标签添加失败！');
         } else {
             $title = ['title' => '标签管理', 'sub_title' => '添加标签'];
-            return view('admin.tag.add', ['menu_list' => session('menu'), 'title' => $title]);
+            return view('admin.tag.add', ['menu_list' => $this->setMenu($request), 'title' => $title]);
         }
     }
 
@@ -99,7 +99,7 @@ class TagController extends CommonController
         } else {
             $title = ['title' => '标签管理', 'sub_title' => '修改标签信息'];
             $tag = Tag::select('id', 'name', 'status')->find($id);
-            return view('admin.tag.edit', ['menu_list' => session('menu'), 'title' => $title, 'tag' => $tag, 'id' => $id]);
+            return view('admin.tag.edit', ['menu_list' => $this->setMenu($request), 'title' => $title, 'tag' => $tag, 'id' => $id]);
         }
     }
 

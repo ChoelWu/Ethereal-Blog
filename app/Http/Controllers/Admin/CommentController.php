@@ -49,7 +49,7 @@ class CommentController extends CommonController
                 $query->whereIn('article_id', $article_id);
             }
         })->where('status', '1')->paginate(10);
-        return view('admin.comment.index', ['menu_list' => session('menu'), 'list' => $list, 'title' => $title, 'article_title' => $article_title, 'user' => $user]);
+        return view('admin.comment.index', ['menu_list' => $this->setMenu($request), 'list' => $list, 'title' => $title, 'article_title' => $article_title, 'user' => $user]);
     }
 
     /**

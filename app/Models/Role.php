@@ -16,5 +16,11 @@ class Role extends Model
     protected $keyType = 'string';
 
     //设置白名单
-    protected $fillable = ['id', 'role_name', 'status', 'updated_at', 'created_date'];
+    protected $fillable = ['id', 'role_name', 'status', 'user_id', 'updated_at', 'created_date'];
+
+    // 所属用户
+    public function user()
+    {
+        return $this->belongsTo('\App\Models\User', 'user_id', 'id');
+    }
 }

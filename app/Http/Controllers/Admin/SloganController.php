@@ -27,11 +27,11 @@ use Illuminate\Support\Facades\Log;
 
 class SloganController extends CommonController
 {
-    public function index()
+    public function index(Request $request)
     {
         $title = ['title' => '广告管理', 'sub_title' => '广告列表'];
         $list = Slogan::paginate(5);
-        return view('admin.slogan.index', ['menu_list' => session('menu'), 'title' => $title, 'list' => $list]);
+        return view('admin.slogan.index', ['menu_list' => $this->setMenu($request), 'title' => $title, 'list' => $list]);
     }
 
     public function add(Request $request)

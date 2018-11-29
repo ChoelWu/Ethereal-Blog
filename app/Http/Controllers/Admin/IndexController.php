@@ -21,17 +21,16 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Illuminate\Http\Request;
+
 class IndexController extends CommonController
 {
-    public function index()
+    public function index(Request $request)
     {
-
-        return view('admin.index.index', ['menu_list' => session('menu')]);
+        return view('admin.index.index', ['menu_list' => $this->setMenu($request)]);
     }
 
     public function test() {
-        return json_encode(
-            ['message' => "成功", 'status' => '200']
-        );
+        return json_encode(['message' => "成功", 'status' => '200']);
     }
 }

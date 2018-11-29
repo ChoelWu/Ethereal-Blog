@@ -24,7 +24,6 @@
 namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\Models\UserRole;
 use App\Models\User;
 use App\Models\Role;
@@ -32,7 +31,7 @@ use App\Models\Authorize;
 use App\Models\Menu;
 use Cookie;
 
-class AuthController extends Controller
+class AuthController extends CommonController
 {
     /**
      * 登录页面显示
@@ -62,7 +61,7 @@ class AuthController extends Controller
                 return view('admin.auth.login');
             }
             // 完成登录，存储用户必要的session信息
-            $this->storeUserInfo($user);
+            $this->storeUserInfo($user, $request);
             // 重定向到首页
             return view('admin.auth.turn', ['user' => $user]);
         } else {
@@ -102,7 +101,7 @@ class AuthController extends Controller
                 Cookie::queue('CMS-IDENTIFY', $identify_cookie, $minute);
             }
             // 保存用户的session信息
-            $this->storeUserInfo($user);
+            $this->storeUserInfo($user, $request);
             $rel = [
                 'status' => true,
                 'message' => "登陆成功，正在为你跳转"
@@ -119,8 +118,9 @@ class AuthController extends Controller
     /**
      * 存储用户信息到session中
      * @param $user
+     * @param $request
      */
-    private function storeUserInfo($user)
+    private function storeUserInfo($user, $request)
     {
         // 用户角色信息
         $role_id = UserRole::where('user_id', $user->id)->value('role_id');
@@ -137,28 +137,28 @@ class AuthController extends Controller
             'role_id' => $role_id
         ];
         // 菜单列表
-        $menu_arr = Menu::select('id', 'name', 'level', 'parent_id', 'url', 'icon')->where('status', '1')->where(function ($query) use ($user) {
-            if ('1' != $user->user_id && '1' != $user->role_id) {
-                $query->whereIn('url', $user->rules)->orWhere('level', '1');
+        $menu_arr = Menu::select('id', 'name', 'level', 'parent_id', 'url', 'icon')->where('status', '1')->where(function ($query) use ($user_session_arr, $rules) {
+            if ('1' != $user_session_arr['user_id'] && '1' != $user_session_arr['role_id']) {
+                $query->whereIn('url', $rules)->orWhere('url', '#');
             }
         })->orderBy('sort', 'asc')->get()->toArray();
         $menu_list = getMenu($menu_arr, 0, 1);
-        // 权限信息
-        $auth_session_arr = [
-            'menu' => $menu_list,
-            'rule' => $rules
-        ];
         // 非超级管理员时清理没有连接地址的父菜单（清理没有权限的父级菜单）
-        if ('1' != $user->user_id && '1' != $user->role_id) {
+        if ('1' != $user['user_id'] && '1' != $user['role_id']) {
             foreach ($menu_list as $key => $menu_level1) {
                 if (empty($menu_level1['children']) && '#' == $menu_level1['url']) {
                     unset($menu_list[$key]);
                 }
             }
         }
+        // 权限信息
+        $auth_session_arr = [
+            'menu' => $menu_list,
+            'rule' => $rules
+        ];
         // 存储用户和权限信息
-        session(['user' => base64_encode(json_encode($user_session_arr))]);
-        session(['auth' => base64_encode(json_encode($auth_session_arr))]);
+        $request->session()->put('user', $user_session_arr);
+        $request->session()->put('auth', $auth_session_arr);
     }
 
     /**
@@ -190,10 +190,11 @@ class AuthController extends Controller
 
     /**
      * 处理沒有授权的操作
+     * @param Request $request
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function forbidden()
+    public function forbidden(Request $request)
     {
-        return view('admin.common.forbidden', ['menu_list' => session('menu')]);
+        return view('admin.common.forbidden', ['menu_list' => $this->setMenu($request)]);
     }
 }

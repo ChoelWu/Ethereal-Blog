@@ -31,12 +31,12 @@ class NavController extends CommonController
      * 导航列表显示
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
         $title = ['title' => '导航管理', 'sub_title' => '导航列表'];
         $nav_arr = Nav::select('id', 'name', 'level', 'parent_id', 'status', 'sort', 'url', 'icon')->orderBy('sort', 'asc')->get();
         $list = getMenu($nav_arr, 0, 1);
-        return view('admin.nav.index', ['menu_list' => session('menu'), 'list' => $list, 'title' => $title]);
+        return view('admin.nav.index', ['menu_list' => $this->setMenu($request), 'list' => $list, 'title' => $title]);
     }
 
     /**
@@ -70,7 +70,7 @@ class NavController extends CommonController
             $title = ['title' => '导航管理', 'sub_title' => '添加导航'];
             $parent_nav_arr = Nav::select('id', 'name', 'level', 'parent_id', 'status', 'sort', 'url', 'icon')->get()->toArray();
             $parent_nav_list = getMenu($parent_nav_arr, 0, 1);
-            return view('admin.nav.add', ['menu_list' => session('menu'), 'parent_nav_list' => $parent_nav_list, 'title' => $title]);
+            return view('admin.nav.add', ['menu_list' => $this->setMenu($request), 'parent_nav_list' => $parent_nav_list, 'title' => $title]);
         }
     }
 
@@ -110,7 +110,7 @@ class NavController extends CommonController
             $parent_nav_arr = Nav::select('id', 'name', 'level', 'parent_id', 'status', 'sort', 'url', 'icon')->get()->toArray();
             $parent_nav_list = getMenu($parent_nav_arr, 0, 1);
             $nav = Nav::select('id', 'name', 'parent_id', 'sort', 'url', 'sort', 'status', 'icon')->find($id);
-            return view('admin.nav.edit', ['menu_list' => session('menu'), 'parent_nav_list' => $parent_nav_list, 'nav' => $nav, 'title' => $title]);
+            return view('admin.nav.edit', ['menu_list' => $this->setMenu($request), 'parent_nav_list' => $parent_nav_list, 'nav' => $nav, 'title' => $title]);
         }
     }
 

@@ -33,24 +33,26 @@ class RoleController extends CommonController
 {
     /**
      * 列表显示
+     * @param Request $request
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
         $title = ['title' => '角色管理', 'sub_title' => '角色列表'];
-        $list = Role::select('id', 'role_name', 'status')->where('id', '<>', '1')->get();
-        $user_session = json_decode(base64_decode(session('user')));
-        $rule_list = Menu::with(['rules' => function ($query) use ($user_session) {
-            if ('1' == $user_session->user_id) {
+        $list = Role::with('user')->select('id', 'role_name', 'status', 'user_id')->where('id', '<>', '1')->get();
+        $user_session = session('user');
+        $auth_session = session('auth');
+        $rule_list = Menu::with(['rules' => function ($query) use ($user_session, $auth_session) {
+            if ('1' == $user_session['user_id']) {
                 $query->select('id', 'menu_id', 'name', 'route')->orderBy('sort', 'asc')->get();
             } else {
-                $query->select('id', 'menu_id', 'name', 'route')->whereIn('route', $user_session->rules)->orderBy('sort', 'asc')->get();
+                $query->select('id', 'menu_id', 'name', 'route')->whereIn('route', $auth_session['rule'])->orderBy('sort', 'asc')->get();
             }
         }])->select('id', 'name', 'sort')->where(function ($query) {
             $parent_id = Menu::where('level', '<>', '1')->pluck('parent_id');
             $query->whereNotIn('id', $parent_id);
         })->orderBy('sort', 'asc')->get();
-        return view('admin.role.index', ['menu_list' => session('menu'), 'list' => $list, 'rule_list' => $rule_list, 'title' => $title]);
+        return view('admin.role.index', ['menu_list' => $this->setMenu($request), 'list' => $list, 'rule_list' => $rule_list, 'title' => $title]);
     }
 
     /**
@@ -67,6 +69,7 @@ class RoleController extends CommonController
                 $data = $request->all();
                 unset($data['_token']);
                 $data['id'] = setModelId("Role");
+                $data['user_id'] = ($request->session()->get('user'))['user_id'];
                 try {
                     $rel = Role::create($data);
                     if (!empty($rel)) {
@@ -79,7 +82,7 @@ class RoleController extends CommonController
             return $this->returnMessage('error', '角色添加失败！');
         } else {
             $title = ['title' => '角色管理', 'sub_title' => '添加角色'];
-            return view('admin.role.add', ['menu_list' => session('menu'), 'title' => $title]);
+            return view('admin.role.add', ['menu_list' => $this->setMenu($request), 'title' => $title]);
         }
     }
 
@@ -100,6 +103,7 @@ class RoleController extends CommonController
                 $role = Role::find($id);
                 unset($data["_token"]);
                 unset($data["id"]);
+                $data['user_id'] = ($request->session()->get('user'))['user_id'];
                 try {
                     $rel = $role->update($data);
                     if ($rel) {
@@ -113,7 +117,7 @@ class RoleController extends CommonController
         } else {
             $title = ['title' => '角色管理', 'sub_title' => '修改角色信息'];
             $role = Role::select('id', 'role_name', 'status')->find($id);
-            return view('admin.role.edit', ['menu_list' => session('menu'), 'title' => $title, 'role' => $role, 'id' => $id]);
+            return view('admin.role.edit', ['menu_list' => $this->setMenu($request), 'title' => $title, 'role' => $role, 'id' => $id]);
         }
     }
 

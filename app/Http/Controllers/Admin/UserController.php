@@ -32,13 +32,14 @@ class UserController extends CommonController
 
     /**
      * 用户列表显示
+     * @param Request $request
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
         $title = ['title' => '用户管理', 'sub_title' => '用户列表'];
-        $list = User::select('id', 'account', 'nickname', 'status', 'e_mail', 'status', 'phone', 'header_img')->where('id', '<>', '1')->paginate(10);
-        return view('admin.user.index', ['menu_list' => session('menu'), 'list' => $list, 'title' => $title]);
+        $list = User::with('user')->select('id', 'account', 'nickname', 'status', 'user_id', 'e_mail', 'status', 'phone', 'header_img')->where('id', '<>', '1')->paginate(10);
+        return view('admin.user.index', ['menu_list' => $this->setMenu($request), 'list' => $list, 'title' => $title]);
     }
 
     /**
@@ -67,6 +68,7 @@ class UserController extends CommonController
                 $data['id'] = setModelId("User");
                 $user_id = $data['id'];
                 $data['password'] = password_encrypt($data["password"], $data["id"]);
+                $data['user_id'] = ($request->session()->get('user'))['user_id'];
                 $user_role_data = [
                     'id' => setModelId("UserRole"),
                     'user_id' => $user_id,
@@ -86,7 +88,7 @@ class UserController extends CommonController
         } else {
             $title = ['title' => '用户管理', 'sub_title' => '添加用户'];
             $role_list = Role::select('id', 'role_name')->where('status', '1')->where('id', '<>', '1')->get();
-            return view('admin.user.add', ['menu_list' => session('menu'), 'role_list' => $role_list, 'title' => $title]);
+            return view('admin.user.add', ['menu_list' => $this->setMenu($request), 'role_list' => $role_list, 'title' => $title]);
         }
     }
 
@@ -108,6 +110,7 @@ class UserController extends CommonController
                 unset($data["role_id"]);
                 unset($data["_token"]);
                 unset($data["id"]);
+                $data['user_id'] = ($request->session()->get('user'))['user_id'];
                 if (empty($data["password"])) {
                     unset($data["password"]);
                 } else {
@@ -141,7 +144,7 @@ class UserController extends CommonController
             $title = ['title' => '用户管理', 'sub_title' => '修改用户信息'];
             $user = User::select('id', 'account', 'nickname', 'phone', 'e_mail', 'header_img', 'status')->find($id);
             $role_list = Role::select('id', 'role_name')->where('status', '1')->where('id', '<>', '1')->get();
-            return view('admin.user.edit', ['menu_list' => session('menu'), 'title' => $title, 'user' => $user, 'role_list' => $role_list, 'id' => $id]);
+            return view('admin.user.edit', ['menu_list' => $this->setMenu($request), 'title' => $title, 'user' => $user, 'role_list' => $role_list, 'id' => $id]);
         }
     }
 

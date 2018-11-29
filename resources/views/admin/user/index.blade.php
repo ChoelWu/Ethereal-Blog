@@ -41,6 +41,9 @@
                                 <th>角色</th>
                                 <th>e-mail</th>
                                 <th>电话</th>
+                                @if(session('user')['role_id'] == '1')
+                                    <th>创建者</th>
+                                @endif
                                 <th>状态</th>
                                 <th class="col-lg-2">操作</th>
                             </tr>
@@ -58,6 +61,9 @@
                                     <td>{{ $user->nickname }}</td>
                                     <td>{{ $user->e_mail }}</td>
                                     <td>{{ $user->phone }}</td>
+                                    @if(session('user')['role_id'] == '1')
+                                        <td><b>&lt;{{ $user['user']['nickname'] }}&gt;</b> @ {{ $user['user']['account'] }}</td>
+                                    @endif
                                     <td>
                                         @if($user->status == '1')
                                             <button class="btn btn-xs btn-primary edit-user-status"

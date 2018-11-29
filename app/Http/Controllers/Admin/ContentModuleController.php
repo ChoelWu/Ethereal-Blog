@@ -32,14 +32,14 @@ class ContentModuleController extends CommonController
      * 模块列表显示
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
         $title = ['title' => '模块管理', 'sub_title' => '模块列表'];
         $content_module = ContentModule::where('status', '1')->get();
         $nav_list = Nav::select('id', 'name', 'parent_id', 'level')->where('status', '1')->get();
         $nav_list = getMenu($nav_list, 0, 1);
         $nav_json_list = json_encode($nav_list, JSON_UNESCAPED_UNICODE);
-        return view('admin.module.index', ['menu_list' => session('menu'), 'title' => $title, 'content_module' => $content_module, 'nav_list' => $nav_list, 'nav_json_list' => $nav_json_list]);
+        return view('admin.module.index', ['menu_list' => $this->setMenu($request), 'title' => $title, 'content_module' => $content_module, 'nav_list' => $nav_list, 'nav_json_list' => $nav_json_list]);
     }
 
     /**

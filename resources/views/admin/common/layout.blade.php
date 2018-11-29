@@ -57,13 +57,13 @@
                     <div class="dropdown profile-element">
                         <span>
                             <img alt="image" class="img-circle" style="width: 50px; height: 50px;"
-                                 src="@if('' != json_decode(base64_decode(session('user')))->header_img){{ asset(json_decode(base64_decode(session('user')))->header_img) }}@else{{ asset(config('view.admin_static_path') . '/img/default_user.png') }}@endif"/>
+                                 src="@if('' != session('user')['header_img']){{ asset(session('user')['header_img']) }}@else{{ asset(config('view.admin_static_path') . '/img/default_user.png') }}@endif"/>
                         </span>
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                             <span class="clear"> <span class="block m-t-xs">
-                                    <strong class="font-bold">{{ json_decode(base64_decode(session('user')))->nickname }}</strong>
+                                    <strong class="font-bold">{{ session('user')['nickname'] }}</strong>
                              </span>
-                                <span class="text-muted text-xs block">{{ json_decode(base64_decode(session('user')))->role_name }}
+                                <span class="text-muted text-xs block">{{ session('user')['role_name'] }}
                                     <b class="caret"></b>
                                 </span>
                             </span>

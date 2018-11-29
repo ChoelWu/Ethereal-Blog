@@ -28,27 +28,35 @@ use Closure;
 class Auth
 {
     /**
-     * Handle an incoming request.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @param  \Closure $next
-     * @param  string|null $guard
-     * @return mixed
+     * 权限处理
+     * @param $request
+     * @param Closure $next
+     * @param null $guard
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|mixed
      */
     public function handle($request, Closure $next, $guard = null)
     {
-        $user_session = json_decode(base64_decode(session('user')));
-        $has_privileges = !empty($user_session->user_id);
+        $user_session = session('user');
+        $auth_session = session('auth');
+        $has_privileges = !empty($user_session) && !empty($auth_session);
         // 判断是否处于登录状态
         if (!$has_privileges) {
             return redirect('/');
         }
         // 权限控制只针对于非超级管理员
-        if ('1' != $user_session->role_id) {
+        if ('1' != $user_session['role_id']) {
             $path = $request->path();
-            $id = $request->id;
-            empty($id) ?: $path = str_replace("/" . $id, "", $path);
-            $is_path_in = in_array($path, $user_session->rules);
+            // 只获取请求路由的前三个路由关键字
+            $path_raw_arr = explode('/', $path);
+            $path_arr = [];
+            foreach($path_raw_arr as $key => $path_raw) {
+                $path_arr[$key] = $path_raw;
+                if($key >= 2) {
+                    break;
+                }
+            }
+            $path = implode('/', $path_arr);
+            $is_path_in = in_array($path, $auth_session['rule']);
             if (!$is_path_in) {
                 $is_ajax = $request->ajax();
                 if ($is_ajax) {
@@ -63,12 +71,5 @@ class Auth
             }
         }
         return $next($request);
-    }
-
-    /**
-     * 检查权限
-     */
-    public function checkAuth() {
-
     }
 }

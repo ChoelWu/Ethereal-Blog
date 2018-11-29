@@ -21,11 +21,20 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class CommonController extends Controller
 {
-    protected $menu_list;
+    /**
+     * 生成菜单
+     * @param Request $request
+     * @return mixed
+     */
+    public function setMenu(Request $request) {
+        $menu_list = $request->session()->get('auth')['menu'];
+        return $menu_list;
+    }
 
     public function returnMessage($action, $message)
     {

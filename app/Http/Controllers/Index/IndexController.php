@@ -25,7 +25,7 @@ use App\Models\Article;
 
 class IndexController extends CommonController
 {
-    public function index()
+    public function index(Request $request)
     {
         $article_list = Article::where('status', '2')->get();
         return view('index.index', ['nav_list' => $this->nav_list, 'article_list' => $article_list]);

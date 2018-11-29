@@ -98,9 +98,12 @@
                             <tr>
                                 <th>#</th>
                                 <th>角色名</th>
-                                <th class="col-lg-2">状态</th>
-                                <th class="col-lg-2">授权</th>
-                                <th class="col-lg-2">操作</th>
+                                <th>状态</th>
+                                <th>授权</th>
+                                @if(session('user')['role_id'] == '1')
+                                    <th>创建者</th>
+                                @endif
+                                <th>操作</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -126,6 +129,9 @@
                                             <i class="fa fa-check-square-o"></i>
                                         </button>
                                     </td>
+                                    @if(session('user')['role_id'] == '1')
+                                        <td><b>&lt;{{ $role['user']['nickname'] }}&gt;</b> @ {{ $role['user']['account'] }}</td>
+                                    @endif
                                     <td>
                                     <span class="btn btn-xs btn-primary edit-role" data-id="{{ $role['id'] }}"><i
                                                 class="fa fa-edit"></i> 修改</span>

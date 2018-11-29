@@ -27,11 +27,11 @@ use Illuminate\Support\Facades\Log;
 
 class PosterController extends CommonController
 {
-    public function index()
+    public function index(Request $request)
     {
         $title = ['title' => '海报管理', 'sub_title' => '海报列表'];
         $list = Poster::paginate(5);
-        return view('admin.poster.index', ['menu_list' => session('menu'), 'title' => $title, 'list' => $list]);
+        return view('admin.poster.index', ['menu_list' => $this->setMenu($request), 'title' => $title, 'list' => $list]);
     }
 
     public function add(Request $request)

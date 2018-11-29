@@ -67,7 +67,7 @@ class ArticleController extends CommonController
         $tag_list = Tag::select('id', 'name')->where('status', '1')->get();
         $nav_list = Nav::select('id', 'name', 'parent_id', 'level')->where('status', '1')->get();
         $nav_list = getMenu($nav_list, 0, 1);
-        return view('admin.article.index', ['menu_list' => session('menu'), 'list' => $list,
+        return view('admin.article.index', ['menu_list' => $this->setMenu($request), 'list' => $list,
             'tag_list' => $tag_list, 'nav_list' => $nav_list, 'title' => $title, 'article_title' => $article_title,
             'nav_id' => $nav_id, 'tag_id' => $tag_id, 'status' => $status]);
     }
@@ -98,7 +98,7 @@ class ArticleController extends CommonController
             return $this->returnMessage('success', '文章添加失败！');
         } else {
             $title = ['title' => '文章管理', 'sub_title' => '新增文章'];
-            return view('admin.article.add', ['menu_list' => session('menu'), 'title' => $title]);
+            return view('admin.article.add', ['menu_list' => $this->setMenu($request), 'title' => $title]);
         }
     }
 
@@ -133,7 +133,7 @@ class ArticleController extends CommonController
         } else {
             $article = Article::find($id);
             $title = ['title' => '文章管理', 'sub_title' => '修改文章'];
-            return view('admin.article.edit', ['menu_list' => session('menu'), 'article' => $article, 'title' => $title]);
+            return view('admin.article.edit', ['menu_list' => $this->setMenu($request), 'article' => $article, 'title' => $title]);
         }
     }
 
