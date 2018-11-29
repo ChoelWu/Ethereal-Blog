@@ -23,12 +23,13 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\UserRole;
-use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\Authorize;
+use App\Models\Menu;
 use Cookie;
 
 class AuthController extends Controller
@@ -40,21 +41,29 @@ class AuthController extends Controller
      */
     public function index(Request $request)
     {
+        // 获取用户历史登录cookie信息
         $identify_cookie = $request->cookie('CMS-IDENTIFY');
         $has_identify_cookie = !empty($identify_cookie);
+        // 如果存在用户历史cookie信息，直接验证信息，免登录，若不存在则定向用户到登录页面
         if ($has_identify_cookie) {
             $identify_arr = json_decode(base64_decode($identify_cookie), true);
-            $user = User::where('identify', $identify_arr['identify'])->first();
+            $user = User::select('id', 'password', 'nickname', 'header_img')->where('identify', $identify_arr['identify'])->first();
             $has_user = !empty($user);
+            // 根据cookie在数据库中未找到用户，重定向到登录页面
             if (!$has_user) {
                 return view('admin.auth.login');
             }
-            $is_overtime = $user->deadline <= date('Y-m-d H:i:s', time());
+            // 检查cookie是否有效
+            $is_overtime = $user->deadline >= date('Y-m-d H:i:s', time() - 300);
+            // 检查令牌是否有效
             $is_allow = $user->token == $identify_arr['token'];
+            // cookie信息无效，重新登录
             if ($is_overtime || !$is_allow) {
                 return view('admin.auth.login');
             }
-            $this->storeUser($user);
+            // 完成登录，存储用户必要的session信息
+            $this->storeUserInfo($user);
+            // 重定向到首页
             return view('admin.auth.turn', ['user' => $user]);
         } else {
             return view('admin.auth.login');
@@ -71,23 +80,29 @@ class AuthController extends Controller
         $account = $request->account;
         $password = $request->password;
         $remember_me = $request->remember_me;
+        // 验证用户的登录信息
         $user = User::select('id', 'password', 'nickname', 'header_img')->where('account', $account)->first();
         $encrypted_pwd = password_encrypt($password, $user->id);
         if ($user->password === $encrypted_pwd) {
-            $token = encrypt_token($user->id, $user->id);
-            $identify = base64_encode(md5($user->account . time() . rand(100, 999)));
-            $minute = 60 * 24 * 7;
+            // 用户勾选记住密码，下次静默登录
             if ('checked' == $remember_me) {
+                $token = encrypt_token($user->id, $user->id);
+                $identify = base64_encode(md5($user->account . time() . rand(100, 999)));
+                // cooki有效时间1周
+                $minute = 60 * 24 * 7;
                 $data = [
                     'token' => $token,
                     'identify' => $identify,
                     'deadline' => date('Y-m-d H:i:s', time() + $minute * 60)
                 ];
+                // 更新用户的静默登录信息
                 User::where('id', $user->id)->update($data);
                 $identify_cookie = base64_encode(json_encode($data));
+                // 保存静默登录cookie
                 Cookie::queue('CMS-IDENTIFY', $identify_cookie, $minute);
             }
-            $this->storeUser($user);
+            // 保存用户的session信息
+            $this->storeUserInfo($user);
             $rel = [
                 'status' => true,
                 'message' => "登陆成功，正在为你跳转"
@@ -105,23 +120,52 @@ class AuthController extends Controller
      * 存储用户信息到session中
      * @param $user
      */
-    private function storeUser($user)
+    private function storeUserInfo($user)
     {
+        // 用户角色信息
         $role_id = UserRole::where('user_id', $user->id)->value('role_id');
         $role_name = Role::where('id', $role_id)->value('role_name');
+        // 权限信息
         $rules_str = Authorize::where('role_id', $role_id)->value('rules');
         $rules = explode(',', $rules_str);
-        $session_arr = [
+        // 用户基本信息
+        $user_session_arr = [
             'user_id' => $user->id,
             'nickname' => $user->nickname,
             'role_name' => $role_name,
             'header_img' => $user->header_img,
-            'role_id' => $role_id,
-            'rules' => $rules
+            'role_id' => $role_id
         ];
-        session(['user' => base64_encode(json_encode($session_arr))]);
+        // 菜单列表
+        $menu_arr = Menu::select('id', 'name', 'level', 'parent_id', 'url', 'icon')->where('status', '1')->where(function ($query) use ($user) {
+            if ('1' != $user->user_id && '1' != $user->role_id) {
+                $query->whereIn('url', $user->rules)->orWhere('level', '1');
+            }
+        })->orderBy('sort', 'asc')->get()->toArray();
+        $menu_list = getMenu($menu_arr, 0, 1);
+        // 权限信息
+        $auth_session_arr = [
+            'menu' => $menu_list,
+            'rule' => $rules
+        ];
+        // 非超级管理员时清理没有连接地址的父菜单（清理没有权限的父级菜单）
+        if ('1' != $user->user_id && '1' != $user->role_id) {
+            foreach ($menu_list as $key => $menu_level1) {
+                if (empty($menu_level1['children']) && '#' == $menu_level1['url']) {
+                    unset($menu_list[$key]);
+                }
+            }
+        }
+        // 存储用户和权限信息
+        session(['user' => base64_encode(json_encode($user_session_arr))]);
+        session(['auth' => base64_encode(json_encode($auth_session_arr))]);
     }
 
+    /**
+     * 注销登录
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
     public function logout(Request $request)
     {
         $request->session()->flush();

@@ -24,7 +24,6 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use App\Models\Menu;
 
 class Auth
 {
@@ -40,14 +39,12 @@ class Auth
     {
         $user_session = json_decode(base64_decode(session('user')));
         $has_privileges = !empty($user_session->user_id);
-//        $menu_session = session('menu');
-//        $is_menu_null = !is_null($menu_session);
-        //判断是否处于登录状态
+        // 判断是否处于登录状态
         if (!$has_privileges) {
             return redirect('/');
         }
-        //权限控制只针对于非超级管理员
-        if ('1' != $user_session->user_id) {
+        // 权限控制只针对于非超级管理员
+        if ('1' != $user_session->role_id) {
             $path = $request->path();
             $id = $request->id;
             empty($id) ?: $path = str_replace("/" . $id, "", $path);
@@ -66,5 +63,12 @@ class Auth
             }
         }
         return $next($request);
+    }
+
+    /**
+     * 检查权限
+     */
+    public function checkAuth() {
+
     }
 }

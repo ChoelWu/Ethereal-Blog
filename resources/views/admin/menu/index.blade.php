@@ -37,6 +37,7 @@
                                 <th>#</th>
                                 <th>名称</th>
                                 <th>图标</th>
+                                <th>短地址</th>
                                 <th>状态</th>
                                 <th class="col-lg-2">操作</th>
                             </tr>
@@ -47,6 +48,7 @@
                                     <td>{{ $menu->sort }}</td>
                                     <td>{{ $menu->name }}</td>
                                     <td><i class="fa fa-{{ $menu->icon }}"></i></td>
+                                    <td>{{ $menu->url }}</td>
                                     <td>
                                         @if($menu->status == '1')
                                             <button class="btn btn-xs btn-primary edit-menu-status"
@@ -80,6 +82,7 @@
                                             <td>
                                                 <i class="fa fa-{{ $m->icon }}"></i>
                                             </td>
+                                            <td>{{ $m->url }}</td>
                                             <td>
                                                 @if($m['status'] == '1')
                                                     <button class="btn btn-xs btn-primary edit-menu-status"
