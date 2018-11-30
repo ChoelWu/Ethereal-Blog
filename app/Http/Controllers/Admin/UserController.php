@@ -38,7 +38,12 @@ class UserController extends CommonController
     public function index(Request $request)
     {
         $title = ['title' => '用户管理', 'sub_title' => '用户列表'];
-        $list = User::with('user')->select('id', 'account', 'nickname', 'status', 'user_id', 'e_mail', 'status', 'phone', 'header_img')->where('id', '<>', '1')->paginate(10);
+        $list = User::with('user')->select('id', 'account', 'nickname', 'status', 'user_id', 'e_mail', 'status', 'phone', 'header_img')
+            ->where('id', '<>', '1')->where(function ($query) {
+                if (session('user')['role_id'] != '1') {
+                    $query->where('user_id', session('user')['user_id']);
+                }
+            })->paginate(10);
         return view('admin.user.index', ['menu_list' => $this->setMenu($request), 'list' => $list, 'title' => $title]);
     }
 

@@ -51,6 +51,10 @@ class RoleController extends CommonController
         }])->select('id', 'name', 'sort')->where(function ($query) {
             $parent_id = Menu::where('level', '<>', '1')->pluck('parent_id');
             $query->whereNotIn('id', $parent_id);
+        })->where(function ($query) use ($user_session) {
+            if ($user_session['role_id'] != '1') {
+                $query->where('user_id', $user_session['user_id']);
+            }
         })->orderBy('sort', 'asc')->get();
         return view('admin.role.index', ['menu_list' => $this->setMenu($request), 'list' => $list, 'rule_list' => $rule_list, 'title' => $title]);
     }

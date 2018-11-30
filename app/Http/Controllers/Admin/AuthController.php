@@ -23,6 +23,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\BlogUser;
 use Illuminate\Http\Request;
 use App\Models\UserRole;
 use App\Models\User;
@@ -127,6 +128,7 @@ class AuthController extends CommonController
         $role_name = Role::where('id', $role_id)->value('role_name');
         // 权限信息
         $rules_str = Authorize::where('role_id', $role_id)->value('rules');
+        $blog_id = BlogUser::where('user_id', $user->id)->value('blog_id');
         $rules = explode(',', $rules_str);
         // 用户基本信息
         $user_session_arr = [
@@ -134,7 +136,8 @@ class AuthController extends CommonController
             'nickname' => $user->nickname,
             'role_name' => $role_name,
             'header_img' => $user->header_img,
-            'role_id' => $role_id
+            'role_id' => $role_id,
+            'blog_id' => $blog_id
         ];
         // 菜单列表
         $menu_arr = Menu::select('id', 'name', 'level', 'parent_id', 'url', 'icon')->where('status', '1')->where(function ($query) use ($user_session_arr, $rules) {
