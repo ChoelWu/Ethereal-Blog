@@ -80,8 +80,8 @@
     <script src="{{ asset(config('view.admin_static_path') . '/js/plugins/switchery/switchery.js') }}"></script>
     <script>
         $(document).ready(function () {
-            var elem = document.querySelector('.js-switch');
-            var switchery = new Switchery(elem, {color: '#1AB394'});
+            let elem = document.querySelector('.js-switch');
+            let switchery = new Switchery(elem, {color: '#1AB394'});
             $('#add-tag-form').bootstrapValidator({
                 live: "submitted",
                 message: 'This value is not valid',
@@ -104,8 +104,8 @@
                             callback: {
                                 message: '已存在相同标签名的标签！',
                                 callback: function (value) {
-                                    var ajax_data;
-                                    var token = "{{ csrf_token() }}";
+                                    let ajax_data;
+                                    let token = "{{ csrf_token() }}";
                                     $.ajax({
                                         type: "post",
                                         url: "{{ url('admin/tag/check_tag') }}",
@@ -126,23 +126,23 @@
             });
             $("#add-tag-submit").click(function () {
                 $('#add-tag-form').bootstrapValidator('validate');
-                var flag = $('#add-tag-form').data('bootstrapValidator').isValid();
+                let flag = $('#add-tag-form').data('bootstrapValidator').isValid();
                 setSwitchInInput(elem, "status");
                 if (flag) {
-                    var data = $("#add-tag-form").serialize();
-                    var type = "1";
-                    var refresh = {
+                    let data = $("#add-tag-form").serialize();
+                    let type = "1";
+                    let refresh = {
                         type: "1",
                         timeout: 2000,
                         url: "{{ url('admin/tag/index') }}",
                     };
-                    var confirmData = {
+                    let confirmData = {
                         effect: "animated bounceInDown",
                         size: "sm",
                         action: "submit",
                         message: "你确定要提交吗？"
                     };
-                    var ajaxData = {
+                    let ajaxData = {
                         url: "{{ url('admin/tag/add') }}",
                         data: data
                     };

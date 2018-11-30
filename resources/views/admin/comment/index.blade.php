@@ -150,7 +150,7 @@
         $(document).ready(function () {
             $(".delete-comment").click(function () {
 
-                var comment_id = $(this).data("id");
+                let comment_id = $(this).data("id");
                 $('#action-modal').find('.modal-body').html('<h3><i class="fa fa-exclamation-triangle text-warning"></i> 是否要删除评论？</h3>');
                 $('#action-modal').modal('show');
                 $('#action-modal').find('.confirm').click(function () {
@@ -180,16 +180,16 @@
                 });
             });
             $('.view-comment').click(function () {
-                var url = "{{ url('admin/comment/view') }}";
-                var id = $(this).data('id');
-                var data = {id: id};
+                let url = "{{ url('admin/comment/view') }}";
+                let id = $(this).data('id');
+                let data = {id: id};
                 $.get(url, data, function (data) {
                     if ('1' == data['type']) {
                         $('#myModal4').find('.modal-body .alert').html('<strong>' + data['user_name'] + '</strong> 在 <strong>《' + data['article_title'] + '》</strong> 中评论到：</strong><br>' + data['content']);
                         $('#myModal4').modal('show');
                     } else {
                         $('#myModal4').find('.modal-body .alert').html('<strong>' + data['user_name'] + '</strong> 在 <strong>《' + data['article_title'] + '》</strong> 中回复 <strong>' + data['response']['user_name'] + '</strong> ：</strong><br><br>' + data['content']);
-                        var content = '<br><div class="panel panel-default"><div class="panel-heading"> <strong>' + data['response']['user_name'] + '</strong> 原评论：</div><div class="panel-body">' +
+                        let content = '<br><div class="panel panel-default"><div class="panel-heading"> <strong>' + data['response']['user_name'] + '</strong> 原评论：</div><div class="panel-body">' +
                             '<p>' + data['response']['content'] + '</p></div></div>';
                         $('#myModal4').find('.modal-body .alert').after(content);
                         $('#myModal4').modal('show');

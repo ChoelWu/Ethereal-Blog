@@ -111,42 +111,42 @@
                 window.location.href = "{{ url('admin/user/edit') }}/" + $(this).data("id");
             });
             $(".delete-user").click(function () {
-                var id = $(this).data("id");
-                var token = "{{ csrf_token() }}";
-                var url = "{{ url('admin/user/delete') }}";
-                var type = "2";
-                var refresh = {
+                let id = $(this).data("id");
+                let token = "{{ csrf_token() }}";
+                let url = "{{ url('admin/user/delete') }}";
+                let type = "2";
+                let refresh = {
                     type: "1",
                     timeout: 2000,
                     url: "{{ url('admin/user/index') }}",
                 };
-                var confirmData = {
+                let confirmData = {
                     type: "warning",
                     title: "你确定要删除用户吗？",
                     message: ""
                 };
-                var ajaxData = {
+                let ajaxData = {
                     url: url,
                     data: {id: id, _token: token}
                 };
                 showAjaxMessage(type, confirmData, ajaxData, refresh);
             });
             $(".edit-user-status").click(function () {
-                var id = $(this).data("id");
-                var token = "{{ csrf_token() }}";
-                var url = "{{ url('admin/user/update_status') }}";
-                var type = "2";
-                var refresh = {
+                let id = $(this).data("id");
+                let token = "{{ csrf_token() }}";
+                let url = "{{ url('admin/user/update_status') }}";
+                let type = "2";
+                let refresh = {
                     type: "1",
                     timeout: 2000,
                     url: "{{ url('admin/user/index') }}",
                 };
-                var confirmData = {
+                let confirmData = {
                     type: "warning",
                     title: "你确定要更改用户状态吗？",
                     message: ""
                 };
-                var ajaxData = {
+                let ajaxData = {
                     url: url,
                     data: {id: id, _token: token}
                 };

@@ -92,42 +92,42 @@
                 window.location.href = "{{ url('admin/tag/edit') }}/" + $(this).data("id");
             });
             $(".delete-tag").click(function () {
-                var id = $(this).data("id");
-                var token = "{{ csrf_token() }}";
-                var url = "{{ url('admin/tag/delete') }}";
-                var type = "2";
-                var refresh = {
+                let id = $(this).data("id");
+                let token = "{{ csrf_token() }}";
+                let url = "{{ url('admin/tag/delete') }}";
+                let type = "2";
+                let refresh = {
                     type: "1",
                     timeout: 2000,
                     url: "{{ url('admin/tag/index') }}",
                 };
-                var confirmData = {
+                let confirmData = {
                     type: "warning",
                     title: "你确定要删除标签吗？",
                     message: ""
                 };
-                var ajaxData = {
+                let ajaxData = {
                     url: url,
                     data: {id: id, _token: token}
                 };
                 showAjaxMessage(type, confirmData, ajaxData, refresh);
             });
             $(".edit-tag-status").click(function () {
-                var id = $(this).data("id");
-                var token = "{{ csrf_token() }}";
-                var url = "{{ url('admin/tag/update_status') }}";
-                var type = "2";
-                var refresh = {
+                let id = $(this).data("id");
+                let token = "{{ csrf_token() }}";
+                let url = "{{ url('admin/tag/update_status') }}";
+                let type = "2";
+                let refresh = {
                     type: "1",
                     timeout: 2000,
                     url: "{{ url('admin/tag/index') }}",
                 };
-                var confirmData = {
+                let confirmData = {
                     type: "warning",
                     title: "你确定要更标签状态吗？",
                     message: ""
                 };
-                var ajaxData = {
+                let ajaxData = {
                     url: url,
                     data: {id: id, _token: token}
                 };

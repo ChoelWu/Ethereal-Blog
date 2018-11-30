@@ -133,7 +133,7 @@
                 $(this).addClass('btn-primary');
                 $('#editor').remove();
                 $('#editor-outer').html('<textarea id="editor" rows="10"></textarea>');
-                var type = $(this).data('type');
+                let type = $(this).data('type');
                 if ('rich-text' == type) {
                     $('#editor').summernote({
                         height: 300,
@@ -171,22 +171,22 @@
             });
             $('#add-article-submit').click(function () {
                 $('#add-article-form').bootstrapValidator('validate');
-                var flag = $('#add-article-form').data('bootstrapValidator').isValid();
+                let flag = $('#add-article-form').data('bootstrapValidator').isValid();
                 if (flag) {
-                    var data = $("#add-article-form").serialize();
-                    var type = "1";
-                    var refresh = {
+                    let data = $("#add-article-form").serialize();
+                    let type = "1";
+                    let refresh = {
                         type: "1",
                         timeout: 2000,
                         url: "{{ url('admin/article/index') }}",
                     };
-                    var confirmData = {
+                    let confirmData = {
                         effect: "animated bounceInDown",
                         size: "sm",
                         action: "submit",
                         message: "你确定要提交吗？"
                     };
-                    var ajaxData = {
+                    let ajaxData = {
                         url: "{{ url('admin/article/add') }}",
                         data: data
                     };

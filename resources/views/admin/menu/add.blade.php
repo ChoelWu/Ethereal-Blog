@@ -127,8 +127,8 @@
     <script src="{{ asset(config('view.admin_static_path') . '/js/plugins/switchery/switchery.js') }}"></script>
     <script>
         $(document).ready(function () {
-            var elem = document.querySelector('.js-switch');
-            var switchery = new Switchery(elem, {color: '#1AB394'});
+            let elem = document.querySelector('.js-switch');
+            let switchery = new Switchery(elem, {color: '#1AB394'});
             $('#add-menu-form').bootstrapValidator({
                 message: 'This value is not valid',
                 feedbackIcons: {
@@ -154,7 +154,7 @@
                             callback: {
                                 message: '请不要添加三级菜单！',
                                 callback: function (value) {
-                                    var ajax_data;
+                                    let ajax_data;
                                     $.ajax({
                                         type: "get",
                                         url: "{{ url('admin/menu/get_menu_level') }}",
@@ -201,23 +201,23 @@
             });
             $("#add-menu-submit").click(function () {
                 $('#add-menu-form').bootstrapValidator('validate');
-                var flag = $('#add-menu-form').data('bootstrapValidator').isValid();
+                let flag = $('#add-menu-form').data('bootstrapValidator').isValid();
                 setSwitchInInput(elem, "status");
                 if (flag) {
-                    var data = $("#add-menu-form").serialize();
-                    var type = "1";
-                    var refresh = {
+                    let data = $("#add-menu-form").serialize();
+                    let type = "1";
+                    let refresh = {
                         type: "1",
                         timeout: 2000,
                         url: "{{ url('admin/menu/index') }}",
                     };
-                    var confirmData = {
+                    let confirmData = {
                         effect: "animated bounceInDown",
                         size: "sm",
                         action: "submit",
                         message: "你确定要提交吗？"
                     };
-                    var ajaxData = {
+                    let ajaxData = {
                         url: "{{ url('admin/menu/add') }}",
                         data: data
                     };

@@ -281,8 +281,8 @@
     <script src="{{ asset(config('view.admin_static_path') . '/js/plugins/datapicker/bootstrap-datepicker.js') }}"></script>
     <script>
         $(document).ready(function () {
-            var elem = document.querySelector('.js-switch');
-            var switchery = new Switchery(elem, {color: '#1AB394'});
+            let elem = document.querySelector('.js-switch');
+            let switchery = new Switchery(elem, {color: '#1AB394'});
             elem.onchange = function () {
                 if (elem.checked) {
                     $('#cp2 input').removeAttr('disabled');
@@ -312,21 +312,21 @@
                 window.location.href = "{{ url('admin/article/edit') }}/" + $(this).data("id");
             });
             $(".delete-article").click(function () {
-                var id = $(this).data("id");
-                var token = "{{ csrf_token() }}";
-                var url = "{{ url('admin/article/delete') }}";
-                var type = "2";
-                var refresh = {
+                let id = $(this).data("id");
+                let token = "{{ csrf_token() }}";
+                let url = "{{ url('admin/article/delete') }}";
+                let type = "2";
+                let refresh = {
                     type: "1",
                     timeout: 2000,
                     url: "{{ url('admin/article/index') }}",
                 };
-                var confirmData = {
+                let confirmData = {
                     type: "warning",
                     title: "你确定要删除文章吗？",
                     message: ""
                 };
-                var ajaxData = {
+                let ajaxData = {
                     url: url,
                     data: {id: id, _token: token}
                 };
@@ -340,7 +340,7 @@
                 setSwitchery(switchery, false);
                 $('#publish-article-form').find('input[name="title_color"]').attr('disabled', 'disabled');
                 $('#publish-article-form').find("select").find("option:nth-child(0)").attr("selected", "selected");
-                var id = $(this).data('id');
+                let id = $(this).data('id');
                 $.get("{{ url('admin/article/publish') }}", {
                     id: id
                 }, function (data) {
@@ -363,85 +363,85 @@
                 $('#publish-article-modal').modal('show');
             });
             $(".update-attribute").click(function () {
-                var id = $(this).data("id");
-                var action = $(this).data("action");
-                var token = "{{ csrf_token() }}";
-                var url = "{{ url('admin/article/update_attribute') }}";
-                var type = "2";
-                var refresh = {
+                let id = $(this).data("id");
+                let action = $(this).data("action");
+                let token = "{{ csrf_token() }}";
+                let url = "{{ url('admin/article/update_attribute') }}";
+                let type = "2";
+                let refresh = {
                     type: "1",
                     timeout: 2000,
                     url: "{{ url('admin/article/index') }}",
                 };
-                var confirmData = {
+                let confirmData = {
                     type: "warning",
                     title: "你确定要更改文章属性吗？",
                     message: ""
                 };
-                var ajaxData = {
+                let ajaxData = {
                     url: url,
                     data: {id: id, _token: token, action: action}
                 };
                 showAjaxMessage(type, confirmData, ajaxData, refresh);
             });
             $(".cancel-stick").click(function () {
-                var id = $(this).data("id");
-                var value = $(this).data("val");
-                var token = "{{ csrf_token() }}";
-                var url = "{{ url('admin/article/stick') }}";
-                var type = "2";
-                var refresh = {
+                let id = $(this).data("id");
+                let value = $(this).data("val");
+                let token = "{{ csrf_token() }}";
+                let url = "{{ url('admin/article/stick') }}";
+                let type = "2";
+                let refresh = {
                     type: "1",
                     timeout: 2000,
                     url: "{{ url('admin/article/index') }}",
                 };
-                var confirmData = {
+                let confirmData = {
                     type: "warning",
                     title: "你确定要更改置顶状态吗？",
                     message: ""
                 };
-                var ajaxData = {
+                let ajaxData = {
                     url: url,
                     data: {id: id, _token: token, value: value}
                 };
                 showAjaxMessage(type, confirmData, ajaxData, refresh);
             });
             $('#submit-to-publish').click(function () {
-                var data = $('#publish-article-form').serialize();
-                var url = "{{ url('admin/article/publish') }}";
-                var type = "2";
-                var refresh = {
+                let data = $('#publish-article-form').serialize();
+                let url = "{{ url('admin/article/publish') }}";
+                let type = "2";
+                let refresh = {
                     type: "1",
                     timeout: 2000,
                     url: "{{ url('admin/article/index') }}",
                 };
-                var confirmData = {
+                let confirmData = {
                     type: "warning",
                     title: "你确定要发布吗？",
                     message: ""
                 };
-                var ajaxData = {
+                let ajaxData = {
                     url: url,
                     data: data
                 };
                 showAjaxMessage(type, confirmData, ajaxData, refresh);
             });
             $('.cancel-publish-article').click(function () {
-                var id = $(this).data("id");
-                var token = "{{ csrf_token() }}";
-                var url = "{{ url('admin/article/cancel_publish') }}";
-                var type = "2";
-                var refresh = {
+                let id = $(this).data("id");
+                let token = "{{ csrf_token() }}";
+                let url = "{{ url('admin/article/cancel_publish') }}";
+                let type = "2";
+                let refresh = {
                     type: "1",
                     timeout: 2000,
                     url: "{{ url('admin/article/index') }}",
                 };
-                var confirmData = {
+                let confirmData = {
                     type: "warning",
                     title: "你确定要取消发布吗？",
                     message: ""
                 };
-                var ajaxData = {
+                let ajaxData = {
                     url: url,
                     data: {id: id, _token: token}
                 };

@@ -164,42 +164,42 @@
                 window.location.href = "{{ url('admin/role/edit') }}/" + $(this).data("id");
             });
             $(".delete-role").click(function () {
-                var id = $(this).data("id");
-                var token = "{{ csrf_token() }}";
-                var url = "{{ url('admin/role/delete') }}";
-                var type = "2";
-                var refresh = {
+                let id = $(this).data("id");
+                let token = "{{ csrf_token() }}";
+                let url = "{{ url('admin/role/delete') }}";
+                let type = "2";
+                let refresh = {
                     type: "1",
                     timeout: 2000,
                     url: "{{ url('admin/role/index') }}",
                 };
-                var confirmData = {
+                let confirmData = {
                     type: "warning",
                     title: "你确定要删除角色吗？",
                     message: ""
                 };
-                var ajaxData = {
+                let ajaxData = {
                     url: url,
                     data: {id: id, _token: token}
                 };
                 showAjaxMessage(type, confirmData, ajaxData, refresh);
             });
             $(".edit-role-status").click(function () {
-                var id = $(this).data("id");
-                var token = "{{ csrf_token() }}";
-                var url = "{{ url('admin/role/update_status') }}";
-                var type = "2";
-                var refresh = {
+                let id = $(this).data("id");
+                let token = "{{ csrf_token() }}";
+                let url = "{{ url('admin/role/update_status') }}";
+                let type = "2";
+                let refresh = {
                     type: "1",
                     timeout: 2000,
                     url: "{{ url('admin/role/index') }}",
                 };
-                var confirmData = {
+                let confirmData = {
                     type: "warning",
                     title: "你确定要更改角色状态吗？",
                     message: ""
                 };
-                var ajaxData = {
+                let ajaxData = {
                     url: url,
                     data: {id: id, _token: token}
                 };
@@ -211,7 +211,7 @@
                 $.get("{{ url('admin/role/get_authorize') }}", {"role_id": $(this).data("id")}, function (data) {
                     $('.i-checks').iCheck('uncheck');
                     $('.i-checks').each(function () {
-                        var ele = $(this);
+                        let ele = $(this);
                         $.each(data, function (name, value) {
                             if (ele.val() == value) {
                                 ele.iCheck('check');
@@ -222,9 +222,9 @@
             });
             $('#submit-btn').click(function () {
                 $("#inputModal").modal("hide");
-                var checkBoxArr = [];
-                var token = "{{ csrf_token() }}";
-                var role_id = $(this).data('item');
+                let checkBoxArr = [];
+                let token = "{{ csrf_token() }}";
+                let role_id = $(this).data('item');
                 $('input[name="rule-item"]:checked').each(function () {
                     checkBoxArr.push($(this).val());
                 });
@@ -253,11 +253,11 @@
                 $('.i-checks').iCheck('uncheck');
             });
             $('.check-menu-all').on('ifChecked', function () {
-                var checked_group = $(this).data('menu-id');
+                let checked_group = $(this).data('menu-id');
                 $('.check-item.' + checked_group).iCheck('check');
             });
             $('.check-item').on('ifUnchecked', function () {
-                var menu_id = $(this).data('menu-id');
+                let menu_id = $(this).data('menu-id');
                 $('.check-menu-all.' + menu_id).iCheck('uncheck');
             });
         });

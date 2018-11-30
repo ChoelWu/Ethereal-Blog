@@ -80,8 +80,8 @@
     <script src="{{ asset(config('view.admin_static_path') . '/js/plugins/switchery/switchery.js') }}"></script>
     <script>
         $(document).ready(function () {
-            var elem = document.querySelector('.js-switch');
-            var switchery = new Switchery(elem, {color: '#1AB394'});
+            let elem = document.querySelector('.js-switch');
+            let switchery = new Switchery(elem, {color: '#1AB394'});
             $('#add-role-form').bootstrapValidator({
                 message: 'This value is not valid',
                 feedbackIcons: {
@@ -106,23 +106,23 @@
             });
             $("#add-role-submit").click(function () {
                 $('#add-role-form').bootstrapValidator('validate');
-                var flag = $('#add-role-form').data('bootstrapValidator').isValid();
+                let flag = $('#add-role-form').data('bootstrapValidator').isValid();
                 setSwitchInInput(elem, "status");
                 if (flag) {
-                    var data = $("#add-role-form").serialize();
-                    var type = "1";
-                    var refresh = {
+                    let data = $("#add-role-form").serialize();
+                    let type = "1";
+                    let refresh = {
                         type: "1",
                         timeout: 2000,
                         url: "{{ url('admin/role/index') }}",
                     };
-                    var confirmData = {
+                    let confirmData = {
                         effect: "animated bounceInDown",
                         size: "sm",
                         action: "submit",
                         message: "你确定要提交吗？"
                     };
-                    var ajaxData = {
+                    let ajaxData = {
                         url: "{{ url('admin/role/add') }}",
                         data: data
                     };

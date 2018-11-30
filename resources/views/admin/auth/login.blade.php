@@ -85,7 +85,7 @@
                         callback: {
                             message: '用户账号不存在！',
                             callback: function (value) {
-                                var ajax_data;
+                                let ajax_data;
                                 $.ajax({
                                     type: "get",
                                     url: "{{ url('admin/auth/check_account') }}",
@@ -112,8 +112,8 @@
         });
         $('#confirm').click(function () {
             $('#login-form').bootstrapValidator('validate');
-            var flag = $('#login-form').data('bootstrapValidator').isValid();
-            var ajax_data;
+            let flag = $('#login-form').data('bootstrapValidator').isValid();
+            let ajax_data;
             if (flag) {
                 $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
                 $.ajax({

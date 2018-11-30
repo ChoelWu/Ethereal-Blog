@@ -105,17 +105,17 @@
     <script>
         $(document).ready(function () {
             $('#module-add').click(function () {
-                var nav_list = JSON.parse('{!! $nav_json_list !!}');
-                var option = '';
-                for (var p in nav_list) {
+                let nav_list = JSON.parse('{!! $nav_json_list !!}');
+                let option = '';
+                for (let p in nav_list) {
                     option += '<option value="' + nav_list[p]['id'] + '">' + nav_list[p]['name'] + '</option>';
                     if (nav_list[p]['children'].length != 0) {
-                        for (var q in nav_list[p]['children']) {
+                        for (let q in nav_list[p]['children']) {
                             option += '<option value="' + nav_list[p]['children'][q]['id'] + '">| - - ' + nav_list[p]['children'][q]['name'] + '</option>';
                         }
                     }
                 }
-                var add_element = '<div class="form-group"><div class="col-sm-2 col-sm-offset-2">' +
+                let add_element = '<div class="form-group"><div class="col-sm-2 col-sm-offset-2">' +
                     '<input type="text" class="form-control" name="name" placeholder="请输入变量名"></div><div class="col-sm-3">' +
                     '<div class="input-group"><input class="form-control" type="text" name="number"  placeholder="请输入条数">' +
                     '<span class="input-group-addon">条</span><input class="form-control" type="text" name="single_length" placeholder="请输入字数">' +
@@ -130,26 +130,26 @@
                 console.log($('div.hr-line-dashed:last'));
             });
             $('.ibox-content').on("click", '.module-submit', function (e) {
-                var element = $(e.target);
-                var name = element.parent().siblings().find('input[name="name"]').val();
-                var number = element.parent().siblings().find('input[name="number"]').val();
-                var single_length = element.parent().siblings().find('input[name="single_length"]').val();
-                var attach = element.parent().siblings().find('select[name="attach"]').val();
-                var id = element.data('id');
-                var token = "{{ csrf_token() }}";
-                var url = "{{ url('admin/module/modify') }}";
-                var type = "2";
-                var refresh = {
+                let element = $(e.target);
+                let name = element.parent().siblings().find('input[name="name"]').val();
+                let number = element.parent().siblings().find('input[name="number"]').val();
+                let single_length = element.parent().siblings().find('input[name="single_length"]').val();
+                let attach = element.parent().siblings().find('select[name="attach"]').val();
+                let id = element.data('id');
+                let token = "{{ csrf_token() }}";
+                let url = "{{ url('admin/module/modify') }}";
+                let type = "2";
+                let refresh = {
                     type: "1",
                     timeout: 2000,
                     url: "{{ url('admin/module/index') }}",
                 };
-                var confirmData = {
+                let confirmData = {
                     type: "warning",
                     title: "你确定要添加模块吗？",
                     message: ""
                 };
-                var ajaxData = {
+                let ajaxData = {
                     url: url,
                     data: {
                         _token: token,
@@ -163,28 +163,28 @@
                 showAjaxMessage(type, confirmData, ajaxData, refresh);
             });
             $(".module-delete").click(function () {
-                var id = $(this).data("id");
-                var token = "{{ csrf_token() }}";
-                var url = "{{ url('admin/module/delete') }}";
-                var type = "2";
-                var refresh = {
+                let id = $(this).data("id");
+                let token = "{{ csrf_token() }}";
+                let url = "{{ url('admin/module/delete') }}";
+                let type = "2";
+                let refresh = {
                     type: "1",
                     timeout: 2000,
                     url: "{{ url('admin/module/index') }}",
                 };
-                var confirmData = {
+                let confirmData = {
                     type: "warning",
                     title: "你确定要删除模块吗？",
                     message: ""
                 };
-                var ajaxData = {
+                let ajaxData = {
                     url: url,
                     data: {id: id, _token: token}
                 };
                 showAjaxMessage(type, confirmData, ajaxData, refresh);
             });
             $('.ibox-content').on("click", '.module-cancel', function (e) {
-                var element = $(e.target);
+                let element = $(e.target);
                 $(element).parent().parent().next().remove();
                 $(element).parent().parent().remove();
             });

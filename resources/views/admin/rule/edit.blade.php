@@ -124,9 +124,9 @@
     <script src="{{ asset(config('view.admin_static_path') . '/js/plugins/switchery/switchery.js') }}"></script>
     <script>
         $(document).ready(function () {
-            var elem = document.querySelector('.js-switch');
-            var switchery = new Switchery(elem, {color: '#1AB394'});
-            var pre_status = "{{ $rule->status }}";
+            let elem = document.querySelector('.js-switch');
+            let switchery = new Switchery(elem, {color: '#1AB394'});
+            let pre_status = "{{ $rule->status }}";
             setSwitch(pre_status, switchery);
             $('#edit-rule-form').bootstrapValidator({
                 message: 'This value is not valid',
@@ -178,22 +178,22 @@
             $("#edit-rule-submit").click(function () {
                 setSwitchInInput(elem, "status");
                 $('#edit-rule-form').bootstrapValidator('validate');
-                var flag = $('#edit-rule-form').data('bootstrapValidator').isValid();
+                let flag = $('#edit-rule-form').data('bootstrapValidator').isValid();
                 if (flag) {
-                    var data = $("#edit-rule-form").serialize();
-                    var type = "1";
-                    var refresh = {
+                    let data = $("#edit-rule-form").serialize();
+                    let type = "1";
+                    let refresh = {
                         type: "1",
                         timeout: 2000,
                         url: "{{ url('admin/rule/index') }}",
                     };
-                    var confirmData = {
+                    let confirmData = {
                         effect: "animated bounceInDown",
                         size: "sm",
                         action: "submit",
                         message: "你确定要提交修改吗？"
                     };
-                    var ajaxData = {
+                    let ajaxData = {
                         url: "{{ url('admin/rule/edit') }}",
                         data: data
                     };

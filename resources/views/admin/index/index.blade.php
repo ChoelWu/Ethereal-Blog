@@ -19,21 +19,21 @@
     <script>
         $(document).ready(function () {
             $('#text-btu').click(function () {
-                var token = "{{ csrf_token() }}";
-                var type = "2";
-                var refresh = {type: "1", timeout: 3000};
-                // var confirmData = {
+                let token = "{{ csrf_token() }}";
+                let type = "2";
+                let refresh = {type: "1", timeout: 3000};
+                // let confirmData = {
                 //     effect: "animated bounceInRight",
                 //     size: "sm",
                 //     action: "submit",
                 //     message: "你确定要删除吗？"
                 // };
-                var confirmData = {
+                let confirmData = {
                     type: "warning",
                     title: "你确定要删除吗？",
                     message: ""
                 };
-                var ajaxData = {
+                let ajaxData = {
                     url: "{{ url('admin/test') }}",
                     data: {id: '1', _token: token}
                 };

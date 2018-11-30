@@ -83,9 +83,9 @@
     <script src="{{ asset(config('view.admin_static_path') . '/js/plugins/switchery/switchery.js') }}"></script>
     <script>
         $(document).ready(function () {
-            var elem = document.querySelector('.js-switch');
-            var switchery = new Switchery(elem, {color: '#1AB394'});
-            var pre_status = "{{ $tag->status }}";
+            let elem = document.querySelector('.js-switch');
+            let switchery = new Switchery(elem, {color: '#1AB394'});
+            let pre_status = "{{ $tag->status }}";
             setSwitch(pre_status, switchery);
             $('#edit-tag-form').bootstrapValidator({
                 live: "submitted",
@@ -109,9 +109,9 @@
                             callback: {
                                 message: '已存在相同标签名的标签！',
                                 callback: function (value) {
-                                    var ajax_data;
-                                    var id = "{{ $tag->id }}";
-                                    var token = "{{ csrf_token() }}";
+                                    let ajax_data;
+                                    let id = "{{ $tag->id }}";
+                                    let token = "{{ csrf_token() }}";
                                     $.ajax({
                                         type: "post",
                                         url: "{{ url('admin/tag/check_tag') }}",
@@ -133,22 +133,22 @@
             $("#edit-tag-submit").click(function () {
                 setSwitchInInput(elem, "status");
                 $('#edit-tag-form').bootstrapValidator('validate');
-                var flag = $('#edit-tag-form').data('bootstrapValidator').isValid();
+                let flag = $('#edit-tag-form').data('bootstrapValidator').isValid();
                 if (flag) {
-                    var data = $("#edit-tag-form").serialize();
-                    var type = "1";
-                    var refresh = {
+                    let data = $("#edit-tag-form").serialize();
+                    let type = "1";
+                    let refresh = {
                         type: "1",
                         timeout: 2000,
                         url: "{{ url('admin/tag/index') }}",
                     };
-                    var confirmData = {
+                    let confirmData = {
                         effect: "animated bounceInDown",
                         size: "sm",
                         action: "submit",
                         message: "你确定要提交修改吗？"
                     };
-                    var ajaxData = {
+                    let ajaxData = {
                         url: "{{ url('admin/tag/edit') }}",
                         data: data
                     };

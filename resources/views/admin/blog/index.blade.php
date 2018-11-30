@@ -188,9 +188,9 @@
     <script>
         $(document).ready(function () {
             $(".submit-info").click(function () {
-                    var block = $(this).data("block");
-                    var data = $("form.block" + block).serialize();
-                    var url = "{{ url('admin/blog/modify') }}";
+                    let block = $(this).data("block");
+                    let data = $("form.block" + block).serialize();
+                    let url = "{{ url('admin/blog/modify') }}";
                     $.post(url, data, function (result) {
                         console.log(result);
                     });

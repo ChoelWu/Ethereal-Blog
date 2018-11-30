@@ -173,9 +173,9 @@
     <script src="{{ asset(config('view.admin_static_path') . '/js/plugins/switchery/switchery.js') }}"></script>
     <script>
         $(document).ready(function () {
-            var elem = document.querySelector('.js-switch');
-            var switchery = new Switchery(elem, {color: '#1AB394'});
-            var pre_status = "{{ $user->status }}";
+            let elem = document.querySelector('.js-switch');
+            let switchery = new Switchery(elem, {color: '#1AB394'});
+            let pre_status = "{{ $user->status }}";
             if (pre_status == "1") {
                 setSwitchery(switchery, true);
             } else {
@@ -215,7 +215,7 @@
                         callback: {
                             message: '该账号已被使用',
                             callback: function (value) {
-                                var ajax_data;
+                                let ajax_data;
                                 $.ajax({
                                     type: "get",
                                     url: "{{ url('admin/auth/check_account') }}",
@@ -271,7 +271,7 @@
                             callback: {
                                 message: '请上传png、jpg、jpeg格式的图片！',
                                 callback: function (value) {
-                                    var type = value.substring(value.lastIndexOf('.') + 1);
+                                    let type = value.substring(value.lastIndexOf('.') + 1);
                                     if (type != "png" && type != "jpeg" && type != "JPG" && type != "PNG" && type != "JPEG" && type != "jpg" && value != "") {
                                         return false;
                                     } else {
@@ -298,10 +298,10 @@
                 } else {
                     $('input[name="status"]').val('0');
                 }
-                var ajax_data;
-                var form_data = new FormData($('#edit-user-form')[0]);
+                let ajax_data;
+                let form_data = new FormData($('#edit-user-form')[0]);
                 $('#edit-user-form').bootstrapValidator('validate');
-                var flag = $('#edit-user-form').data('bootstrapValidator').isValid();
+                let flag = $('#edit-user-form').data('bootstrapValidator').isValid();
                 if (flag) {
                     $.ajax({
                         type: "post",

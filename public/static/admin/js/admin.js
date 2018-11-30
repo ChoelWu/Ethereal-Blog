@@ -10,7 +10,7 @@
  * @param afterHide
  */
 function showMessageModal(effect, size, level, message, timeout, afterHide) {
-    var title = '';
+    let title = '';
     $("#showMessageModal").find(".modal-content").addClass(effect);
     $("#showMessageModal").find(".modal-dialog").addClass("modal-" + size);
     if ("warning" == level) {
@@ -40,7 +40,7 @@ function showMessageModal(effect, size, level, message, timeout, afterHide) {
  * @param message
  */
 function confirmModal(effect, size, action, message) {
-    var title = '';
+    let title = '';
     $("#confirmModal").find(".modal-content").addClass(effect);
     $("#confirmModal").find(".modal-dialog").addClass("modal-" + size);
     if ("submit" == action) {
@@ -162,6 +162,9 @@ function showAjaxMessage(type, confirmData, ajaxData, refresh) {
                             window.location.href = refresh['url'];
                         }
                     });
+                } else if ('400' == data['status']) {
+                    showMessageModal("animated flipInX", "sm", "error", data['message'], refresh['timeout'], function () {
+                    });
                 }
             }, function () {
                 showMessageModal("animated flipInX", "sm", "warning", "系统异常！", refresh['timeout'], function () {
@@ -184,6 +187,8 @@ function showAjaxMessage(type, confirmData, ajaxData, refresh) {
                     if ("1" == refresh["type"]) {
                         refreshPage(refresh['timeout'], refresh['url']);
                     }
+                } else if ('400' == data['status']) {
+                    showMessageAlert("error", data['message'], "", refresh['timeout']);
                 }
             }, function () {
                 showMessageAlert("error", "系统异常！", "", refresh['timeout']);
